@@ -3,6 +3,7 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -41,7 +42,6 @@ func run() error {
 		Delivered: myDeliveredFunc,   // your function for delivery report
 		Seen:      mySeenFunc,        // or assign events after declaration
 	}
-	v.NewButton(1, 1, viber.Reply, "qwe", "1", "")
 
 	// you really need this only once, remove after you set the webhook
 
@@ -80,6 +80,15 @@ func myMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		v.SendTextMessage(u.ID, "Thank you for your message")
 		txt := m.(*viber.TextMessage).Text
 		v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
+		if txt == "button" {
+			fmt.Println("button")
+			b := v.NewButton(1, 1, viber.Reply, "qwe", "1", "")
+			k := v.NewKeyboard("", true)
+			k.AddButton(b)
+			msg := v.NewTextMessage("qwe")
+			msg.Keyboars = k
+			v.SendMessage(u.ID, msg)
+		}
 
 	case *viber.URLMessage:
 		url := m.(*viber.URLMessage).Media
