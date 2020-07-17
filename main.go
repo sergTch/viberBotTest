@@ -39,8 +39,9 @@ func run() error {
 		},
 		Message:   myMsgReceivedFunc, // your function for handling messages
 		Delivered: myDeliveredFunc,   // your function for delivery report
+		Seen:      mySeenFunc,        // or assign events after declaration
 	}
-	v.Seen = mySeenFunc // or assign events after declaration
+	v.NewButton(1, 1, viber.Reply, "qwe", "1", "")
 
 	// you really need this only once, remove after you set the webhook
 
