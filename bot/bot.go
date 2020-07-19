@@ -12,10 +12,10 @@ func NewBot(cfg encio.Config) *viber.Viber {
 			Name: "Loyalty bot",
 			// Avatar: "https://mysite.com/img/avatar.jpg",
 		},
-		Subscribed: MySubscribed,
-		Message:    MyMsgReceivedFunc, // your function for handling messages
-		Delivered:  MyDeliveredFunc,   // your function for delivery report
-		Seen:       MySeenFunc,        // or assign events after declaration
+		ConversationStarted: MyConversaionStarted,
+		Message:             MyMsgReceivedFunc, // your function for handling messages
+		Delivered:           MyDeliveredFunc,   // your function for delivery report
+		Seen:                MySeenFunc,        // or assign events after declaration
 	}
 
 }
