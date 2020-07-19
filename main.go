@@ -82,7 +82,7 @@ func myMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
 		if txt == "button" {
 			fmt.Println("button")
-			b := v.NewButton(1, 1, viber.Reply, "qwe", "1", "")
+			b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
 			k := v.NewKeyboard("", true)
 			k.AddButton(b)
 			b.Text = "2"
