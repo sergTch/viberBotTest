@@ -5,7 +5,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/mileusna/viber"
+	"github.com/orsenkucher/viber"
 )
 
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
@@ -14,7 +14,7 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 	//b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
 	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/1200px-Smiley.svg.png")
 	k := v.NewKeyboard("", false)
-	k.AddButton(b)
+	k.AddButtons(*b)
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
 	msg.SetKeyboard(k)
 	return msg
@@ -35,13 +35,13 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 
 			b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
 			k := v.NewKeyboard("", false)
-			k.AddButton(b)
+			k.AddButtons(*b)
 
 			b.Text = "2"
-			k.AddButton(b)
+			k.AddButtons(*b)
 
 			msg := v.NewTextMessage("qwe")
-			msg.Keyboars = k
+			msg.Keyboard = k
 			_, _ = v.SendMessage(u.ID, msg)
 		}
 

@@ -1,8 +1,8 @@
 package bot
 
 import (
-	"github.com/mileusna/viber"
 	"github.com/orsenkucher/nothing/encio"
+	"github.com/orsenkucher/viber"
 )
 
 func NewBot(cfg encio.Config) *viber.Viber {

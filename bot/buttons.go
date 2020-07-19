@@ -1,6 +1,8 @@
 package bot
 
-import "github.com/mileusna/viber"
+import (
+	"github.com/orsenkucher/viber"
+)
 
 var Actions map[string]*Action
 
