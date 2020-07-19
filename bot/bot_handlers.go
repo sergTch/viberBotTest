@@ -10,6 +10,7 @@ import (
 
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
+
 	//b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
 	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/1200px-Smiley.svg.png")
 	k := v.NewKeyboard("", false)
@@ -24,6 +25,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 
 	switch tm := m.(type) {
 	case *viber.TextMessage:
+		fmt.Println(u.Mcc, u.Mnc, u.DeviceType, u.Name, u.PrimaryDeviceOs, u.Country)
 		_, _ = v.SendTextMessage(u.ID, "Thank you for your message")
 		txt := tm.Text
 		_, _ = v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
