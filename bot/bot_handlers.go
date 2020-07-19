@@ -10,11 +10,12 @@ import (
 
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
-	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
-	//	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/1200px-Smiley.svg.png")
+	//b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
+	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/1200px-Smiley.svg.png")
 	k := v.NewKeyboard("", false)
 	k.AddButton(b)
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
+	msg.SetKeyboard(k)
 	return msg
 }
 
