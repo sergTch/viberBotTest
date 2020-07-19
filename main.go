@@ -3,13 +3,11 @@ package main
 import (
 	"errors"
 	"flag"
-	"fmt"
 	"log"
 	"net/http"
-	"time"
 
-	"github.com/mileusna/viber"
 	"github.com/orsenkucher/nothing/encio"
+	"github.com/sergTch/viberBotTest/bot"
 )
 
 func main() {
@@ -34,16 +32,7 @@ func run() error {
 		return err
 	}
 
-	v := &viber.Viber{
-		AppKey: cfg["token"].(string),
-		Sender: viber.Sender{
-			Name: "Loyalty bot",
-			// Avatar: "https://mysite.com/img/avatar.jpg",
-		},
-		Message:   myMsgReceivedFunc, // your function for handling messages
-		Delivered: myDeliveredFunc,   // your function for delivery report
-		Seen:      mySeenFunc,        // or assign events after declaration
-	}
+	v := bot.NewBot(cfg)
 
 	// you really need this only once, remove after you set the webhook
 
@@ -74,44 +63,4 @@ func run() error {
 	}
 
 	return nil
-}
-
-// myMsgReceivedFunc will be called everytime when user send us a message.
-func myMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
-	switch tm := m.(type) {
-	case *viber.TextMessage:
-		_, _ = v.SendTextMessage(u.ID, "Thank you for your message")
-		txt := tm.Text
-		_, _ = v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
-
-		if txt == "button" {
-			fmt.Println("button")
-
-			b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
-			k := v.NewKeyboard("", false)
-			k.AddButton(b)
-
-			b.Text = "2"
-			k.AddButton(b)
-
-			msg := v.NewTextMessage("qwe")
-			msg.Keyboars = k
-			_, _ = v.SendMessage(u.ID, msg)
-		}
-
-	case *viber.URLMessage:
-		url := m.(*viber.URLMessage).Media
-		_, _ = v.SendTextMessage(u.ID, "You have sent me an interesting link "+url)
-
-	case *viber.PictureMessage:
-		_, _ = v.SendTextMessage(u.ID, "Nice pic!")
-	}
-}
-
-func myDeliveredFunc(v *viber.Viber, userID string, token uint64, t time.Time) {
-	log.Println("Message ID", token, "delivered to user ID", userID)
-}
-
-func mySeenFunc(v *viber.Viber, userID string, token uint64, t time.Time) {
-	log.Println("Message ID", token, "seen by user ID", userID)
 }
