@@ -9,6 +9,7 @@ import (
 )
 
 func MySubscribed(v *viber.Viber, u viber.User, token uint64, t time.Time) {
+	fmt.Println("new subscriber", u.ID)
 	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
 	//	b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/1200px-Smiley.svg.png")
 	k := v.NewKeyboard("", false)
