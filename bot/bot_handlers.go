@@ -23,11 +23,11 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 // myMsgReceivedFunc will be called everytime when user send us a message.
 func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
 
-	switch tm := m.(type) {
+	switch m := m.(type) {
 	case *viber.TextMessage:
 		fmt.Println(u.Mcc, u.Mnc, u.DeviceType, u.Name, u.PrimaryDeviceOs, u.Country)
 		_, _ = v.SendTextMessage(u.ID, "Thank you for your message")
-		txt := tm.Text
+		txt := m.Text
 		_, _ = v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
 
 		if txt == "button" {
@@ -46,11 +46,15 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		}
 
 	case *viber.URLMessage:
-		url := m.(*viber.URLMessage).Media
+		url := m.Media
 		_, _ = v.SendTextMessage(u.ID, "You have sent me an interesting link "+url)
 
 	case *viber.PictureMessage:
 		_, _ = v.SendTextMessage(u.ID, "Nice pic!")
+
+	case *viber.ContactMessage:
+		fmt.Printf("%+v", m)
+		_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}
 }
 
