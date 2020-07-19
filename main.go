@@ -20,7 +20,9 @@ func main() {
 
 func run() error {
 	var s = flag.String("s", "", "provide encio password")
+
 	flag.Parse()
+
 	if *s == "" {
 		return errors.New("[-s] -> encio must be handled")
 	}
@@ -49,6 +51,7 @@ func run() error {
 	if err != nil {
 		return err
 	}
+
 	log.Printf("%+v", hook)
 
 	// userID := "Goxxuipn9xKKRqkFOOwKnw==" // fake user ID, use the real one
@@ -64,6 +67,7 @@ func run() error {
 	})
 
 	http.Handle("/viber/webhook", v)
+
 	err = http.ListenAndServe(":9094", nil)
 	if err != nil {
 		return err
@@ -72,31 +76,32 @@ func run() error {
 	return nil
 }
 
-// myMsgReceivedFunc will be called everytime when user send us a message
+// myMsgReceivedFunc will be called everytime when user send us a message.
 func myMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
-	switch m.(type) {
-
+	switch tm := m.(type) {
 	case *viber.TextMessage:
-		v.SendTextMessage(u.ID, "Thank you for your message")
-		txt := m.(*viber.TextMessage).Text
-		v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
+		_, _ = v.SendTextMessage(u.ID, "Thank you for your message")
+		txt := tm.Text
+		_, _ = v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
+
 		if txt == "button" {
 			fmt.Println("button")
+
 			b := v.NewButton(1, 1, viber.Reply, "qwe", "1", "")
 			k := v.NewKeyboard("", true)
 			k.AddButton(b)
+
 			msg := v.NewTextMessage("qwe")
 			msg.Keyboars = k
-			v.SendMessage(u.ID, msg)
+			_, _ = v.SendMessage(u.ID, msg)
 		}
 
 	case *viber.URLMessage:
 		url := m.(*viber.URLMessage).Media
-		v.SendTextMessage(u.ID, "You have sent me an interesting link "+url)
+		_, _ = v.SendTextMessage(u.ID, "You have sent me an interesting link "+url)
 
 	case *viber.PictureMessage:
-		v.SendTextMessage(u.ID, "Nice pic!")
-
+		_, _ = v.SendTextMessage(u.ID, "Nice pic!")
 	}
 }
 
@@ -107,3 +112,4 @@ func myDeliveredFunc(v *viber.Viber, userID string, token uint64, t time.Time) {
 func mySeenFunc(v *viber.Viber, userID string, token uint64, t time.Time) {
 	log.Println("Message ID", token, "seen by user ID", userID)
 }
+
