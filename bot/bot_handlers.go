@@ -48,7 +48,10 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 
 			msg := v.NewTextMessage("qwe")
 			msg.Keyboard = k
-			_, _ = v.SendMessage(u.ID, msg)
+			_, err := v.SendMessage(u.ID, msg)
+			if err != nil {
+				fmt.Println(err)
+			}
 		}
 
 	case *viber.URLMessage:
