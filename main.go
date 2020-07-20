@@ -18,6 +18,7 @@ func main() {
 
 func run() error {
 	var s = flag.String("s", "", "provide encio password")
+	var h = flag.Bool("h", false, "set webhook if true")
 
 	flag.Parse()
 
@@ -36,12 +37,14 @@ func run() error {
 
 	// you really need this only once, remove after you set the webhook
 
-	hook, err := v.SetWebhook("https://loyalty-vbot.abmloyalty.app/viber/webhook", nil)
-	if err != nil {
-		return err
-	}
+	if *h {
+		hook, err := v.SetWebhook("https://loyalty-vbot.abmloyalty.app/viber/webhook", nil)
+		if err != nil {
+			return err
+		}
 
-	log.Printf("%+v", hook)
+		log.Printf("%+v", hook)
+	}
 
 	// userID := "Goxxuipn9xKKRqkFOOwKnw==" // fake user ID, use the real one
 	// // send text message
