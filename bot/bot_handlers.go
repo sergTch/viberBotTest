@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"log"
+	"strings"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -30,7 +31,9 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		txt := m.Text
 		_, _ = v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
 
-		if txt == "button" {
+		fmt.Printf("msg:%s\n", txt)
+		fmt.Printf("eq:%v", txt == "button")
+		if strings.Contains(txt, "button") {
 			fmt.Println("button")
 
 			b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
