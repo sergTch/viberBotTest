@@ -36,7 +36,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		if strings.Contains(txt, "button") {
 			fmt.Println("button")
 
-			b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
+			b := v.NewButton(2, 2, viber.SharePhone, "qwe", "1", "")
 			k := v.NewKeyboard("", false)
 			k.AddButtons(*b)
 
