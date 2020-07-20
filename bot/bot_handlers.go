@@ -47,7 +47,6 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			// k.AddButtons(*b)
 
 			msg := v.NewTextMessage("qwe")
-			msg.MinAPIVersion = 3
 			msg.Keyboard = k
 			_, err := v.SendMessage(u.ID, msg)
 			if err != nil {
