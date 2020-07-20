@@ -40,11 +40,11 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			k := v.NewKeyboard("", false)
 			k.AddButtons(*b)
 
-			b.Text = "2"
-			k.AddButtons(*b)
+			// b.Text = "2"
+			// k.AddButtons(*b)
 
-			b = v.NewButton(2, 2, viber.SharePhone, "numberqwe", "Give num", "")
-			k.AddButtons(*b)
+			// b = v.NewButton(2, 2, viber.SharePhone, "numberqwe", "Give num", "")
+			// k.AddButtons(*b)
 
 			msg := v.NewTextMessage("qwe")
 			msg.Keyboard = k
