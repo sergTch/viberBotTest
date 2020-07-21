@@ -8,7 +8,7 @@ import (
 func NewBot(cfg encio.Config) *viber.Viber {
 	return &viber.Viber{
 		AppKey: cfg["token"].(string),
-		MinAPI: 3,
+		MinAPI: 4,
 		Sender: viber.Sender{
 			Name: "Loyalty bot",
 			// Avatar: "https://mysite.com/img/avatar.jpg",
