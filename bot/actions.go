@@ -18,7 +18,7 @@ type Action struct {
 func init() {
 	Actions = map[string]*Action{}
 	Actions["agr"] = &Action{Act: AgreementMsg, ID: "agr"}
-	Actions["str"] = &Action{Act: AgreementMsg, ID: "str"}
+	Actions["str"] = &Action{Act: StartMsg, ID: "str"}
 }
 
 //id: str
@@ -36,12 +36,12 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t tim
 
 //id: agr
 func AgreementMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
-	phoneB := v.NewButton(6, 1, viber.SharePhone, "", "Принять", "")
-	linkB := v.NewButton(3, 1, viber.OpenURL, "", "Условия", data.AgreementLink)
+	linkB := v.NewButton(6, 1, viber.OpenURL, data.AgreementLink, "Условия", "")
+	phoneB := v.NewButton(3, 1, viber.SharePhone, "", "Принять", "")
 	cancelB := BuildButton(v, 3, 1, "", "Отмена", "str")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*phoneB, *linkB, *cancelB)
-	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
+	msg := v.NewTextMessage(fmt.Sprint("Вам уже исполнилось ", data.Age, " лет и Вы принимаете Условия программы лояльности?"))
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
 	if err != nil {
