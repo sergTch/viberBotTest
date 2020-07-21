@@ -37,7 +37,7 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t tim
 //id: agr
 func AgreementMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
 	linkB := v.NewButton(6, 1, viber.OpenURL, data.AgreementLink, "Условия", "")
-	phoneB := v.NewButton(3, 1, viber.SharePhone, "", "Принять", "")
+	phoneB := v.NewButton(3, 1, viber.SharePhone, "qwe", "Принять", "")
 	cancelB := BuildButton(v, 3, 1, "", "Отмена", "str")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*linkB, *phoneB, *cancelB)
