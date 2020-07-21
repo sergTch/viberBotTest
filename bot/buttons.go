@@ -9,5 +9,5 @@ func BuildButton(v *viber.Viber, cols int, rows int, image string, text string, 
 	for _, id := range actionIDs {
 		actBody += "/" + id
 	}
-	return v.NewButton(cols, rows, viber.Reply, actBody, "0", image)
+	return v.NewButton(cols, rows, viber.Reply, actBody, text, image)
 }

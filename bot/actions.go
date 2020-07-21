@@ -17,7 +17,7 @@ type Action struct {
 
 func init() {
 	Actions = map[string]*Action{}
-	Actions["arg"] = &Action{Act: AgreementMsg, ID: "arg"}
+	Actions["agr"] = &Action{Act: AgreementMsg, ID: "agr"}
 	Actions["str"] = &Action{Act: AgreementMsg, ID: "str"}
 }
 
