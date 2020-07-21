@@ -14,7 +14,7 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 
 	//b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
 
-	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr", "qwe")
+	startB := BuildButton(v, 5, 1, "", "START", "agr", "qwe")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")

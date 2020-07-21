@@ -12,13 +12,16 @@ var Actions map[string]*Action
 
 type Action struct {
 	Act func(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time)
-	ID  *string
+	ID  string
 }
 
 func init() {
 	Actions = map[string]*Action{}
+	Actions["arg"] = &Action{Act: AgreementMsg, ID: "arg"}
+	Actions["str"] = &Action{Act: AgreementMsg, ID: "str"}
 }
 
+//id: str
 func StartMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
 	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr", "qwe")
 	keyboard := v.NewKeyboard("", false)
@@ -31,6 +34,7 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t tim
 	}
 }
 
+//id: agr
 func AgreementMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
 	phoneB := v.NewButton(6, 1, viber.SharePhone, "", "Принять", "")
 	linkB := v.NewButton(3, 1, viber.OpenURL, "", "Условия", data.AgreementLink)
