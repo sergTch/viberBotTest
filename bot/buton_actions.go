@@ -8,17 +8,18 @@ import (
 	"github.com/sergTch/viberBotTest/data"
 )
 
-var Actions map[string]*Action
+var ButtActions map[string]*ButtAction
 
-type Action struct {
+type ButtAction struct {
 	Act func(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time)
 	ID  string
 }
 
 func init() {
-	Actions = map[string]*Action{}
-	Actions["agr"] = &Action{Act: AgreementMsg, ID: "agr"}
-	Actions["str"] = &Action{Act: StartMsg, ID: "str"}
+	fmt.Println("init1")
+	ButtActions = map[string]*ButtAction{}
+	ButtActions["agr"] = &ButtAction{Act: AgreementMsg, ID: "agr"}
+	ButtActions["str"] = &ButtAction{Act: StartMsg, ID: "str"}
 }
 
 //id: str
