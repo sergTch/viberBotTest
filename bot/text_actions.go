@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -15,5 +14,4 @@ type TextAction struct {
 }
 
 func init() {
-	fmt.Println("init2")
 }

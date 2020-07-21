@@ -16,7 +16,6 @@ type ButtAction struct {
 }
 
 func init() {
-	fmt.Println("init1")
 	ButtActions = map[string]*ButtAction{}
 	ButtActions["agr"] = &ButtAction{Act: AgreementMsg, ID: "agr"}
 	ButtActions["str"] = &ButtAction{Act: StartMsg, ID: "str"}
