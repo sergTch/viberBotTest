@@ -4,17 +4,10 @@ import (
 	"github.com/orsenkucher/viber"
 )
 
-var Actions map[string]*Action
-
-type Action struct {
-	Act func()
-	ID  *string
-}
-
-func BuildButton(v *viber.Viber, actionIDs []string, image string, text string) *viber.Button {
+func BuildButton(v *viber.Viber, cols int, rows int, image string, text string, actionIDs ...string) *viber.Button {
 	actBody := "#butt"
 	for _, id := range actionIDs {
 		actBody += "/" + id
 	}
-	return v.NewButton(1, 1, viber.Reply, actBody, "0", image)
+	return v.NewButton(cols, rows, viber.Reply, actBody, "0", image)
 }
