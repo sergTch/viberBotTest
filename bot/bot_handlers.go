@@ -27,31 +27,14 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 
 	switch m := m.(type) {
 	case *viber.TextMessage:
-		fmt.Println(u.Mcc, u.Mnc, u.DeviceType, u.Name, u.PrimaryDeviceOs, u.Country)
-		_, _ = v.SendTextMessage(u.ID, "Thank you for your message")
 		txt := m.Text
-		_, _ = v.SendTextMessage(u.ID, "This is the text you have sent to me "+txt)
-
-		fmt.Printf("msg:%s\n", txt)
-		fmt.Printf("eq:%v", txt == "button")
-		if strings.Contains(txt, "button") {
-			fmt.Println("button")
-
-			b := v.NewButton(2, 2, viber.SharePhone, "qwe", "1", "")
-			k := v.NewKeyboard("", false)
-			k.AddButtons(*b)
-
-			// b.Text = "2"
-			// k.AddButtons(*b)
-
-			// b = v.NewButton(2, 2, viber.SharePhone, "numberqwe", "Give num", "")
-			// k.AddButtons(*b)
-
-			msg := v.NewTextMessage("qwe")
-			msg.Keyboard = k
-			_, err := v.SendMessage(u.ID, msg)
-			if err != nil {
-				fmt.Println(err)
+		fmt.Println(txt)
+		parts := strings.Split(txt, "/")
+		if parts[0] == "#butt" {
+			for _, actionID := range parts {
+				if action, ok := Actions[actionID]; ok {
+					action.Act(v, u, m, token, t)
+				}
 			}
 		}
 
