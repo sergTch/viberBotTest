@@ -2,6 +2,7 @@ package abm
 
 import (
 	"encoding/json"
+	"errors"
 	"net/http"
 	"net/url"
 
@@ -20,22 +21,28 @@ func New() *Client {
 	}
 }
 
+func (c *Client) url(endpoint string) string {
+	return c.apiURL + endpoint
+}
+
 // client := abm.New()
 // ok, err := client.CheckPhone("380671810640")
 // fmt.Printf("phone: %v %v", ok, err)
 
-func (c *Client) CheckPhone(number string) (bool, error) {
+func (c *Client) CheckPhone(number string) (ok bool, err error) {
 	values := url.Values{}
 	values.Set("phone", number)
-	url := c.apiURL + "/v2/client/check-phone"
-	r, err := c.client.PostForm(url, values)
+
+	r, err := c.client.PostForm(c.url("/v2/client/check-phone"), values)
 	if err != nil {
-		return false, err
+		return
 	}
+
 	defer r.Body.Close()
 
 	if r.StatusCode != 201 {
-		return false, nil
+		err = errors.New("Not 201 status")
+		return
 	}
 
 	var resp struct {
@@ -43,10 +50,47 @@ func (c *Client) CheckPhone(number string) (bool, error) {
 			Is_exist bool `json:"is_exist"`
 		} `json:"data"`
 	}
+
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
-		return false, nil
+		return
 	}
 
-	return true, nil
+	ok = true
+	return
+}
+
+func (c *Client) Register(phone, password, signature string) (smsID int, err error) {
+	values := url.Values{}
+	values.Set("phone", phone)
+	values.Set("password", password)
+	values.Set("signature", signature)
+
+	r, err := c.client.PostForm(c.url("/v2.1/client/registration"), values)
+	if err != nil {
+		return
+	}
+
+	defer r.Body.Close()
+
+	if r.StatusCode != 201 {
+		err = errors.New("Not 201 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Phone   string `json:"phone"`
+			SMSID   int    `json:"sms_id"`
+			Timeout int    `json:"timeout"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	smsID = resp.Data.SMSID
+	return
 }
