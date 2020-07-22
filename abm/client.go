@@ -129,3 +129,80 @@ func (c *Client) Confirm(code string, smsID int) (token string, ok bool, err err
 	token = resp.Data.Token
 	return
 }
+
+type Card struct {
+	Created         int        `json:"created"`
+	DateActivated   int        `json:"date_activated"`
+	DateBlocked     int        `json:"date_blocked"`
+	Number          string     `json:"number"`
+	UserGuid        string     `json:"user_guid"`
+	MainCardNumber  string     `json:"main_card_number"`
+	SlaveCardNumber string     `json:"slave_card_number"`
+	Type            CardType   // `json:"type"`
+	Status          CardStatus // `json:"status"`
+}
+
+func (c *Card) UnmarshalJSON(data []byte) error {
+	v := &struct {
+		*Card
+		Type   int `json:"type"`
+		Status int `json:"status"`
+	}{Card: c}
+
+	if err := json.Unmarshal(data, v); err != nil {
+		return err
+	}
+
+	c.Type = CardType(v.Type)
+	c.Status = CardStatus(v.Status)
+	return nil
+}
+
+type CardStatus int
+
+const (
+	NewCard CardStatus = iota
+	ActiveCard
+	BlockedCard
+	PaymentCard
+)
+
+type CardType int
+
+const (
+	MainCard CardType = iota + 1
+	SlaveCard
+)
+
+func (c *Client) SetCard(number string) (card *Card, ok bool, err error) {
+	values := url.Values{}
+	values.Set("number", number)
+
+	r, err := c.client.PostForm(c.url("/v2/client/card/set-card"), values)
+	if err != nil {
+		return
+	}
+
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Card *Card `json:"card"`
+		} `json:"data"`
+		Success bool `json:"success"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	ok = resp.Success
+	card = resp.Data.Card
+	return
+}
