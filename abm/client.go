@@ -206,3 +206,40 @@ func (c *Client) SetCard(number string) (card *Card, ok bool, err error) {
 	card = resp.Data.Card
 	return
 }
+
+func (c *Client) BarCode(token string) (userID int, barCode string, err error) {
+	req, err := http.NewRequest("", c.url("/v2/client/bar-code"), nil)
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token, "")
+	r, err := c.client.Do(req)
+
+	if err != nil {
+		return
+	}
+
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			UserID  int    `json:"user_id"`
+			BarCode string `json:"bar_code"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	userID = resp.Data.UserID
+	barCode = resp.Data.BarCode
+	return
+}
