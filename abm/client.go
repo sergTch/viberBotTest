@@ -1,4 +1,4 @@
-package api
+package abm
 
 import (
 	"encoding/json"
@@ -10,24 +10,24 @@ import (
 
 type Client struct {
 	client *http.Client
-	api    string
+	apiURL string
 }
 
 func New() *Client {
 	return &Client{
 		client: &http.Client{},
-		api:    data.API,
+		apiURL: data.ApiUrl,
 	}
 }
 
-// client := api.New()
+// client := abm.New()
 // ok, err := client.CheckPhone("380671810640")
 // fmt.Printf("phone: %v %v", ok, err)
 
 func (c *Client) CheckPhone(number string) (bool, error) {
 	values := url.Values{}
 	values.Set("phone", number)
-	url := c.api + "/v2/client/check-phone"
+	url := c.apiURL + "/v2/client/check-phone"
 	r, err := c.client.PostForm(url, values)
 	if err != nil {
 		return false, err

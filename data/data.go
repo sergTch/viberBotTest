@@ -11,8 +11,8 @@ const (
 )
 
 var (
-	Age           int
-	API           string
+	MinAge        int
+	ApiUrl        string
 	AgreementLink string
 )
 
@@ -29,6 +29,6 @@ func init() {
 	}
 
 	AgreementLink = cfg["AgreementLink"].(string)
-	Age = int(cfg["Age"].(float64))
-	API = cfg["API"].(string)
+	MinAge = int(cfg["Age"].(float64))
+	ApiUrl = cfg["ApiUrl"].(string)
 }
