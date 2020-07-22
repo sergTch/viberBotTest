@@ -18,5 +18,4 @@ func NewBot(cfg encio.Config) *viber.Viber {
 		Delivered:           MyDeliveredFunc,   // your function for delivery report
 		Seen:                MySeenFunc,        // or assign events after declaration
 	}
-
 }
