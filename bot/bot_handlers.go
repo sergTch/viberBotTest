@@ -39,7 +39,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		} else {
 			for _, actions := range UserTxtAct {
 				for _, action := range actions {
-					action.Act(v, u, m, token, t)
+					action.Act(v, u, *m, token, t)
 				}
 			}
 		}

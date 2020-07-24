@@ -12,14 +12,14 @@ import (
 var UserTxtAct map[string][]*TextAction
 
 type TextAction struct {
-	Act func(v *viber.Viber, u viber.User, m *viber.TextMessage, token uint64, t time.Time)
+	Act func(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time)
 }
 
 func init() {
 	UserTxtAct = map[string][]*TextAction{}
 }
 
-func Registration(v *viber.Viber, u viber.User, m *viber.TextMessage, token uint64, t time.Time) {
+func Registration(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	if !strings.Contains(m.Text, " ") && len(m.Text) > 5 {
 		user := UserIDMap[u.ID]
 		_, err := abm.Client.Register(user.Contact.PhoneNumber, m.Text, "Ydfsdf464s")
