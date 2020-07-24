@@ -53,8 +53,9 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		}
 		fmt.Println(ok)
 		if !ok {
-
+			v.SendTextMessage(u.ID, "Нужно зарегаться")
 		}
+		v.SendTextMessage(u.ID, "Дратути")
 		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}
 }
