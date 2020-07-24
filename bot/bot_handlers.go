@@ -12,8 +12,6 @@ import (
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
 
-	//b := v.NewButton(2, 2, viber.Reply, "qwe", "1", "")
-
 	startB := BuildButton(v, 6, 1, "https://upload.wikimedia.org/wikipedia/commons/thumb/8/85/Smiley.svg/1200px-Smiley.svg.png", " ", "agr", "qwe")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
