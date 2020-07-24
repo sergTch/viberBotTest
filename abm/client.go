@@ -10,19 +10,25 @@ import (
 	"github.com/sergTch/viberBotTest/data"
 )
 
-type Client struct {
+var Client *client
+
+func init() {
+	Client = New()
+}
+
+type client struct {
 	client *http.Client
 	apiURL string
 }
 
-func New() *Client {
-	return &Client{
+func New() *client {
+	return &client{
 		client: &http.Client{},
 		apiURL: data.ApiUrl,
 	}
 }
 
-func (c *Client) url(endpoint string) string {
+func (c *client) url(endpoint string) string {
 	return c.apiURL + endpoint
 }
 
@@ -30,7 +36,7 @@ func (c *Client) url(endpoint string) string {
 // ok, err := client.CheckPhone("380671810640")
 // fmt.Printf("phone: %v %v", ok, err)
 
-func (c *Client) CheckPhone(number string) (ok bool, err error) {
+func (c *client) CheckPhone(number string) (ok bool, err error) {
 	values := url.Values{}
 	values.Set("phone", number)
 
@@ -61,7 +67,7 @@ func (c *Client) CheckPhone(number string) (ok bool, err error) {
 	return
 }
 
-func (c *Client) Register(phone, password, signature string) (smsID int, err error) {
+func (c *client) Register(phone, password, signature string) (smsID int, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
@@ -96,7 +102,7 @@ func (c *Client) Register(phone, password, signature string) (smsID int, err err
 	return
 }
 
-func (c *Client) Confirm(code string, smsID int) (token string, ok bool, err error) {
+func (c *client) Confirm(code string, smsID int) (token string, ok bool, err error) {
 	values := url.Values{}
 	values.Set("code", code)
 	values.Set("sms_id", strconv.Itoa(smsID))
@@ -174,7 +180,7 @@ const (
 	SlaveCard
 )
 
-func (c *Client) SetCard(number string) (card *Card, ok bool, err error) {
+func (c *client) SetCard(number string) (card *Card, ok bool, err error) {
 	values := url.Values{}
 	values.Set("number", number)
 
@@ -207,7 +213,7 @@ func (c *Client) SetCard(number string) (card *Card, ok bool, err error) {
 	return
 }
 
-func (c *Client) BarCode(token string) (userID int, barCode string, err error) {
+func (c *client) BarCode(token string) (userID int, barCode string, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/bar-code"), nil)
 	if err != nil {
 		return
