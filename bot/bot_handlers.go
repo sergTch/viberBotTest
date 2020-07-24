@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/orsenkucher/viber"
+	"github.com/sergTch/viberBotTest/abm"
 )
 
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
@@ -45,7 +46,16 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 
 	case *viber.ContactMessage:
 		fmt.Printf("%+v", m)
-		_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
+		ok, err := abm.Client.CheckPhone(m.Contact.PhoneNumber)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(ok)
+		if !ok {
+
+		}
+		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}
 }
 
