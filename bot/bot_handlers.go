@@ -16,9 +16,10 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr", "qwe")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
+	keyboard.InputFieldState = viber.HiddenInputField
+	UserTxtAct[u.ID] = []*TextAction{}
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
 	msg.SetKeyboard(keyboard)
-	UserTxtAct[u.ID] = []*TextAction{}
 	return msg
 }
 
