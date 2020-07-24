@@ -7,7 +7,12 @@ import (
 var UserPhoneMap map[string]*User
 var UserIDMap map[string]*User
 
+func init() {
+	UserPhoneMap = map[string]*User{}
+	UserIDMap = map[string]*User{}
+}
+
 type User struct {
-	Account viber.Account
-	Contact viber.Contact
+	ViberUser viber.User
+	Contact   viber.Contact
 }
