@@ -16,7 +16,7 @@ type TextAction struct {
 }
 
 func init() {
-
+	UserTxtAct = map[string][]*TextAction{}
 }
 
 func Registration(v *viber.Viber, u viber.User, m *viber.TextMessage, token uint64, t time.Time) {
