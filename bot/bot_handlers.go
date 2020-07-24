@@ -18,6 +18,7 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 	keyboard.AddButtons(*startB)
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
 	msg.SetKeyboard(keyboard)
+	UserTxtAct[u.ID] = []*TextAction{}
 	return msg
 }
 
@@ -32,6 +33,12 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		if parts[0] == "#butt" {
 			for _, actionID := range parts {
 				if action, ok := ButtActions[actionID]; ok {
+					action.Act(v, u, m, token, t)
+				}
+			}
+		} else {
+			for _, actions := range UserTxtAct {
+				for _, action := range actions {
 					action.Act(v, u, m, token, t)
 				}
 			}
@@ -53,9 +60,14 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		}
 		fmt.Println(ok)
 		if !ok {
-			v.SendTextMessage(u.ID, "Нужно зарегаться")
+			_, err := v.SendTextMessage(u.ID, "Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
+			if err != nil {
+				fmt.Println(err)
+			}
+			UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
+		} else {
+			v.SendTextMessage(u.ID, "Дратути")
 		}
-		v.SendTextMessage(u.ID, "Дратути")
 		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}
 }

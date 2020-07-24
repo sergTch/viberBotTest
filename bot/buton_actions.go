@@ -32,6 +32,7 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t tim
 	if err != nil {
 		fmt.Println(err)
 	}
+	UserTxtAct[u.ID] = []*TextAction{}
 }
 
 //id: agr
@@ -47,4 +48,5 @@ func AgreementMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t
 	if err != nil {
 		fmt.Println(err)
 	}
+	UserTxtAct[u.ID] = []*TextAction{}
 }
