@@ -57,7 +57,7 @@ func (c *Client) CheckPhone(number string) (ok bool, err error) {
 		return
 	}
 
-	ok = true
+	ok = resp.Data.Is_exist
 	return
 }
 
