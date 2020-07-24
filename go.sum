@@ -1,6 +1,4 @@
 github.com/orsenkucher/nothing/encio v0.0.0-20200718092502-89b9762067b4 h1:NTNVvcD2owXQDUOXfFfpjIQsPZLlYhr7fUYxX4SrowI=
 github.com/orsenkucher/nothing/encio v0.0.0-20200718092502-89b9762067b4/go.mod h1:NgEsur+isLpyRw0dEzCeZ+2RBtSoyumqbaJvfPx3MaI=
-github.com/orsenkucher/viber v0.0.0-20200720211402-a8853fccfe7f h1:C/1Z8l1iHuCxghFjIMjtZRo2Eburbqh/5solYpHGYoA=
-github.com/orsenkucher/viber v0.0.0-20200720211402-a8853fccfe7f/go.mod h1:chR/HC1FltrSYihF9rugtsa1DdEaStz32XABX/MfHb4=
-github.com/orsenkucher/viber v0.0.0-20200724114310-c8639db64519 h1:y5tN9PlYxaap3uKbBGeKuCaGlGzX+ArwBzmA5y0HJqE=
-github.com/orsenkucher/viber v0.0.0-20200724114310-c8639db64519/go.mod h1:chR/HC1FltrSYihF9rugtsa1DdEaStz32XABX/MfHb4=
+github.com/orsenkucher/viber v0.0.0-20200724121252-77f6a6654d02 h1:B6JZNrbjaVLHrFjlEvaJ8lrqjW40T4tyvlBp70Wxqns=
+github.com/orsenkucher/viber v0.0.0-20200724121252-77f6a6654d02/go.mod h1:chR/HC1FltrSYihF9rugtsa1DdEaStz32XABX/MfHb4=
