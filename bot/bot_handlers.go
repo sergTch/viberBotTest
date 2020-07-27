@@ -62,7 +62,6 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(ok)
 		if !ok {
 			_, err := v.SendTextMessage(u.ID, "Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
 			if err != nil {

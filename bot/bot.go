@@ -1,6 +1,8 @@
 package bot
 
 import (
+	"fmt"
+
 	"github.com/orsenkucher/nothing/encio"
 	"github.com/orsenkucher/viber"
 )
@@ -17,5 +19,12 @@ func NewBot(cfg encio.Config) *viber.Viber {
 		Message:             MyMsgReceivedFunc, // your function for handling messages
 		Delivered:           MyDeliveredFunc,   // your function for delivery report
 		Seen:                MySeenFunc,        // or assign events after declaration
+	}
+}
+
+func Send(v *viber.Viber, id string, m viber.Message) {
+	_, err := v.SendMessage(id, m)
+	if err != nil {
+		fmt.Println(err)
 	}
 }
