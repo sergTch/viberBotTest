@@ -20,14 +20,15 @@ func init() {
 }
 
 func Registration(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	var msg viber.Message
-	defer Send(v, u.ID, msg)
 	if !strings.Contains(m.Text, " ") && len(m.Text) > 5 {
 		user := UserIDMap[u.ID]
 		smsID, err := abm.Client.Register(user.Contact.PhoneNumber, m.Text, "Ydfsdf464s")
 		if err != nil {
 			fmt.Println(err)
-			msg = v.NewTextMessage("Плохой пароль, попробуйте другой")
+			_, err = v.SendTextMessage(u.ID, "Плохой пароль, попробуйте другой")
+			if err != nil {
+				fmt.Println(err)
+			}
 			return
 		}
 		_, err = v.SendTextMessage(u.ID, "Введите код из SMS. Будет отправлен вам в течении 2-х минут")
@@ -37,13 +38,14 @@ func Registration(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 		UserData[u.ID] = SMS{ID: smsID}
 		UserTxtAct[u.ID] = []*TextAction{}
 	} else {
-		msg = v.NewTextMessage("Введите другой пароль, он должен не содержать пробелов и состоять минимум из 6-ти символов")
+		_, err := v.SendTextMessage(u.ID, "Введите другой пароль, он должен не содержать пробелов и состоять минимум из 6-ти символов")
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
 
 func RegistrationConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	var msg viber.Message
-	defer Send(v, u.ID, msg)
 	//user := UserIDMap[u.ID]
 	data, ok := UserData[u.ID].(SMS)
 	if !ok {
