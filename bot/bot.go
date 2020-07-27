@@ -22,8 +22,7 @@ func NewBot(cfg encio.Config) *viber.Viber {
 	}
 }
 
-func Send(v *viber.Viber, id string, m viber.Message) {
-	_, err := v.SendMessage(id, m)
+func check(err error) {
 	if err != nil {
 		fmt.Println(err)
 	}

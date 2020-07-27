@@ -64,12 +64,11 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		}
 		if !ok {
 			_, err := v.SendTextMessage(u.ID, "Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
-			if err != nil {
-				fmt.Println(err)
-			}
+			check(err)
 			UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
 		} else {
-			v.SendTextMessage(u.ID, "Дратути")
+			_, err := v.SendTextMessage(u.ID, "Дратути")
+			check(err)
 		}
 		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}

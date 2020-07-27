@@ -31,9 +31,7 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t tim
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
-	if err != nil {
-		fmt.Println(err)
-	}
+	check(err)
 }
 
 //id: agr
@@ -48,7 +46,5 @@ func AgreementMsg(v *viber.Viber, u viber.User, m viber.Message, token uint64, t
 	msg := v.NewTextMessage(fmt.Sprint("Вам уже исполнилось ", data.MinAge, " лет и Вы принимаете Условия программы лояльности?"))
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
-	if err != nil {
-		fmt.Println(err)
-	}
+	check(err)
 }

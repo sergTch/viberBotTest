@@ -32,11 +32,9 @@ func Registration(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 			return
 		}
 		_, err = v.SendTextMessage(u.ID, "Введите код из SMS. Будет отправлен вам в течении 2-х минут")
-		if err != nil {
-			fmt.Println(err)
-		}
+		check(err)
 		UserData[u.ID] = SMS{ID: smsID}
-		UserTxtAct[u.ID] = []*TextAction{}
+		UserTxtAct[u.ID] = []*TextAction{{Act: RegistrationConfirm}}
 	} else {
 		_, err := v.SendTextMessage(u.ID, "Введите другой пароль, он должен не содержать пробелов и состоять минимум из 6-ти символов")
 		if err != nil {
@@ -50,17 +48,20 @@ func RegistrationConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, toke
 	data, ok := UserData[u.ID].(SMS)
 	if !ok {
 		_, err := v.SendTextMessage(u.ID, "Извините, что-то пошло не так, давайе попробуем ещё раз:(\nДля регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
-		if err != nil {
-			fmt.Println(err)
-		}
+		check(err)
 		UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
+		return
 	}
 	_, ok, err := abm.Client.Confirm(m.Text, data.ID)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	if !ok {
+	if ok {
+		_, err := v.SendTextMessage(u.ID, "У вас уже есть бонусная карта?")
+		check(err)
+		UserTxtAct[u.ID] = []*TextAction{}
+	} else {
 		fmt.Println("")
 	}
 }
