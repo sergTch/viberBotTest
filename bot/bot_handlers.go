@@ -33,8 +33,8 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		parts := strings.Split(txt, "/")
 		if parts[0] == "#butt" {
 			for _, actionID := range parts {
-				if action, ok := ButtActions[actionID]; ok {
-					action.Act(v, u, m, token, t)
+				if action, ok := ButtActIDs[actionID]; ok {
+					action.Act(v, u, *m, token, t)
 				}
 			}
 		} else {
@@ -53,9 +53,9 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		_, _ = v.SendTextMessage(u.ID, "Nice pic!")
 
 	case *viber.ContactMessage:
-		user := User{ViberUser: u, Contact: m.Contact}
+		user := User{ViberUser: u, PhoneNumber: m.Contact.PhoneNumber}
 		UserIDMap[user.ViberUser.ID] = &user
-		UserPhoneMap[user.Contact.PhoneNumber] = &user
+		//UserPhoneMap[user.Contact.PhoneNumber] = &user
 		fmt.Printf("%+v", m)
 		ok, err := abm.Client.CheckPhone(m.Contact.PhoneNumber)
 		if err != nil {
