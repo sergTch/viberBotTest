@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/orsenkucher/viber"
+	"github.com/sergTch/viberBotTest/abm"
 	"github.com/sergTch/viberBotTest/data"
 )
 
@@ -64,12 +65,21 @@ func CardExistQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token 
 }
 
 func CardInput(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	_, err := v.SendTextMessage(u.ID, "Введите номер вашей карты")
-	UserTxtAct[u.ID] = []*TextAction{{Act: BarCode}}
+	msg := v.NewTextMessage("Введите номер вашей карты")
+	keyboard := v.NewKeyboard("", false)
+	keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите номер карты", "", true))
+	msg.Keyboard = keyboard
+	_, err := v.SendMessage(u.ID, msg)
+	UserTxtAct[u.ID] = []*TextAction{{Act: SetCard}}
 	check(err)
 }
 
 func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	_, err := v.SendTextMessage(u.ID, "Введите номер вашей карты")
+	user := UserIDMap[u.ID]
+	_, barcode, err := abm.Client.BarCode(user.PhoneNumber, user.Password)
+	check(err)
+	fmt.Println(barcode)
+	msg := v.NewPictureMessage("bar-code", barcode, "")
+	_, err = v.SendMessage(u.ID, msg)
 	check(err)
 }

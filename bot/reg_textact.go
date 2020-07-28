@@ -67,8 +67,13 @@ func RegistrationConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, toke
 	}
 }
 
-func BarCode(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	//user := UserIDMap[u.ID]
-	//_, barCode, err := abm.Client.SetCard(user.Token)
-	//msg := v.NewPictureMessage("",,)
+func SetCard(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	user := UserIDMap[u.ID]
+	_, _, err := abm.Client.SetCard(user.PhoneNumber, user.Password, m.Text)
+	check(err)
+	_, barcode, err := abm.Client.BarCode(user.PhoneNumber, user.Password)
+	check(err)
+	msg := v.NewPictureMessage("bar-code", barcode, "")
+	_, err = v.SendMessage(u.ID, msg)
+	check(err)
 }
