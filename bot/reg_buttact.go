@@ -57,6 +57,7 @@ func CardExistQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token 
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Да", "cin"), *BuildButton(v, 3, 1, "", "Да", "ccr"))
 	keyboard.InputFieldState = viber.HiddenInputField
+	msg.Keyboard = keyboard
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
 	UserTxtAct[u.ID] = []*TextAction{}

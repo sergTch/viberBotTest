@@ -17,8 +17,8 @@ func generatePhoneNumber(number string) string {
 			str += string(ch)
 		}
 	}
-	//return "+" + str[0:3] + "(" + str[3:5] + ")" + str[5:8] + "-" + str[8:10] + "-" + str[10:12]
-	return str
+	return "+" + str[0:3] + "(" + str[3:5] + ")" + str[5:8] + "-" + str[8:10] + "-" + str[10:12]
+	//return str
 }
 
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
@@ -75,7 +75,11 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			return
 		}
 		if !ok {
-			_, err := v.SendTextMessage(u.ID, "Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
+			msg := v.NewTextMessage("Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
+			keyboard := v.NewKeyboard("", false)
+			keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите пароль", "", true))
+			msg.Keyboard = keyboard
+			_, err := v.SendMessage(u.ID, msg)
 			check(err)
 			UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
 		} else {
