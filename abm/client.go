@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 
 	"github.com/sergTch/viberBotTest/data"
 )
@@ -181,11 +182,22 @@ const (
 	SlaveCard
 )
 
-func (c *client) SetCard(number string) (card *Card, ok bool, err error) {
+func (c *client) SetCard(phone, password, cardNumber string) (card *Card, ok bool, err error) {
 	values := url.Values{}
-	values.Set("number", number)
+	values.Set("number", cardNumber)
 
-	r, err := c.client.PostForm(c.url("/v2/client/card/set-card"), values)
+	req, err := http.NewRequest(
+		"POST",
+		c.url("/v2/client/card/set-card"),
+		strings.NewReader(values.Encode()),
+	)
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(phone, password)
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r, err := c.client.Do(req)
 	if err != nil {
 		return
 	}
@@ -214,15 +226,14 @@ func (c *client) SetCard(number string) (card *Card, ok bool, err error) {
 	return
 }
 
-func (c *client) BarCode(token string) (userID int, barCode string, err error) {
+func (c *client) BarCode(phone, password string) (userID int, barCode string, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/bar-code"), nil)
 	if err != nil {
 		return
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(phone, password)
 	r, err := c.client.Do(req)
-
 	if err != nil {
 		return
 	}
