@@ -10,15 +10,27 @@ import (
 	"github.com/sergTch/viberBotTest/abm"
 )
 
+func generatePhoneNumber(number string) string {
+	str := ""
+	for _, ch := range number {
+		if ch >= '0' && ch <= '9' {
+			str += string(ch)
+		}
+	}
+	//return "+" + str[0:3] + "(" + str[3:5] + ")" + str[5:8] + "-" + str[8:10] + "-" + str[10:12]
+	return str
+}
+
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
 
 	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr", "qwe")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
+	keyboard.InputFieldState = viber.HiddenInputField
+	UserTxtAct[u.ID] = []*TextAction{}
 	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
 	msg.SetKeyboard(keyboard)
-	UserTxtAct[u.ID] = []*TextAction{}
 	return msg
 }
 
@@ -32,8 +44,8 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		parts := strings.Split(txt, "/")
 		if parts[0] == "#butt" {
 			for _, actionID := range parts {
-				if action, ok := ButtActions[actionID]; ok {
-					action.Act(v, u, m, token, t)
+				if action, ok := ButtActIDs[actionID]; ok {
+					action.Act(v, u, *m, token, t)
 				}
 			}
 		} else {
@@ -52,24 +64,23 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		_, _ = v.SendTextMessage(u.ID, "Nice pic!")
 
 	case *viber.ContactMessage:
-		user := User{ViberUser: u, Contact: m.Contact}
+		user := User{ViberUser: u, PhoneNumber: m.Contact.PhoneNumber}
 		UserIDMap[user.ViberUser.ID] = &user
-		UserPhoneMap[user.Contact.PhoneNumber] = &user
-		fmt.Printf("%+v", m)
-		ok, err := abm.Client.CheckPhone(m.Contact.PhoneNumber)
+		//UserPhoneMap[user.Contact.PhoneNumber] = &user
+		fmt.Println(m.Contact.PhoneNumber)
+		fmt.Println(generatePhoneNumber(m.Contact.PhoneNumber))
+		ok, err := abm.Client.CheckPhone(generatePhoneNumber(m.Contact.PhoneNumber))
 		if err != nil {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(ok)
 		if !ok {
 			_, err := v.SendTextMessage(u.ID, "Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
-			if err != nil {
-				fmt.Println(err)
-			}
+			check(err)
 			UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
 		} else {
-			v.SendTextMessage(u.ID, "Дратути")
+			_, err := v.SendTextMessage(u.ID, "Дратути")
+			check(err)
 		}
 		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}

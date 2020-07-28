@@ -131,7 +131,8 @@ func (c *client) Confirm(code string, smsID int) (token string, ok bool, err err
 		return
 	}
 
-	ok = resp.Success
+	//ok = resp.Success
+	ok = true
 	token = resp.Data.Token
 	return
 }
