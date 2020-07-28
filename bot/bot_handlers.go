@@ -10,6 +10,16 @@ import (
 	"github.com/sergTch/viberBotTest/abm"
 )
 
+func generatePhoneNumber(number string) string {
+	str := ""
+	for _, ch := range number {
+		if ch >= '0' && ch <= '9' {
+			str += string(ch)
+		}
+	}
+	return "+" + str[0:3] + " (" + str[3:5] + ") " + str[5:8] + "-" + str[8:10] + "-" + str[10:12]
+}
+
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
 
@@ -57,7 +67,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		UserIDMap[user.ViberUser.ID] = &user
 		//UserPhoneMap[user.Contact.PhoneNumber] = &user
 		fmt.Printf("%+v", m)
-		ok, err := abm.Client.CheckPhone(m.Contact.PhoneNumber)
+		ok, err := abm.Client.CheckPhone(generatePhoneNumber(m.Contact.PhoneNumber))
 		if err != nil {
 			fmt.Println(err)
 			return
