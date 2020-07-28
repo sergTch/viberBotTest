@@ -17,7 +17,7 @@ func generatePhoneNumber(number string) string {
 			str += string(ch)
 		}
 	}
-	return "+" + str[0:3] + " (" + str[3:5] + ") " + str[5:8] + "-" + str[8:10] + "-" + str[10:12]
+	return "+" + str[0:3] + "(" + str[3:5] + ")" + str[5:8] + "-" + str[8:10] + "-" + str[10:12]
 	//return str
 }
 
