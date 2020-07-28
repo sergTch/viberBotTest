@@ -66,7 +66,8 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		user := User{ViberUser: u, PhoneNumber: m.Contact.PhoneNumber}
 		UserIDMap[user.ViberUser.ID] = &user
 		//UserPhoneMap[user.Contact.PhoneNumber] = &user
-		fmt.Printf("%+v", m)
+		fmt.Println(m.Contact.PhoneNumber)
+		fmt.Println(generatePhoneNumber(m.Contact.PhoneNumber))
 		ok, err := abm.Client.CheckPhone(generatePhoneNumber(m.Contact.PhoneNumber))
 		if err != nil {
 			fmt.Println(err)
