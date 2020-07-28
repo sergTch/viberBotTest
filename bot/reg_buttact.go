@@ -56,7 +56,7 @@ func AgreementMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 func CardExistQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	msg := v.NewTextMessage("У вас уже есть бонусная карта?")
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Да", "cin"), *BuildButton(v, 3, 1, "", "Да", "ccr"))
+	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Да", "cin"), *BuildButton(v, 3, 1, "", "Нет", "ccr"))
 	keyboard.InputFieldState = viber.HiddenInputField
 	msg.Keyboard = keyboard
 	_, err := v.SendMessage(u.ID, msg)
@@ -76,7 +76,7 @@ func CardInput(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, 
 
 func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
-	_, barcode, err := abm.Client.BarCode(user.PhoneNumber, user.Password)
+	_, barcode, err := abm.Client.BarCode(user.Token)
 	check(err)
 	fmt.Println(barcode)
 	msg := v.NewPictureMessage("bar-code", barcode, "")

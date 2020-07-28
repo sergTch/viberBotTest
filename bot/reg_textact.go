@@ -71,7 +71,7 @@ func SetCard(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t 
 	user := UserIDMap[u.ID]
 	_, _, err := abm.Client.SetCard(user.PhoneNumber, user.Password, m.Text)
 	check(err)
-	_, barcode, err := abm.Client.BarCode(user.PhoneNumber, user.Password)
+	_, barcode, err := abm.Client.BarCode(user.Token)
 	check(err)
 	msg := v.NewPictureMessage("bar-code", barcode, "")
 	_, err = v.SendMessage(u.ID, msg)
