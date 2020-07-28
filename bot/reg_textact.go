@@ -23,6 +23,7 @@ func Registration(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	if !strings.Contains(m.Text, " ") && len(m.Text) > 5 {
 		user := UserIDMap[u.ID]
 		smsID, err := abm.Client.Register(user.PhoneNumber, m.Text, "Ydfsdf464s")
+		fmt.Println(smsID)
 		if err != nil {
 			fmt.Println(err)
 			_, err = v.SendTextMessage(u.ID, "Плохой пароль, попробуйте другой")
