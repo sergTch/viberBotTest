@@ -69,7 +69,7 @@ func RegistrationConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, toke
 
 func SetCard(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
-	_, _, err := abm.Client.SetCard(user.PhoneNumber, user.Password, m.Text)
+	_, _, err := abm.Client.SetCard(user.Token, m.Text)
 	check(err)
 	_, barcode, err := abm.Client.BarCode(user.Token)
 	check(err)

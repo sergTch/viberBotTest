@@ -78,7 +78,6 @@ func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 	user := UserIDMap[u.ID]
 	_, barcode, err := abm.Client.BarCode(user.Token)
 	check(err)
-	fmt.Println(barcode)
 	msg := v.NewPictureMessage("bar-code", barcode, "")
 	_, err = v.SendMessage(u.ID, msg)
 	check(err)

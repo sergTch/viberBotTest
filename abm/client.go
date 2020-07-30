@@ -182,7 +182,7 @@ const (
 	SlaveCard
 )
 
-func (c *client) SetCard(phone, password, cardNumber string) (card *Card, ok bool, err error) {
+func (c *client) SetCard(token, cardNumber string) (card *Card, ok bool, err error) {
 	values := url.Values{}
 	values.Set("number", cardNumber)
 
@@ -195,7 +195,7 @@ func (c *client) SetCard(phone, password, cardNumber string) (card *Card, ok boo
 		return
 	}
 
-	req.SetBasicAuth(phone, password)
+	req.SetBasicAuth(token, "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.client.Do(req)
 	if err != nil {
