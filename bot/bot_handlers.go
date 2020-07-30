@@ -83,8 +83,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			check(err)
 			UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
 		} else {
-			_, err := v.SendTextMessage(u.ID, "Дратути")
-			check(err)
+			Menu(v, u, *v.NewTextMessage(""), token, t)
 		}
 		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}
