@@ -108,7 +108,7 @@ func EnterPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 
 func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Menu"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to start", "str"))
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
 	msg := v.NewTextMessage("Вы попали в меню...")

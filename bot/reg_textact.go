@@ -58,8 +58,6 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	}
 	user.Password = m.Text
 	user.Token = uToken
-	_, err = v.SendTextMessage(u.ID, "Введите код из SMS. Будет отправлен вам в течении 2-х минут")
-	check(err)
 	Menu(v, u, m, token, t)
 }
 
