@@ -9,7 +9,7 @@ import (
 	"github.com/sergTch/viberBotTest/data"
 )
 
-var ButtActIDs map[string]*ButtAction
+var ButtActions map[string]*ButtAction
 
 type ButtAction struct {
 	Act func(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time)
@@ -17,13 +17,13 @@ type ButtAction struct {
 }
 
 func init() {
-	ButtActIDs = map[string]*ButtAction{}
-	ButtActIDs["agr"] = &ButtAction{Act: AgreementMsg, ID: "agr"}
-	ButtActIDs["str"] = &ButtAction{Act: StartMsg, ID: "str"}
-	ButtActIDs["ceq"] = &ButtAction{Act: CardExistQuestion, ID: "ceq"}
-	ButtActIDs["ccr"] = &ButtAction{Act: CardCreate, ID: "ccr"}
-	ButtActIDs["cin"] = &ButtAction{Act: CardInput, ID: "cin"}
-	ButtActIDs["mnu"] = &ButtAction{Act: Menu, ID: "mnu"}
+	ButtActions = map[string]*ButtAction{}
+	ButtActions["agr"] = &ButtAction{Act: AgreementMsg, ID: "agr"}
+	ButtActions["str"] = &ButtAction{Act: StartMsg, ID: "str"}
+	ButtActions["ceq"] = &ButtAction{Act: CardExistQuestion, ID: "ceq"}
+	ButtActions["ccr"] = &ButtAction{Act: CardCreate, ID: "ccr"}
+	ButtActions["cin"] = &ButtAction{Act: CardInput, ID: "cin"}
+	ButtActions["mnu"] = &ButtAction{Act: Menu, ID: "mnu"}
 }
 
 //id: str
@@ -81,6 +81,16 @@ func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 	check(err)
 	msg := v.NewPictureMessage("bar-code", barcode, "")
 	_, err = v.SendMessage(u.ID, msg)
+	check(err)
+}
+
+func EnterPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	msg := v.NewTextMessage("Ваш номер уже зарегистрирован в программе лояльности. Для авторизации отправьте свой пароль")
+	keyboard := v.NewKeyboard("", false)
+	keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите пароль", "", true))
+	msg.Keyboard = keyboard
+	_, err := v.SendMessage(u.ID, msg)
+	UserTxtAct[u.ID] = []*TextAction{{Act: CheckPassword}}
 	check(err)
 }
 

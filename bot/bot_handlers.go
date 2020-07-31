@@ -44,7 +44,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		parts := strings.Split(txt, "/")
 		if parts[0] == "#butt" {
 			for _, actionID := range parts {
-				if action, ok := ButtActIDs[actionID]; ok {
+				if action, ok := ButtActions[actionID]; ok {
 					action.Act(v, u, *m, token, t)
 				}
 			}
@@ -81,9 +81,11 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			msg.Keyboard = keyboard
 			_, err := v.SendMessage(u.ID, msg)
 			check(err)
-			UserTxtAct[u.ID] = []*TextAction{{Act: Registration}}
+			NextAction[user.ViberUser.ID] = ButtActions["ceq"]
+			UserTxtAct[u.ID] = []*TextAction{{Act: SetPassword}}
 		} else {
-			Menu(v, u, *v.NewTextMessage(""), token, t)
+			EnterPassword(v, u, *v.NewTextMessage(""), token, t)
+			NextAction[u.ID] = ButtActions["mnu"]
 		}
 		//_, _ = v.SendTextMessage(u.ID, fmt.Sprintf("%s %s", m.Contact.Name, m.Contact.PhoneNumber))
 	}

@@ -6,12 +6,14 @@ import (
 
 //var UserPhoneMap map[string]*User
 var UserIDMap map[string]*User
-var UserData map[string]interface{}
+var UserSMS map[string]SMS
+var NextAction map[string]*ButtAction
 
 func init() {
 	//UserPhoneMap = map[string]*User{}
 	UserIDMap = map[string]*User{}
-	UserData = map[string]interface{}{}
+	UserSMS = map[string]SMS{}
+	NextAction = map[string]*ButtAction{}
 }
 
 type User struct {
