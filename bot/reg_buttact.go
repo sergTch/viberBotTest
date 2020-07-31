@@ -82,6 +82,18 @@ func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 	msg := v.NewPictureMessage("bar-code", barcode, "")
 	_, err = v.SendMessage(u.ID, msg)
 	check(err)
+	FillInfQuestion(v, u, m, token, t)
+}
+
+func FillInfQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	msg := v.NewTextMessage("Для возможности использовать накопленные бонусы необходимо заполнить обязательные поля анкеты в разделе меню Мой профиль. Заполнить анкету сейчас?")
+	keyboard := v.NewKeyboard("", false)
+	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "да"), *BuildButton(v, 3, 1, "", "Заполнить позже", "mnu"))
+	keyboard.InputFieldState = viber.HiddenInputField
+	msg.Keyboard = keyboard
+	_, err := v.SendMessage(u.ID, msg)
+	UserTxtAct[u.ID] = []*TextAction{}
+	check(err)
 }
 
 func EnterPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {

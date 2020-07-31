@@ -98,6 +98,7 @@ func SetCard(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t 
 		msg.Text = ""
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
+		FillInfQuestion(v, u, m, token, t)
 	} else {
 		_, err := v.SendTextMessage(u.ID, "That card is invalid, sorry, you can answer no for following question to get newone")
 		check(err)
