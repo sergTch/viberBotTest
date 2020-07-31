@@ -117,7 +117,7 @@ func (c *client) AuthPhone(phone, password, signature string) (smsID int, err er
 	defer r.Body.Close()
 
 	if r.StatusCode != 201 {
-		err = errors.New("Not 201 status")
+		err = errors.New("Not 201 status" + "\nstatus: " + strconv.Itoa(r.StatusCode))
 		return
 	}
 
