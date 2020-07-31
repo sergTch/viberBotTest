@@ -103,7 +103,7 @@ func (c *client) Register(phone, password, signature string) (smsID int, err err
 	return
 }
 
-func (c *client) AuthPhone(phone, password, signature string) (smsID int, err error) {
+func (c *client) AuthPhone(phone, password, signature string) (token string, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
@@ -123,6 +123,7 @@ func (c *client) AuthPhone(phone, password, signature string) (smsID int, err er
 
 	var resp struct {
 		Data struct {
+			Token   string `json:"token"`
 			Phone   string `json:"phone"`
 			SMSID   int    `json:"sms_id"`
 			Timeout int    `json:"timeout"`
@@ -134,7 +135,7 @@ func (c *client) AuthPhone(phone, password, signature string) (smsID int, err er
 		return
 	}
 
-	smsID = resp.Data.SMSID
+	token = resp.Data.Token
 	return
 }
 
