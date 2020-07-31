@@ -24,6 +24,7 @@ func init() {
 	ButtActions["ccr"] = &ButtAction{Act: CardCreate, ID: "ccr"}
 	ButtActions["cin"] = &ButtAction{Act: CardInput, ID: "cin"}
 	ButtActions["mnu"] = &ButtAction{Act: Menu, ID: "mnu"}
+	ButtActions["chp"] = &ButtAction{Act: ChangePassword, ID: "chp"}
 }
 
 //id: str
@@ -99,10 +100,20 @@ func FillInfQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 func EnterPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	msg := v.NewTextMessage("Ваш номер уже зарегистрирован в программе лояльности. Для авторизации отправьте свой пароль")
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите пароль", "", true))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Забыл Пароль", "chp"))
 	msg.Keyboard = keyboard
 	_, err := v.SendMessage(u.ID, msg)
 	UserTxtAct[u.ID] = []*TextAction{{Act: CheckPassword}}
+	check(err)
+}
+
+func ChangePassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	msg := v.NewTextMessage("Придумайте и отправьте мне новый пароль. Пароль должен состоять минимум из 6-ти символов")
+	keyboard := v.NewKeyboard("", false)
+	keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите новый пароль", "", true))
+	msg.Keyboard = keyboard
+	_, err := v.SendMessage(u.ID, msg)
+	UserTxtAct[u.ID] = []*TextAction{{Act: ReadNewPassword}}
 	check(err)
 }
 

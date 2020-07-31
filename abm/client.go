@@ -139,6 +139,41 @@ func (c *client) AuthPhone(phone, password, signature string) (token string, err
 	return
 }
 
+func (c *client) ChangePassword(phone, password, signature string) (smsID int, err error) {
+	values := url.Values{}
+	values.Set("phone", phone)
+	values.Set("password", password)
+	values.Set("signature", signature)
+
+	r, err := c.client.PostForm(c.url("/v2.1/client/change-password"), values)
+	if err != nil {
+		return
+	}
+
+	defer r.Body.Close()
+
+	if r.StatusCode != 201 {
+		err = errors.New("Not 201 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Phone   string `json:"phone"`
+			SMSID   int    `json:"sms_id"`
+			Timeout int    `json:"timeout"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	smsID = resp.Data.SMSID
+	return
+}
+
 func (c *client) Confirm(code string, smsID int) (token string, ok bool, err error) {
 	values := url.Values{}
 	values.Set("code", code)

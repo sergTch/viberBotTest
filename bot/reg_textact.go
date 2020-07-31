@@ -61,6 +61,32 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	Menu(v, u, m, token, t)
 }
 
+func ReadNewPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	if !strings.Contains(m.Text, " ") && len(m.Text) > 5 {
+		user := UserIDMap[u.ID]
+		smsID, err := abm.Client.ChangePassword(user.PhoneNumber, m.Text, "Ydfsdf464s")
+		fmt.Println(smsID)
+		if err != nil {
+			fmt.Println(err)
+			_, err = v.SendTextMessage(u.ID, "Плохой пароль, попробуйте другой")
+			if err != nil {
+				fmt.Println(err)
+			}
+			return
+		}
+		user.Password = m.Text
+		_, err = v.SendTextMessage(u.ID, "Введите код из SMS. Будет отправлен вам в течении 2-х минут")
+		check(err)
+		UserSMS[u.ID] = SMS{ID: smsID}
+		UserTxtAct[u.ID] = []*TextAction{{Act: SMSConfirm}}
+	} else {
+		_, err := v.SendTextMessage(u.ID, "Введите другой пароль, он должен не содержать пробелов и состоять минимум из 6-ти символов")
+		if err != nil {
+			fmt.Println(err)
+		}
+	}
+}
+
 func SMSConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
 	data, ok := UserSMS[u.ID]
