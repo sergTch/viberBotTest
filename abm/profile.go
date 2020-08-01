@@ -53,3 +53,16 @@ func (p *Profile) readParams(r io.Reader) error {
 }
 
 func (p *Profile) readFileds(r io.Reader) {}
+
+type schema []struct {
+	ID   int    `json:"id"`
+	Name string `json:"name"`
+}
+
+func (p *Profile) Schema(param string) schema {
+	val, ok := p.data[param+"_param"]
+	if !ok {
+		return nil
+	}
+	return val.(schema)
+}
