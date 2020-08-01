@@ -3,27 +3,29 @@ package abm
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io"
 )
 
 type Profile struct {
-	params map[string]bool
-	fields map[string]bool
-	data   map[string]interface{}
+	params  map[string]bool
+	fields  map[string]bool
+	schemas map[string]interface{}
 }
 
 func NewProfile() *Profile {
 	return &Profile{
-		params: map[string]bool{},
-		fields: map[string]bool{},
-		data:   map[string]interface{}{},
+		params:  map[string]bool{},
+		fields:  map[string]bool{},
+		schemas: map[string]interface{}{},
 	}
 }
 
 func (p *Profile) readParams(r io.Reader) error {
 	buf := &bytes.Buffer{}
 	tee := io.TeeReader(r, buf)
-	var params struct {
+
+	var resp struct {
 		Data struct {
 			Params struct {
 				Required map[string]bool `json:"required"`
@@ -31,24 +33,26 @@ func (p *Profile) readParams(r io.Reader) error {
 		} `json:"data"`
 	}
 
-	err := json.NewDecoder(tee).Decode(&params)
+	err := json.NewDecoder(tee).Decode(&resp)
 	if err != nil {
 		return err
 	}
 
-	var data struct {
+	var resp2 struct {
 		Data struct {
-			Params map[string]interface{} `json:"params"`
+			Schema map[string]interface{} `json:"params"`
 		} `json:"data"`
 	}
 
-	err = json.NewDecoder(buf).Decode(&data)
+	err = json.NewDecoder(buf).Decode(&resp2)
 	if err != nil {
 		return err
 	}
 
-	p.params = params.Data.Params.Required
-	p.data = data.Data.Params
+	p.params = resp.Data.Params.Required
+	fmt.Printf("%+v\n", p.params)
+	p.schemas = resp2.Data.Schema
+	fmt.Printf("%+v\n", p.schemas)
 	return nil
 }
 
@@ -59,10 +63,22 @@ type schema []struct {
 	Name string `json:"name"`
 }
 
-func (p *Profile) Schema(param string) schema {
-	val, ok := p.data[param+"_param"]
+func (p *Profile) Schema(param string) (s schema, ok bool) {
+	val, ok := p.schemas[param+"_params"]
 	if !ok {
-		return nil
+		return
 	}
-	return val.(schema)
+
+	b, err := json.Marshal(val)
+	if err != nil {
+		return
+	}
+
+	err = json.Unmarshal(b, &s)
+	if err != nil {
+		return
+	}
+
+	ok = true
+	return
 }
