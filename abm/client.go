@@ -3,6 +3,8 @@ package abm
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -359,6 +361,44 @@ func (c *client) ProfileParams() (params map[string]bool, err error) {
 		} `json:"data"`
 	}
 
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	params = resp.Data.Params.Required
+	return
+}
+
+func (c *client) Profile(token string) (params map[string]bool, err error) {
+	req, err := http.NewRequest("", c.url("/v2/client/profile"), nil)
+	req.SetBasicAuth(token, "")
+	if err != nil {
+		return
+	}
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Params struct {
+				Required map[string]bool `json:"required"`
+			} `json:"params"`
+		} `json:"data"`
+	}
+
+	data, _ := ioutil.ReadAll(r.Body)
+	fmt.Println(data)
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
 		return

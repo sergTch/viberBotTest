@@ -126,4 +126,5 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
+	abm.Client.Profile(u.ID)
 }
