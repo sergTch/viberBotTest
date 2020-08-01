@@ -56,7 +56,45 @@ func (p *Profile) readParams(r io.Reader) error {
 	return nil
 }
 
-func (p *Profile) readFileds(r io.Reader) {}
+func (p *Profile) readFields(r io.Reader) error {
+	var resp struct {
+		Data struct {
+			Fields []struct {
+				Name      string   `json:"name"`
+				Key       string   `json:"key"`
+				FieldType string   `json:"field_type"`
+				DataType  string   `json:"data_type"`
+				Required  string   `json:"required"`
+				Values    []string `json:"value"`
+			} `json:"fields"`
+		} `json:"data"`
+	}
+
+	err := json.NewDecoder(r).Decode(&resp)
+	if err != nil {
+		return err
+	}
+
+	fields := map[string]bool{}
+	for _, f := range resp.Data.Fields {
+		fields[f.Key] = true
+
+		type entry struct {
+			ID   int    `json:"id"`
+			Name string `json:"name"`
+		}
+
+		schema := []entry{}
+		for i, v := range f.Values {
+			schema = append(schema, entry{ID: i, Name: v})
+		}
+
+		p.schemas[f.Key] = schema
+	}
+
+	p.fields = fields
+	return nil
+}
 
 type schema []struct {
 	ID   int    `json:"id"`

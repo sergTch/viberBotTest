@@ -334,7 +334,7 @@ func (c *client) BarCode(token string) (userID int, barCode string, err error) {
 	return
 }
 
-func (c *client) Profile() (*Profile, error) {
+func (c *client) Profile(token string) (*Profile, error) {
 	r, err := c.profileParams()
 	if err != nil {
 		return nil, err
@@ -342,6 +342,16 @@ func (c *client) Profile() (*Profile, error) {
 
 	p := NewProfile()
 	err = p.readParams(r)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err = c.profileFields(token)
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.readFields(r)
 	if err != nil {
 		return nil, err
 	}
@@ -362,6 +372,27 @@ func (c *client) profileParams() (reader io.Reader, err error) {
 
 	if r.StatusCode != 200 {
 		err = errors.New("Not 200 status")
+		return
+	}
+
+	return r.Body, nil
+}
+
+func (c *client) profileFields(token string) (reader io.Reader, err error) {
+	req, err := http.NewRequest("", c.url("/v2/system/profile-fields"), nil)
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token, "")
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	if r.StatusCode != 201 {
+		err = errors.New("Not 201 status")
 		return
 	}
 

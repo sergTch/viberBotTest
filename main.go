@@ -24,8 +24,11 @@ func run() error {
 
 	flag.Parse()
 
-	profile, err := abm.Client.Profile()
-	fmt.Printf("%+v %+v", profile, err)
+	profile, err := abm.Client.Profile("")
+	fmt.Printf("%+v %+v\n", profile, err)
+	println("------")
+	fmt.Println(profile.Schema("birth_day"))
+	fmt.Println(profile.Schema("gender"))
 
 	if *s == "" {
 		return errors.New("[-s] -> encio must be handled")
