@@ -3,6 +3,7 @@ package abm
 import (
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -333,7 +334,22 @@ func (c *client) BarCode(token string) (userID int, barCode string, err error) {
 	return
 }
 
-func (c *client) ProfileParams() (params map[string]bool, err error) {
+func (c *client) Profile() (*Profile, error) {
+	r, err := c.profileParams()
+	if err != nil {
+		return nil, err
+	}
+
+	p := NewProfile()
+	err = p.readParams(r)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
+func (c *client) profileParams() (reader io.Reader, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/profile-params"), nil)
 	if err != nil {
 		return
@@ -344,26 +360,10 @@ func (c *client) ProfileParams() (params map[string]bool, err error) {
 		return
 	}
 
-	defer r.Body.Close()
-
 	if r.StatusCode != 200 {
 		err = errors.New("Not 200 status")
 		return
 	}
 
-	var resp struct {
-		Data struct {
-			Params struct {
-				Required map[string]bool `json:"required"`
-			} `json:"params"`
-		} `json:"data"`
-	}
-
-	err = json.NewDecoder(r.Body).Decode(&resp)
-	if err != nil {
-		return
-	}
-
-	params = resp.Data.Params.Required
-	return
+	return r.Body, nil
 }

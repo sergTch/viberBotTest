@@ -3,10 +3,12 @@ package main
 import (
 	"errors"
 	"flag"
+	"fmt"
 	"log"
 	"net/http"
 
 	"github.com/orsenkucher/nothing/encio"
+	"github.com/sergTch/viberBotTest/abm"
 	"github.com/sergTch/viberBotTest/bot"
 )
 
@@ -21,6 +23,9 @@ func run() error {
 	var h = flag.Bool("h", false, "set webhook if true")
 
 	flag.Parse()
+
+	profile, err := abm.Client.Profile()
+	fmt.Printf("%+v %+v", profile, err)
 
 	if *s == "" {
 		return errors.New("[-s] -> encio must be handled")
