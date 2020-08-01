@@ -8,15 +8,15 @@ import (
 )
 
 type Profile struct {
-	params  map[string]bool
-	fields  map[string]bool
+	Params  map[string]bool
+	Fields  map[string]bool
 	schemas map[string]interface{}
 }
 
 func NewProfile() *Profile {
 	return &Profile{
-		params:  map[string]bool{},
-		fields:  map[string]bool{},
+		Params:  map[string]bool{},
+		Fields:  map[string]bool{},
 		schemas: map[string]interface{}{},
 	}
 }
@@ -49,8 +49,8 @@ func (p *Profile) readParams(r io.Reader) error {
 		return err
 	}
 
-	p.params = resp.Data.Params.Required
-	fmt.Printf("%+v\n", p.params)
+	p.Params = resp.Data.Params.Required
+	fmt.Printf("%+v\n", p.Params)
 	p.schemas = resp2.Data.Schema
 	fmt.Printf("%+v\n", p.schemas)
 	return nil
@@ -92,7 +92,7 @@ func (p *Profile) readFields(r io.Reader) error {
 		p.schemas[f.Key] = schema
 	}
 
-	p.fields = fields
+	p.Fields = fields
 	return nil
 }
 
