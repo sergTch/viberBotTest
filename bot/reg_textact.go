@@ -35,7 +35,7 @@ func SetPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		user.Password = m.Text
 		_, err = v.SendTextMessage(u.ID, "Введите код из SMS. Будет отправлен вам в течении 2-х минут")
 		check(err)
-		UserSMS[u.ID] = SMS{ID: smsID}
+		UserSMS[u.ID] = SMS{ID: smsID, ConfirmType: "registration-confirm"}
 		UserTxtAct[u.ID] = []*TextAction{{Act: SMSConfirm}}
 	} else {
 		_, err := v.SendTextMessage(u.ID, "Введите другой пароль, он должен не содержать пробелов и состоять минимум из 6-ти символов")
@@ -77,7 +77,7 @@ func ReadNewPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		user.Password = m.Text
 		_, err = v.SendTextMessage(u.ID, "Введите код из SMS. Будет отправлен вам в течении 2-х минут")
 		check(err)
-		UserSMS[u.ID] = SMS{ID: smsID}
+		UserSMS[u.ID] = SMS{ID: smsID, ConfirmType: "change-password-confirm"}
 		UserTxtAct[u.ID] = []*TextAction{{Act: SMSConfirm}}
 	} else {
 		_, err := v.SendTextMessage(u.ID, "Введите другой пароль, он должен не содержать пробелов и состоять минимум из 6-ти символов")
@@ -89,14 +89,14 @@ func ReadNewPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 
 func SMSConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
-	data, ok := UserSMS[u.ID]
+	sms, ok := UserSMS[u.ID]
 	if !ok {
 		_, err := v.SendTextMessage(u.ID, "Извините, что-то пошло не так, давайе попробуем ещё раз:(\nДля регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
 		check(err)
 		UserTxtAct[u.ID] = []*TextAction{{Act: SetPassword}}
 		return
 	}
-	regToken, ok, err := abm.Client.Confirm(m.Text, data.ID)
+	regToken, ok, err := abm.Client.Confirm(m.Text, sms.ID, sms.ConfirmType)
 	if err != nil {
 		fmt.Println(err)
 		return

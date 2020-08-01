@@ -174,12 +174,12 @@ func (c *client) ChangePassword(phone, password, signature string) (smsID int, e
 	return
 }
 
-func (c *client) Confirm(code string, smsID int) (token string, ok bool, err error) {
+func (c *client) Confirm(code string, smsID int, confirmType string) (token string, ok bool, err error) {
 	values := url.Values{}
 	values.Set("code", code)
 	values.Set("sms_id", strconv.Itoa(smsID))
 
-	r, err := c.client.PostForm(c.url("/v2.1/client/registration-confirm"), values)
+	r, err := c.client.PostForm(c.url("/v2.1/client/"+confirmType), values)
 	if err != nil {
 		return
 	}

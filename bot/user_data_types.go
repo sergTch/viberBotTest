@@ -1,5 +1,6 @@
 package bot
 
 type SMS struct {
-	ID int
+	ConfirmType string
+	ID          int
 }
