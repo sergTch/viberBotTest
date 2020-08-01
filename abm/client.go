@@ -332,3 +332,38 @@ func (c *client) BarCode(token string) (userID int, barCode string, err error) {
 	barCode = resp.Data.BarCode
 	return
 }
+
+func (c *client) ProfileParams() (params map[string]bool, err error) {
+	req, err := http.NewRequest("", c.url("/v2/client/profile-params"), nil)
+	if err != nil {
+		return
+	}
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Params struct {
+				Required map[string]bool `json:"required"`
+			} `json:"params"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	params = resp.Data.Params.Required
+	return
+}
