@@ -50,7 +50,11 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	uToken, err := abm.Client.AuthPhone(user.PhoneNumber, m.Text, "Ydfsdf464s")
 	if err != nil {
 		fmt.Println(err)
-		_, err = v.SendTextMessage(u.ID, "Неправильный пароль, попробуйте другой")
+		msg := v.NewTextMessage("Неправильный пароль, попробуйте другой")
+		keyboard := v.NewKeyboard("", false)
+		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Забыл Пароль", "chp"))
+		msg.Keyboard = keyboard
+		_, err := v.SendMessage(u.ID, msg)
 		if err != nil {
 			fmt.Println(err)
 		}
