@@ -90,6 +90,8 @@ func (p *Profile) readFields(r io.Reader) error {
 		}
 
 		p.schemas[f.Key] = schema
+		fmt.Println("!!! !!!")
+		fmt.Println(schema)
 	}
 
 	p.Fields = fields
