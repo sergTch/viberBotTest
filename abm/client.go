@@ -396,8 +396,8 @@ func (c *client) profileFields(token string) (reader io.Reader, err error) {
 
 	fmt.Println("@@@ @@@")
 	fmt.Println(r.StatusCode)
-	if r.StatusCode != 201 {
-		err = errors.New("Not 201 status")
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
 		return
 	}
 
