@@ -94,7 +94,7 @@ func (p *Profile) readFields(r io.Reader) error {
 }
 
 type schema []struct {
-	ID   int    `json:"id"`
+	ID   string `json:"id"`
 	Name string `json:"name"`
 }
 
