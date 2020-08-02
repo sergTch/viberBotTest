@@ -115,6 +115,7 @@ func (p *Profile) Schema(param string) (s schema, ok bool) {
 		return
 	}
 
+	fmt.Println(val)
 	b, err := json.Marshal(val)
 	if err != nil {
 		return
@@ -124,6 +125,7 @@ func (p *Profile) Schema(param string) (s schema, ok bool) {
 	if err != nil {
 		return
 	}
+	fmt.Println(s)
 
 	ok = true
 	return
