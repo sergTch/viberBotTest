@@ -3,6 +3,7 @@ package abm
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"net/http"
 	"net/url"
@@ -397,4 +398,38 @@ func (c *client) profileFields(token string) (reader io.Reader, err error) {
 	}
 
 	return r.Body, nil
+}
+
+func (c *client) ProfileLoad(token string) (err error) {
+	req, err := http.NewRequest("", c.url("/v2/client/profile"), nil)
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token, "")
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+
+	fmt.Println("*** ***")
+	fmt.Println(r.StatusCode)
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data map[string]interface{} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	fmt.Printf("%+v", resp)
+
+	return nil
 }
