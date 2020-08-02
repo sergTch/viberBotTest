@@ -127,10 +127,11 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
 
-	err = abm.Client.ProfileLoad(u.ID)
+	user := UserIDMap[u.ID]
+	err = abm.Client.ProfileLoad(user.Token)
 	check(err)
 
-	profile, err := abm.Client.Profile(u.ID)
+	profile, err := abm.Client.Profile(user.Token)
 	check(err)
 	for param := range profile.Params {
 		fmt.Println(profile.Schema(param))
