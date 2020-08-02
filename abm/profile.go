@@ -64,7 +64,7 @@ func (p *Profile) readFields(r io.Reader) error {
 				Key  string `json:"key"`
 				// FieldType string   `json:"field_type"`
 				// DataType  string   `json:"data_type"`
-				Required string   `json:"required"`
+				Required bool     `json:"required"`
 				Values   []string `json:"value"`
 			} `json:"fields"`
 		} `json:"data"`
@@ -77,7 +77,7 @@ func (p *Profile) readFields(r io.Reader) error {
 
 	fields := map[string]bool{}
 	for _, f := range resp.Data.Fields {
-		fields[f.Key] = true
+		fields[f.Key] = f.Required
 
 		type entry struct {
 			ID   int    `json:"id"`
