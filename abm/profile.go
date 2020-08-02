@@ -60,12 +60,12 @@ func (p *Profile) readFields(r io.Reader) error {
 	var resp struct {
 		Data struct {
 			Fields []struct {
-				Name      string   `json:"name"`
-				Key       string   `json:"key"`
-				FieldType string   `json:"field_type"`
-				DataType  string   `json:"data_type"`
-				Required  string   `json:"required"`
-				Values    []string `json:"value"`
+				Name string `json:"name"`
+				Key  string `json:"key"`
+				// FieldType string   `json:"field_type"`
+				// DataType  string   `json:"data_type"`
+				Required string   `json:"required"`
+				Values   []string `json:"value"`
 			} `json:"fields"`
 		} `json:"data"`
 	}
