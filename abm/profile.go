@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"io/ioutil"
 )
 
 type Profile struct {
@@ -69,6 +70,13 @@ func (p *Profile) readFields(r io.Reader) error {
 			} `json:"fields"`
 		} `json:"data"`
 	}
+
+	buf := &bytes.Buffer{}
+	tee := io.TeeReader(r, buf)
+	fmt.Println("$$$ $$$")
+	bs, _ := ioutil.ReadAll(tee)
+	fmt.Println(string(bs))
+	r = buf
 
 	err := json.NewDecoder(r).Decode(&resp)
 	if err != nil {
