@@ -61,10 +61,10 @@ func (p *Profile) readFields(r io.Reader) error {
 	var resp struct {
 		Data struct {
 			Fields []struct {
-				Name     string   `json:"name"`
-				Key      string   `json:"key"`
-				Required bool     `json:"required"`
-				Items    []string `json:"items"`
+				Name     string `json:"name"`
+				Key      string `json:"key"`
+				Required bool   `json:"required"`
+				Schema   schema `json:"items"`
 			} `json:"fields"`
 		} `json:"data"`
 	}
@@ -84,20 +84,9 @@ func (p *Profile) readFields(r io.Reader) error {
 	fields := map[string]bool{}
 	for _, f := range resp.Data.Fields {
 		fields[f.Key] = f.Required
-
-		type entry struct {
-			ID   int    `json:"id"`
-			Name string `json:"name"`
-		}
-
-		schema := []entry{}
-		for i, it := range f.Items {
-			schema = append(schema, entry{ID: i, Name: it})
-		}
-
-		p.schemas[f.Key] = schema
+		p.schemas[f.Key] = f.Schema
 		fmt.Println("!!! !!!")
-		fmt.Println(schema)
+		fmt.Println(f.Schema)
 	}
 
 	p.Fields = fields
