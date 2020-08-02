@@ -1,10 +1,12 @@
 package abm
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -392,6 +394,8 @@ func (c *client) profileFields(token string) (reader io.Reader, err error) {
 		return
 	}
 
+	fmt.Println("@@@ @@@")
+	fmt.Println(r.StatusCode)
 	if r.StatusCode != 201 {
 		err = errors.New("Not 201 status")
 		return
@@ -423,6 +427,12 @@ func (c *client) ProfileLoad(token string) (err error) {
 	var resp struct {
 		Data map[string]interface{} `json:"data"`
 	}
+
+	buf := &bytes.Buffer{}
+	tee := io.TeeReader(r.Body, buf)
+	bytes, _ := ioutil.ReadAll(tee)
+	fmt.Println(string(bytes))
+	r.Body = ioutil.NopCloser(buf)
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
