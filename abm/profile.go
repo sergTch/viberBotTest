@@ -17,6 +17,7 @@ type Profile struct {
 	Fields     map[string]bool
 	schemas    map[string]interface{}
 	Additional map[string]Field
+	Main       map[string]Field
 	DataType   map[int]string
 	FieldType  map[int]string
 	Required   map[int]string
@@ -28,6 +29,7 @@ func NewProfile() *Profile {
 		Fields:     map[string]bool{},
 		schemas:    map[string]interface{}{},
 		Additional: map[string]Field{},
+		Main:       map[string]Field{},
 		DataType:   map[int]string{},
 		FieldType:  map[int]string{},
 		Required:   map[int]string{},
@@ -91,6 +93,12 @@ func (p *Profile) readParams(r io.Reader) error {
 	fmt.Printf("%+v\n", p.Params)
 	p.schemas = resp2.Data.Schema
 	fmt.Printf("%+v\n", p.schemas)
+
+	for k, v := range resp.Data.Params.Required {
+		s, _ := p.Schema(k)
+		p.Main[k] = Field{Name: k, Key: k, Required: v, Schema: s}
+	}
+
 	return nil
 }
 
