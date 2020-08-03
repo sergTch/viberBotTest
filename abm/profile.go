@@ -71,10 +71,13 @@ func (c *client) Profile(token string) (*Profile, error) {
 		return nil, err
 	}
 
+	fmt.Println("****************************************************************8888888")
+
 	err = p.readProfile(r)
 	if err != nil {
 		return nil, err
 	}
+	fmt.Println("****************************************************************7777777")
 
 	return p, nil
 }
