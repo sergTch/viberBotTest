@@ -5,4 +5,5 @@ go 1.13
 require (
 	github.com/orsenkucher/nothing/encio v0.0.0-20200718092502-89b9762067b4
 	github.com/orsenkucher/viber v0.0.0-20200728183928-2399979e808f
+	golang.org/x/tools v0.0.0-20200731060945-b5fad4ed8dd6 // indirect
 )
