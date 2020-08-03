@@ -71,13 +71,10 @@ func (c *client) Profile(token string) (*Profile, error) {
 		return nil, err
 	}
 
-	fmt.Println("****************************************************************8888888")
-
 	err = p.readProfile(r)
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("****************************************************************7777777")
 
 	return p, nil
 }
@@ -262,8 +259,7 @@ func (p *Profile) readProfile(r io.Reader) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println("resprespresprespresprespresp")
-	fmt.Println(resp)
+
 	for _, v := range p.Fields {
 		if val, ok := resp.Data[v.Key]; ok {
 			v.Value = val
