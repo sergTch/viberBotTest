@@ -410,6 +410,7 @@ func (c *client) profileLoad(token string) (reader io.ReadCloser, err error) {
 
 func (c *client) ProfileSave(token string, profile *Profile) error {
 	values := url.Values{}
+	values.Set("channel_reg", "22")
 	for _, f := range profile.Fields {
 		values.Set(f.Key, fmt.Sprintf("%v", f.Value))
 	}
