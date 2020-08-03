@@ -71,10 +71,10 @@ func (c *client) Profile(token string) (*Profile, error) {
 		return nil, err
 	}
 
-	err = p.readProfile(r)
-	if err != nil {
-		return nil, err
-	}
+	// err = p.readProfile(r)
+	// if err != nil {
+	// 	return nil, err
+	// }
 
 	return p, nil
 }
