@@ -11,7 +11,7 @@ import (
 )
 
 func (c *client) ProfileLoadTest(token string) (err error) {
-	req, err := http.NewRequest("", c.url("/v2/client/profile-fields"), nil)
+	req, err := http.NewRequest("", c.url("/v2/system/profile-fields"), nil)
 	if err != nil {
 		return
 	}
