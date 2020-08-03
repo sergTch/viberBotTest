@@ -190,12 +190,14 @@ func (p *Profile) Schema(param string) (s schema, ok bool) {
 	}
 
 	fmt.Println(val)
-	b, err := json.Marshal(val)
+	bs, err := json.Marshal(val)
 	if err != nil {
 		return
 	}
 
-	err = json.Unmarshal(b, &s)
+	fmt.Println(string(bs))
+
+	err = json.Unmarshal(bs, &s)
 	if err != nil {
 		return
 	}
