@@ -337,31 +337,6 @@ func (c *client) BarCode(token string) (userID int, barCode string, err error) {
 	return
 }
 
-func (c *client) Profile(token string) (*Profile, error) {
-	r, err := c.profileParams()
-	if err != nil {
-		return nil, err
-	}
-
-	p := NewProfile()
-	err = p.readParams(r)
-	if err != nil {
-		return nil, err
-	}
-
-	r, err = c.profileFields(token)
-	if err != nil {
-		return nil, err
-	}
-
-	err = p.readFields(r)
-	if err != nil {
-		return nil, err
-	}
-
-	return p, nil
-}
-
 func (c *client) profileParams() (reader io.Reader, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/profile-params"), nil)
 	if err != nil {

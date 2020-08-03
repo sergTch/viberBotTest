@@ -30,6 +30,31 @@ func NewProfile() *Profile {
 	}
 }
 
+func (c *client) Profile(token string) (*Profile, error) {
+	r, err := c.profileParams()
+	if err != nil {
+		return nil, err
+	}
+
+	p := NewProfile()
+	err = p.readParams(r)
+	if err != nil {
+		return nil, err
+	}
+
+	r, err = c.profileFields(token)
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.readFields(r)
+	if err != nil {
+		return nil, err
+	}
+
+	return p, nil
+}
+
 func (p *Profile) readParams(r io.Reader) error {
 	buf := &bytes.Buffer{}
 	tee := io.TeeReader(r, buf)
@@ -114,9 +139,9 @@ type entry struct {
 
 func (e *entry) UnmarshalJSON(data []byte) error {
 	var v struct {
-		ID    string `json:"id"`
-		Name  string `json:"name"`
-		Value string `json:"value"`
+		ID    interface{} `json:"id"`
+		Name  string      `json:"name"`
+		Value string      `json:"value"`
 	}
 
 	if err := json.Unmarshal(data, &v); err != nil {
@@ -128,18 +153,12 @@ func (e *entry) UnmarshalJSON(data []byte) error {
 		e.Value = v.Value
 	}
 
-	e.ID = v.ID
-	if e.ID == "" {
-		var v struct {
-			ID int `json:"id"`
-		}
-
-		if err := json.Unmarshal(data, &v); err != nil {
-			return err
-		}
-
-		e.ID = fmt.Sprintf("%v", v.ID)
+	if id, ok := v.ID.(string); ok {
+		e.ID = id
+	} else if id, ok := v.ID.(int); ok {
+		e.ID = fmt.Sprintf("%v", id)
 	}
+
 	return nil
 }
 
