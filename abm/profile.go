@@ -79,7 +79,8 @@ func (c *client) Profile(token string) (*Profile, error) {
 	return p, nil
 }
 
-func (p *Profile) readParams(r io.Reader) error {
+func (p *Profile) readParams(r io.ReadCloser) error {
+	defer r.Close()
 	buf := &bytes.Buffer{}
 	tee := io.TeeReader(r, buf)
 
@@ -120,7 +121,8 @@ func (p *Profile) readParams(r io.Reader) error {
 	return nil
 }
 
-func (p *Profile) readFields(r io.Reader) error {
+func (p *Profile) readFields(r io.ReadCloser) error {
+	defer r.Close()
 	var resp struct {
 		Data struct {
 			Fields    []Field `json:"fields"`
@@ -135,7 +137,7 @@ func (p *Profile) readFields(r io.Reader) error {
 	fmt.Println("$$$ $$$")
 	bs, _ := ioutil.ReadAll(tee)
 	fmt.Println(string(bs))
-	r = buf
+	r = ioutil.NopCloser(buf)
 
 	err := json.NewDecoder(r).Decode(&resp)
 	if err != nil {
@@ -251,7 +253,8 @@ func (p *Profile) ToString() string {
 	return text
 }
 
-func (p *Profile) readProfile(r io.Reader) error {
+func (p *Profile) readProfile(r io.ReadCloser) error {
+	defer r.Close()
 	var resp struct {
 		Data map[string]interface{} `json:"data"`
 	}
