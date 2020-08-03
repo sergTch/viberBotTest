@@ -399,9 +399,9 @@ func (c *client) profileLoad(token string) (reader io.Reader, err error) {
 		return
 	}
 
-	var resp struct {
-		Data map[string]interface{} `json:"data"`
-	}
+	// var resp struct {
+	// 	Data map[string]interface{} `json:"data"`
+	// }
 
 	buf := &bytes.Buffer{}
 	tee := io.TeeReader(r.Body, buf)
@@ -409,12 +409,12 @@ func (c *client) profileLoad(token string) (reader io.Reader, err error) {
 	fmt.Println(string(bytes))
 	r.Body = ioutil.NopCloser(buf)
 
-	err = json.NewDecoder(r.Body).Decode(&resp)
-	if err != nil {
-		return
-	}
+	// err = json.NewDecoder(r.Body).Decode(&resp)
+	// if err != nil {
+	// 	return
+	// }
 
-	fmt.Printf("%+v", resp)
+	// fmt.Printf("%+v", resp)
 
 	return r.Body, nil
 }
