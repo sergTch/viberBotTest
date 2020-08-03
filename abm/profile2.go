@@ -22,7 +22,7 @@ type Field struct {
 	FieldType int    `json:"field_type"`
 	DataType  int    `json:"data_type"`
 	Required  bool   `json:"required"`
-	Items     []Item `json:"items"`
+	//Items     []Item `json:"items"`
 }
 
 type Profile2 struct {
