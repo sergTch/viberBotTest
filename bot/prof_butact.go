@@ -31,3 +31,7 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	_, err = v.SendMessage(u.ID, msg)
 	check(err)
 }
+
+func ChangeProfField() {
+
+}

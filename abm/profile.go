@@ -10,12 +10,13 @@ import (
 )
 
 type Field struct {
-	Name      string `json:"name"`
-	Key       string `json:"key"`
-	Required  bool   `json:"required"`
-	FieldType int    `json:"field_type"`
-	DataType  int    `json:"data_type"`
-	Schema    schema `json:"items"`
+	Value     interface{} `json:"-"`
+	Name      string      `json:"name"`
+	Key       string      `json:"key"`
+	Required  bool        `json:"required"`
+	FieldType int         `json:"field_type"`
+	DataType  int         `json:"data_type"`
+	Schema    schema      `json:"items"`
 }
 
 type Profile struct {
