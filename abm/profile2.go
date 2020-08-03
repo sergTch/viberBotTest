@@ -67,6 +67,7 @@ func (c *client) LoadFields(prof *Profile2, token string) (err error) {
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
+	fmt.Println(resp)
 	if err != nil {
 		return
 	}
