@@ -9,16 +9,24 @@ import (
 )
 
 type Profile struct {
-	Params  map[string]bool
-	Fields  map[string]bool
-	schemas map[string]interface{}
+	Gender     Field
+	Region     Field
+	City       Field
+	Params     map[string]bool
+	Fields     map[string]bool
+	schemas    map[string]interface{}
+	Additional map[string]Field
+	DataType   schema
+	FieldType  schema
+	Required   schema
 }
 
 func NewProfile() *Profile {
 	return &Profile{
-		Params:  map[string]bool{},
-		Fields:  map[string]bool{},
-		schemas: map[string]interface{}{},
+		Params:     map[string]bool{},
+		Fields:     map[string]bool{},
+		schemas:    map[string]interface{}{},
+		Additional: map[string]Field{},
 	}
 }
 
@@ -60,12 +68,10 @@ func (p *Profile) readParams(r io.Reader) error {
 func (p *Profile) readFields(r io.Reader) error {
 	var resp struct {
 		Data struct {
-			Fields []struct {
-				Name     string `json:"name"`
-				Key      string `json:"key"`
-				Required bool   `json:"required"`
-				Schema   schema `json:"items"`
-			} `json:"fields"`
+			Fields    []Field `json:"fields"`
+			DataType  schema  `json:"data_type_param"`
+			FieldType schema  `json:"field_type_param"`
+			Required  schema  `json:"required_param"`
 		} `json:"data"`
 	}
 
@@ -90,13 +96,20 @@ func (p *Profile) readFields(r io.Reader) error {
 	}
 
 	p.Fields = fields
+	p.DataType = resp.Data.DataType
+	p.FieldType = resp.Data.FieldType
+	p.Required = resp.Data.Required
+	for _, v := range resp.Data.Fields {
+		p.Additional[v.Key] = v
+	}
+
 	return nil
 }
 
 type schema []entry
 type entry struct {
-	ID   string `json:"id"`
-	Name string `json:"name"`
+	ID    string `json:"id"`
+	Value string `json:"value"`
 }
 
 func (e *entry) UnmarshalJSON(data []byte) error {
@@ -110,9 +123,9 @@ func (e *entry) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	e.Name = v.Name
-	if e.Name == "" {
-		e.Name = v.Value
+	e.Value = v.Name
+	if e.Value == "" {
+		e.Value = v.Value
 	}
 
 	e.ID = v.ID

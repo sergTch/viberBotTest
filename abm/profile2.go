@@ -16,13 +16,12 @@ type Item struct {
 }
 
 type Field struct {
-	//Value     interface{} `json:"value"`
 	Name      string `json:"name"`
 	Key       string `json:"key"`
+	Required  bool   `json:"required"`
 	FieldType int    `json:"field_type"`
 	DataType  int    `json:"data_type"`
-	Required  bool   `json:"required"`
-	//Items     []Item `json:"items"`
+	Schema    schema `json:"items"`
 }
 
 type Profile2 struct {

@@ -130,7 +130,9 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	user := UserIDMap[u.ID]
 	check(err)
 
-	profile := abm.Client.NewProfile2(user.Token)
+	profile, err := abm.Client.Profile(user.Token)
+	check(err)
+
 	for key, field := range profile.Additional {
 		fmt.Println(key, field)
 	}
