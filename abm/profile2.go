@@ -57,9 +57,10 @@ func (c *client) LoadFields(prof *Profile2, token string) (err error) {
 		err = errors.New("Not 200 status")
 		return
 	}
-	//buf := &bytes.Buffer{}
-	//tee := io.TeeReader(r.Body, buf)
-	//bytes, _ := ioutil.ReadAll(tee)
+	buf := &bytes.Buffer{}
+	tee := io.TeeReader(r.Body, buf)
+	bytes, _ := ioutil.ReadAll(tee)
+	fmt.Println(string(bytes))
 	var resp struct {
 		Data struct {
 			Fields []Field `json:"fields"`
