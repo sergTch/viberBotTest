@@ -10,11 +10,11 @@ import (
 )
 
 type Profile struct {
-	Gender     Field
-	Region     Field
-	City       Field
-	Params     map[string]bool
-	Fields     map[string]bool
+	Gender Field
+	Region Field
+	City   Field
+	//Params     map[string]bool
+	//Fields     map[string]bool
 	schemas    map[string]interface{}
 	Additional map[string]Field
 	Main       map[string]Field
@@ -25,8 +25,8 @@ type Profile struct {
 
 func NewProfile() *Profile {
 	return &Profile{
-		Params:     map[string]bool{},
-		Fields:     map[string]bool{},
+		//Params:     map[string]bool{},
+		//Fields:     map[string]bool{},
 		schemas:    map[string]interface{}{},
 		Additional: map[string]Field{},
 		Main:       map[string]Field{},
@@ -89,8 +89,8 @@ func (p *Profile) readParams(r io.Reader) error {
 		return err
 	}
 
-	p.Params = resp.Data.Params.Required
-	fmt.Printf("%+v\n", p.Params)
+	//p.Params = resp.Data.Params.Required
+	//fmt.Printf("%+v\n", p.Params)
 	p.schemas = resp2.Data.Schema
 	fmt.Printf("%+v\n", p.schemas)
 
@@ -132,7 +132,7 @@ func (p *Profile) readFields(r io.Reader) error {
 		fmt.Println(f.Schema)
 	}
 
-	p.Fields = fields
+	//p.Fields = fields
 	for _, v := range resp.Data.DataType {
 		id, _ := strconv.Atoi(v.ID)
 		p.DataType[id] = v.Value
