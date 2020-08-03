@@ -43,7 +43,7 @@ func (c *client) NewProfile2(token string) *Profile2 {
 }
 
 func (c *client) LoadFields(prof *Profile2, token string) (err error) {
-	req, err := http.NewRequest("", c.url("/v2/client/profile-params"), nil)
+	req, err := http.NewRequest("", c.url("/v2/system/profile-fields"), nil)
 	if err != nil {
 		return
 	}
