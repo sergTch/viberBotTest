@@ -20,6 +20,7 @@ type Field struct {
 }
 
 type Profile struct {
+	Fields     []*Field
 	Region     *Field
 	City       *Field
 	schemas    map[string]interface{}
@@ -62,7 +63,18 @@ func (c *client) Profile(token string) (*Profile, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	p.fillMainParams()
+
+	r, err = c.profileLoad(token)
+	if err != nil {
+		return nil, err
+	}
+
+	err = p.readProfile(r)
+	if err != nil {
+		return nil, err
+	}
 
 	return p, nil
 }
@@ -100,7 +112,9 @@ func (p *Profile) readParams(r io.Reader) error {
 
 	for k, v := range resp.Data.Params.Required {
 		s, _ := p.Schema(k)
-		p.Main[k] = &Field{Name: k, Key: k, Required: v, Schema: s}
+		field := Field{Name: k, Key: k, Required: v, Schema: s}
+		p.Main[k] = &field
+		p.Fields = append(p.Fields, &field)
 	}
 
 	return nil
@@ -150,6 +164,7 @@ func (p *Profile) readFields(r io.Reader) error {
 	}
 	for _, v := range resp.Data.Fields {
 		field := v
+		p.Fields = append(p.Fields, &field)
 		p.Additional[v.Key] = &field
 	}
 
@@ -234,4 +249,20 @@ func (p *Profile) ToString() string {
 	}
 	text += p.Region.Name + ": " + "\n"
 	return text
+}
+
+func (p *Profile) readProfile(r io.Reader) error {
+	var resp struct {
+		Data map[string]interface{} `json:"data"`
+	}
+	err := json.NewDecoder(r).Decode(&resp)
+	if err != nil {
+		return err
+	}
+	for _, v := range p.Fields {
+		if val, ok := resp.Data[v.Key]; ok {
+			v.Value = val
+		}
+	}
+	return nil
 }

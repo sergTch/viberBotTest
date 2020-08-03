@@ -379,7 +379,7 @@ func (c *client) profileFields(token string) (reader io.Reader, err error) {
 	return r.Body, nil
 }
 
-func (c *client) ProfileLoad(token string) (err error) {
+func (c *client) profileLoad(token string) (reader io.Reader, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/profile"), nil)
 	if err != nil {
 		return
@@ -416,5 +416,5 @@ func (c *client) ProfileLoad(token string) (err error) {
 
 	fmt.Printf("%+v", resp)
 
-	return nil
+	return r.Body, nil
 }
