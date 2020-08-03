@@ -210,6 +210,15 @@ func (p *Profile) Schema(param string) (s schema, ok bool) {
 }
 
 func (p *Profile) ToString() string {
+	fmt.Println("===MAIN===")
+	for key, field := range p.Main {
+		fmt.Println(key, field)
+	}
+
+	fmt.Println("===Additional===")
+	for key, field := range p.Additional {
+		fmt.Println(key, field)
+	}
 	text := ""
 	for _, field := range p.Main {
 		if field.Required {
