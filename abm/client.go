@@ -439,3 +439,32 @@ func (c *client) ProfileSave(token string, profile *Profile) error {
 
 	return nil
 }
+
+func (c *client) FieldSave(token string, field *Field) error {
+	values := url.Values{}
+	values.Set(field.Key, fmt.Sprintf("%v", field.Value))
+
+	req, err := http.NewRequest(
+		"PUT",
+		c.url("/v2/client/profile"),
+		strings.NewReader(values.Encode()),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(token, "")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return err
+	}
+
+	return nil
+}
