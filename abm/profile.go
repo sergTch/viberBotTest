@@ -148,7 +148,8 @@ func (p *Profile) readFields(r io.Reader) error {
 		p.Required[id] = v.Value
 	}
 	for _, v := range resp.Data.Fields {
-		p.Additional[v.Key] = &v
+		field := v
+		p.Additional[v.Key] = &field
 	}
 
 	return nil
@@ -210,15 +211,6 @@ func (p *Profile) Schema(param string) (s schema, ok bool) {
 }
 
 func (p *Profile) ToString() string {
-	fmt.Println("===MAIN===")
-	for key, field := range p.Main {
-		fmt.Println(key, field)
-	}
-
-	fmt.Println("===Additional===")
-	for key, field := range p.Additional {
-		fmt.Println(key, field)
-	}
 	text := ""
 	for _, field := range p.Main {
 		if field.Required {
