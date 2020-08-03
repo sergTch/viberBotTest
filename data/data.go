@@ -16,7 +16,7 @@ var (
 	AgreementLink string
 )
 
-func init() {
+func Init() {
 	var cfg map[string]interface{}
 	bytes, err := ioutil.ReadFile(pub)
 	if err != nil {

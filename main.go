@@ -8,9 +8,11 @@ import (
 
 	"github.com/orsenkucher/nothing/encio"
 	"github.com/sergTch/viberBotTest/bot"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func main() {
+	data.Init()
 	if err := run(); err != nil {
 		log.Fatalln(err)
 	}

@@ -176,8 +176,8 @@ func (e *entry) UnmarshalJSON(data []byte) error {
 
 	if id, ok := v.ID.(string); ok {
 		e.ID = id
-	} else if id, ok := v.ID.(int); ok {
-		e.ID = fmt.Sprintf("%v", id)
+	} else if id, ok := v.ID.(float64); ok {
+		e.ID = fmt.Sprintf("%v", int(id))
 	}
 
 	return nil
