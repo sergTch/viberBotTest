@@ -19,11 +19,11 @@ type Field struct {
 }
 
 type Profile struct {
-	Region     Field
-	City       Field
+	Region     *Field
+	City       *Field
 	schemas    map[string]interface{}
-	Additional map[string]Field
-	Main       map[string]Field
+	Additional map[string]*Field
+	Main       map[string]*Field
 	DataType   map[int]string
 	FieldType  map[int]string
 	Required   map[int]string
@@ -32,8 +32,8 @@ type Profile struct {
 func NewProfile() *Profile {
 	return &Profile{
 		schemas:    map[string]interface{}{},
-		Additional: map[string]Field{},
-		Main:       map[string]Field{},
+		Additional: map[string]*Field{},
+		Main:       map[string]*Field{},
 		DataType:   map[int]string{},
 		FieldType:  map[int]string{},
 		Required:   map[int]string{},
@@ -99,7 +99,7 @@ func (p *Profile) readParams(r io.Reader) error {
 
 	for k, v := range resp.Data.Params.Required {
 		s, _ := p.Schema(k)
-		p.Main[k] = Field{Name: k, Key: k, Required: v, Schema: s}
+		p.Main[k] = &Field{Name: k, Key: k, Required: v, Schema: s}
 	}
 
 	return nil
@@ -148,7 +148,7 @@ func (p *Profile) readFields(r io.Reader) error {
 		p.Required[id] = v.Value
 	}
 	for _, v := range resp.Data.Fields {
-		p.Additional[v.Key] = v
+		p.Additional[v.Key] = &v
 	}
 
 	return nil
