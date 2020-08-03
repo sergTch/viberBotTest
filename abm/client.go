@@ -468,3 +468,51 @@ func (c *client) FieldSave(token string, field *Field) error {
 
 	return nil
 }
+
+type Region struct {
+	CountryID   int
+	CountryName string
+	RegionID    int
+	RegionName  string
+}
+
+func (c *client) Regions() (regs []Region, err error) {
+	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/regions", data.CountryID)), nil)
+	if err != nil {
+		return
+	}
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Country string `json:"country"`
+			Target  []struct {
+				CountryID   int    `json:"country_id"`
+				CountryName string `json:"country_name"`
+				RegionID    int    `json:"region_id"`
+				RegionName  string `json:"region_name"`
+			} `json:"target"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	for _, v := range resp.Data.Target {
+		regs = append(regs, Region(v))
+	}
+
+	return
+}

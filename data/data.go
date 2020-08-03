@@ -14,6 +14,7 @@ var (
 	MinAge        int
 	ApiUrl        string
 	AgreementLink string
+	CountryID     string
 )
 
 func Init() {
@@ -31,4 +32,5 @@ func Init() {
 	AgreementLink = cfg["AgreementLink"].(string)
 	MinAge = int(cfg["Age"].(float64))
 	ApiUrl = cfg["ApiUrl"].(string)
+	CountryID = cfg["CountryID"].(string)
 }
