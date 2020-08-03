@@ -17,7 +17,7 @@ import (
 
 var Client *client
 
-func init() {
+func Init() {
 	Client = New()
 }
 

@@ -7,12 +7,14 @@ import (
 	"net/http"
 
 	"github.com/orsenkucher/nothing/encio"
+	"github.com/sergTch/viberBotTest/abm"
 	"github.com/sergTch/viberBotTest/bot"
 	"github.com/sergTch/viberBotTest/data"
 )
 
 func main() {
 	data.Init()
+	abm.Init()
 	if err := run(); err != nil {
 		log.Fatalln(err)
 	}
