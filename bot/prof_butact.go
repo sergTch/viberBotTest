@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -12,6 +13,15 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	check(err)
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
+	fmt.Println("===MAIN===")
+	for key, field := range prof.Main {
+		fmt.Println(key, field)
+	}
+
+	fmt.Println("===Additional===")
+	for key, field := range prof.Additional {
+		fmt.Println(key, field)
+	}
 	check(err)
 	text := "*Номер: " + user.PhoneNumber + "\n"
 	text += prof.ToString()
