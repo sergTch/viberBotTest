@@ -470,10 +470,10 @@ func (c *client) FieldSave(token string, field *Field) error {
 }
 
 type Region struct {
-	CountryID   int
-	CountryName string
-	RegionID    int
-	RegionName  string
+	CountryID   int    `json:"country_id"`
+	CountryName string `json:"country_name"`
+	RegionID    int    `json:"region_id"`
+	RegionName  string `json:"region_name"`
 }
 
 func (c *client) Regions() (regs []Region, err error) {
@@ -495,13 +495,8 @@ func (c *client) Regions() (regs []Region, err error) {
 
 	var resp struct {
 		Data struct {
-			Country string `json:"country"`
-			Target  []struct {
-				CountryID   int    `json:"country_id"`
-				CountryName string `json:"country_name"`
-				RegionID    int    `json:"region_id"`
-				RegionName  string `json:"region_name"`
-			} `json:"target"`
+			Country string   `json:"country"`
+			Target  []Region `json:"target"`
 		} `json:"data"`
 	}
 
@@ -510,9 +505,43 @@ func (c *client) Regions() (regs []Region, err error) {
 		return
 	}
 
-	for _, v := range resp.Data.Target {
-		regs = append(regs, Region(v))
+	return resp.Data.Target, nil
+}
+
+type City struct {
+	Region
+	CityID   int    `json:"city_id"`
+	CityName string `json:"city_name"`
+}
+
+func (c *client) SearchCity(city string) (cs []City, err error) {
+	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/%s/search-city", data.CountryID, city)), nil)
+	if err != nil {
+		return
 	}
 
-	return
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Country string `json:"country"`
+			Target  []City `json:"target"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	return resp.Data.Target, nil
 }
