@@ -407,3 +407,34 @@ func (c *client) profileLoad(token string) (reader io.Reader, err error) {
 
 	return r.Body, nil
 }
+
+func (c *client) ProfileSave(token string, profile *Profile) error {
+	values := url.Values{}
+	for _, f := range profile.Fields {
+		values.Set(f.Key, fmt.Sprintf("%v", f.Value))
+	}
+
+	req, err := http.NewRequest(
+		"PUT",
+		c.url("/v2/client/profile"),
+		strings.NewReader(values.Encode()),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(token, "")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r, err := c.client.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return err
+	}
+
+	return nil
+}
