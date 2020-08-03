@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"strconv"
 )
 
 type Profile struct {
@@ -16,9 +17,9 @@ type Profile struct {
 	Fields     map[string]bool
 	schemas    map[string]interface{}
 	Additional map[string]Field
-	DataType   schema
-	FieldType  schema
-	Required   schema
+	DataType   map[int]string
+	FieldType  map[int]string
+	Required   map[int]string
 }
 
 func NewProfile() *Profile {
@@ -27,6 +28,9 @@ func NewProfile() *Profile {
 		Fields:     map[string]bool{},
 		schemas:    map[string]interface{}{},
 		Additional: map[string]Field{},
+		DataType:   map[int]string{},
+		FieldType:  map[int]string{},
+		Required:   map[int]string{},
 	}
 }
 
@@ -121,9 +125,18 @@ func (p *Profile) readFields(r io.Reader) error {
 	}
 
 	p.Fields = fields
-	p.DataType = resp.Data.DataType
-	p.FieldType = resp.Data.FieldType
-	p.Required = resp.Data.Required
+	for _, v := range resp.Data.DataType {
+		id, _ := strconv.Atoi(v.ID)
+		p.DataType[id] = v.Value
+	}
+	for _, v := range resp.Data.FieldType {
+		id, _ := strconv.Atoi(v.ID)
+		p.FieldType[id] = v.Value
+	}
+	for _, v := range resp.Data.Required {
+		id, _ := strconv.Atoi(v.ID)
+		p.Required[id] = v.Value
+	}
 	for _, v := range resp.Data.Fields {
 		p.Additional[v.Key] = v
 	}
