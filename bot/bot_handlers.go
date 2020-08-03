@@ -43,10 +43,14 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		fmt.Println(txt)
 		parts := strings.Split(txt, "/")
 		if parts[0] == "#butt" {
-			for _, actionID := range parts {
-				if action, ok := ButtActions[actionID]; ok {
-					action.Act(v, u, *m, token, t)
+			if parts[1] != "prof" {
+				for _, actionID := range parts {
+					if action, ok := ButtActions[actionID]; ok {
+						action.Act(v, u, *m, token, t)
+					}
 				}
+			} else {
+
 			}
 		} else {
 			for _, actions := range UserTxtAct {

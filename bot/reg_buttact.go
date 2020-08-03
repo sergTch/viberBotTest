@@ -25,6 +25,7 @@ func init() {
 	ButtActions["cin"] = &ButtAction{Act: CardInput, ID: "cin"}
 	ButtActions["mnu"] = &ButtAction{Act: Menu, ID: "mnu"}
 	ButtActions["chp"] = &ButtAction{Act: ChangePassword, ID: "chp"}
+	ButtActions["prf"] = &ButtAction{Act: ProfileChange, ID: "prf"}
 }
 
 //id: str
@@ -89,7 +90,7 @@ func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 func FillInfQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	msg := v.NewTextMessage("Для возможности использовать накопленные бонусы необходимо заполнить обязательные поля анкеты в разделе меню Мой профиль. Заполнить анкету сейчас?")
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "да"), *BuildButton(v, 3, 1, "", "Заполнить позже", "mnu"))
+	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "да", "prf"), *BuildButton(v, 3, 1, "", "Заполнить позже", "mnu"))
 	keyboard.InputFieldState = viber.HiddenInputField
 	msg.Keyboard = keyboard
 	_, err := v.SendMessage(u.ID, msg)
@@ -120,6 +121,7 @@ func ChangePassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to start", "str"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to profile", "prf"))
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
 	msg := v.NewTextMessage("Вы попали в меню...")

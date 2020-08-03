@@ -65,4 +65,10 @@ func (p *Profile) fillMainParams() {
 		f.DataType = dayData
 		f.FieldType = dayField
 	}
+
+	p.City = p.Main["city"]
+	p.Region = p.Main["region"]
+	delete(p.Main, "city")
+	delete(p.Main, "region")
+	delete(p.Main, "mobile")
 }

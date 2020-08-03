@@ -208,3 +208,28 @@ func (p *Profile) Schema(param string) (s schema, ok bool) {
 	ok = true
 	return
 }
+
+func (p *Profile) ToString() string {
+	text := ""
+	for _, field := range p.Main {
+		if field.Required {
+			text += "*"
+		}
+		text += field.Name + ": " + "\n"
+	}
+	for _, field := range p.Additional {
+		if field.Required {
+			text += "*"
+		}
+		text += field.Name + ": " + "\n"
+	}
+	if p.City.Required {
+		text += "*"
+	}
+	text += p.City.Name + ": " + "\n"
+	if p.Region.Required {
+		text += "*"
+	}
+	text += p.Region.Name + ": " + "\n"
+	return text
+}
