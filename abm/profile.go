@@ -239,16 +239,16 @@ func (f *Field) ToString() string {
 	}
 	text += f.Name + ": "
 	if f.Value != nil {
-		if FieldType[f.FieldType] == "Integer" {
-			str := strconv.Itoa(f.Value.(int))
-			for _, ent := range f.Schema {
-				if ent.ID == str {
-					text += ent.Value
-				}
-			}
-		} else {
-			text += f.Value.(string)
-		}
+		// if FieldType[f.FieldType] == "Integer" {
+		// 	str := strconv.Itoa(f.Value.(int))
+		// 	for _, ent := range f.Schema {
+		// 		if ent.ID == str {
+		// 			text += ent.Value
+		// 		}
+		// 	}
+		// } else {
+		text += f.Value.(string)
+		// }
 	}
 	return text
 }
