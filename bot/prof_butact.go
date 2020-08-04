@@ -51,7 +51,7 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
 		for _, region := range regions {
-			keyboard.AddButtons(*v.NewButton(6, 1, viber.Reply, strconv.Itoa(region.RegionID), region.RegionName, "", true))
+			keyboard.AddButtons(*v.NewButton(6, 1, viber.Reply, strconv.Itoa(region.RegionID), region.RegionName[:5], "", true))
 		}
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
