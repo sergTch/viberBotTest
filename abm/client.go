@@ -545,3 +545,67 @@ func (c *client) SearchCity(city string) (cs []City, err error) {
 
 	return resp.Data.Target, nil
 }
+
+func (c *client) GetRegion(regID string) (reg Region, err error) {
+	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/get-region", regID)), nil)
+	if err != nil {
+		return
+	}
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			ID     string `json:"id"`
+			Target Region `json:"target"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	return resp.Data.Target, nil
+}
+
+func (c *client) GetCity(cityID string) (ct City, err error) {
+	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/get-city", cityID)), nil)
+	if err != nil {
+		return
+	}
+
+	r, err := c.client.Do(req)
+	if err != nil {
+		return
+	}
+	defer r.Body.Close()
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			ID     string `json:"id"`
+			Target City   `json:"target"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return
+	}
+
+	return resp.Data.Target, nil
+}
