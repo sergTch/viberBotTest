@@ -8,7 +8,7 @@ func (p *Profile) fillMainParams() {
 	textData := -1
 	dayData := -1
 
-	for id, dataType := range p.DataType {
+	for id, dataType := range DataType {
 		if dataType == "Dropdown list" {
 			dropData = id
 		}
@@ -19,7 +19,7 @@ func (p *Profile) fillMainParams() {
 			textData = id
 		}
 	}
-	for id, fieldType := range p.FieldType {
+	for id, fieldType := range FieldType {
 		if fieldType == "Integer" {
 			numberField = id
 		}
@@ -67,7 +67,9 @@ func (p *Profile) fillMainParams() {
 	}
 
 	p.City = p.Main["city"]
+	p.City.Key = "id_city"
 	p.Region = p.Main["region"]
+	p.Region.Key = "id_region"
 	delete(p.Main, "city")
 	delete(p.Main, "region")
 	delete(p.Main, "mobile")

@@ -9,6 +9,10 @@ import (
 	"strconv"
 )
 
+var DataType map[int]string
+var FieldType map[int]string
+var Required map[int]string
+
 type Field struct {
 	Value     interface{} `json:"-"`
 	Name      string      `json:"name"`
@@ -16,7 +20,7 @@ type Field struct {
 	Required  bool        `json:"required"`
 	FieldType int         `json:"field_type"`
 	DataType  int         `json:"data_type"`
-	Schema    schema      `json:"items"`
+	Schema    Schema      `json:"items"`
 }
 
 type Profile struct {
@@ -26,9 +30,6 @@ type Profile struct {
 	schemas    map[string]interface{}
 	Additional map[string]*Field
 	Main       map[string]*Field
-	DataType   map[int]string
-	FieldType  map[int]string
-	Required   map[int]string
 }
 
 func NewProfile() *Profile {
@@ -36,9 +37,9 @@ func NewProfile() *Profile {
 		schemas:    map[string]interface{}{},
 		Additional: map[string]*Field{},
 		Main:       map[string]*Field{},
-		DataType:   map[int]string{},
-		FieldType:  map[int]string{},
-		Required:   map[int]string{},
+		//DataType:   map[int]string{},
+		//FieldType:  map[int]string{},
+		//Required:   map[int]string{},
 	}
 }
 
@@ -126,9 +127,9 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 	var resp struct {
 		Data struct {
 			Fields    []Field `json:"fields"`
-			DataType  schema  `json:"data_type_param"`
-			FieldType schema  `json:"field_type_param"`
-			Required  schema  `json:"required_param"`
+			DataType  Schema  `json:"data_type_param"`
+			FieldType Schema  `json:"field_type_param"`
+			Required  Schema  `json:"required_param"`
 		} `json:"data"`
 	}
 
@@ -152,17 +153,20 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 		fmt.Println(f.Schema)
 	}
 
+	DataType = map[int]string{}
+	FieldType = map[int]string{}
+	Required = map[int]string{}
 	for _, v := range resp.Data.DataType {
 		id, _ := strconv.Atoi(v.ID)
-		p.DataType[id] = v.Value
+		DataType[id] = v.Value
 	}
 	for _, v := range resp.Data.FieldType {
 		id, _ := strconv.Atoi(v.ID)
-		p.FieldType[id] = v.Value
+		FieldType[id] = v.Value
 	}
 	for _, v := range resp.Data.Required {
 		id, _ := strconv.Atoi(v.ID)
-		p.Required[id] = v.Value
+		Required[id] = v.Value
 	}
 	for _, v := range resp.Data.Fields {
 		field := v
@@ -173,13 +177,13 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 	return nil
 }
 
-type schema []entry
-type entry struct {
+type Schema []Entry
+type Entry struct {
 	ID    string `json:"id"`
 	Value string `json:"value"`
 }
 
-func (e *entry) UnmarshalJSON(data []byte) error {
+func (e *Entry) UnmarshalJSON(data []byte) error {
 	var v struct {
 		ID    interface{} `json:"id"`
 		Name  string      `json:"name"`
@@ -204,7 +208,7 @@ func (e *entry) UnmarshalJSON(data []byte) error {
 	return nil
 }
 
-func (p *Profile) Schema(param string) (s schema, ok bool) {
+func (p *Profile) Schema(param string) (s Schema, ok bool) {
 	val, ok := p.schemas[param+"_params"]
 	if !ok {
 		return

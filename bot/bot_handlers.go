@@ -50,7 +50,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 					}
 				}
 			} else {
-
+				ChangeProfField(v, u, *m, token, t, parts[2])
 			}
 		} else {
 			for _, actions := range UserTxtAct {
