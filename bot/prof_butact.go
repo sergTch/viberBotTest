@@ -41,6 +41,16 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	}
 	if fkey == "city" {
 		field = prof.City
+		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
+		keyboard := v.NewKeyboard("", false)
+		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
+		keyboard.InputFieldState = viber.HiddenInputField
+		msg.Keyboard = keyboard
+		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
+		UserField[u.ID] = field
+		_, err = v.SendMessage(u.ID, msg)
+		check(err)
+		return
 	}
 	if fkey == "id_region" {
 		field = prof.Region

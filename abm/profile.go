@@ -233,6 +233,13 @@ func (f *Field) ToString() string {
 		text += "*"
 	}
 	text += f.Name + ": "
+	// if f.Key == "id_region" {
+	// 	if fmt.Sprint(f.Value) == "0" {
+	// 		return text
+	// 	} else {
+
+	// 	}
+	// }
 	if f.Value != nil {
 		if FieldType[f.FieldType] == "Integer" {
 			str := fmt.Sprint(f.Value)

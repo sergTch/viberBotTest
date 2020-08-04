@@ -13,7 +13,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	user := UserIDMap[u.ID]
 	field, ok := UserField[u.ID]
 	if !ok {
-		return
+		Menu(v, u, m, token, t)
 	}
 	if abm.FieldType[field.FieldType] == "String" {
 		field.Value = m.Text
@@ -38,4 +38,14 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	err = abm.Client.FieldSave(user.Token, field)
 	check(err)
 	ProfileChange(v, u, m, token, t)
+}
+
+func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	// user := UserIDMap[u.ID]
+	// field, ok := UserField[u.ID]
+	// if !ok {
+	// 	Menu(v, u, m, token, t)
+	// }
+	// cities, err := abm.Client.SearchCity(m.Text)
+	// check(err)
 }
