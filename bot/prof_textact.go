@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -36,16 +37,52 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		field.Value = m.Text
 	}
 	err = abm.Client.FieldSave(user.Token, field)
+	if field.Key == "id_region" {
+		prof, err := abm.Client.Profile(user.Token)
+		check(err)
+		field = prof.City
+		msg := v.NewTextMessage("Редактируем '" + field.Name + "' Введите несколько первых букв вашего города")
+		keyboard := v.NewKeyboard("", false)
+		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
+		keyboard.InputFieldState = viber.HiddenInputField
+		msg.Keyboard = keyboard
+		UserTxtAct[u.ID] = []*TextAction{{Act: SearchCity}}
+		UserField[u.ID] = field
+		_, err = v.SendMessage(u.ID, msg)
+		check(err)
+		return
+	}
 	check(err)
 	ProfileChange(v, u, m, token, t)
 }
 
 func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	// user := UserIDMap[u.ID]
-	// field, ok := UserField[u.ID]
-	// if !ok {
-	// 	Menu(v, u, m, token, t)
-	// }
-	// cities, err := abm.Client.SearchCity(m.Text)
-	// check(err)
+	field, ok := UserField[u.ID]
+	if !ok {
+		Menu(v, u, m, token, t)
+	}
+
+	user := UserIDMap[u.ID]
+	prof, err := abm.Client.Profile(user.Token)
+	check(err)
+	region, err := abm.Client.GetRegion(fmt.Sprint(prof.Region.Value))
+	check(err)
+	fmt.Println(region)
+
+	cities, err := abm.Client.SearchCity(m.Text)
+	if len(cities) > 0 {
+		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
+		keyboard := v.NewKeyboard("", false)
+		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
+		for _, city := range cities {
+			keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(city.CityID), city.CityName, "", true))
+		}
+		keyboard.InputFieldState = viber.HiddenInputField
+		msg.Keyboard = keyboard
+		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
+		UserField[u.ID] = field
+		_, err = v.SendMessage(u.ID, msg)
+		check(err)
+	}
+	check(err)
 }

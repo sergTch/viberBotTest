@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"fmt"
 	"strconv"
 	"time"
 
@@ -22,7 +21,11 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "В меню", "mnu"))
 
 	for _, field := range prof.Fields {
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", field.Name, "prof", field.Key))
+		if field.Key == "id_region" {
+			keyboard.AddButtons(*BuildButton(v, 6, 1, "", prof.Region.Name+"/"+prof.City.Name, "prof", field.Key))
+		} else if field.Key != "id_city" {
+			keyboard.AddButtons(*BuildButton(v, 6, 1, "", field.Name, "prof", field.Key))
+		}
 	}
 
 	keyboard.InputFieldState = viber.HiddenInputField
@@ -39,29 +42,14 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if !ok {
 		field = prof.Additional[fkey]
 	}
-	if fkey == "city" {
-		field = prof.City
-		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
-		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
-		keyboard.InputFieldState = viber.HiddenInputField
-		msg.Keyboard = keyboard
-		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserField[u.ID] = field
-		_, err = v.SendMessage(u.ID, msg)
-		check(err)
-		return
-	}
 	if fkey == "id_region" {
 		field = prof.Region
 		regions, err := abm.Client.Regions()
-		fmt.Println("Regions ammount: ", len(regions))
 		check(err)
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
 		for _, region := range regions {
-			fmt.Println(region.RegionName)
 			keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(region.RegionID), region.RegionName, "", true))
 		}
 		keyboard.InputFieldState = viber.HiddenInputField
