@@ -255,14 +255,9 @@ func (f *Field) ToString() string {
 
 func (p *Profile) ToString() string {
 	text := ""
-	for _, field := range p.Main {
+	for _, field := range p.Fields {
 		text += field.ToString() + "\n"
 	}
-	for _, field := range p.Additional {
-		text += field.ToString() + "\n"
-	}
-	text += p.City.ToString() + "\n"
-	text += p.Region.ToString() + "\n"
 	return text
 }
 
