@@ -21,7 +21,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		field.Value, err = strconv.Atoi(m.Text)
 		check(err)
 	} else if abm.FieldType[field.FieldType] == "Birthday" {
-		_, err := time.Parse("2006-01-02", "2012-10-12")
+		_, err := time.Parse("2006-01-02", m.Text)
 		if err != nil {
 			_, err := v.SendTextMessage(u.ID, "Дата должна быть выписана в формате ГГГГ-ММ-ДД. Повторите ещё раз")
 			check(err)
