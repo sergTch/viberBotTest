@@ -31,6 +31,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			msg.Keyboard = keyboard
 			_, err = v.SendMessage(u.ID, msg)
 			check(err)
+			return
 		}
 		field.Value = m.Text
 	}
