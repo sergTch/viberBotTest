@@ -112,9 +112,9 @@ func (p *Profile) readParams(r io.ReadCloser) error {
 	p.schemas = resp2.Data.Schema
 	fmt.Printf("%+v\n", p.schemas)
 
-	for k, v := range resp.Data.Params.Required {
+	for _, k := range requiredParams {
 		s, _ := p.Schema(k)
-		field := Field{Name: k, Key: k, Required: v, Schema: s}
+		field := Field{Name: k, Key: k, Required: resp.Data.Params.Required[k], Schema: s}
 		p.Main[k] = &field
 		p.Fields = append(p.Fields, &field)
 	}

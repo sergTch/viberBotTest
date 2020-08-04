@@ -1,5 +1,19 @@
 package abm
 
+var requiredParams []string
+
+func init() {
+	requiredParams = []string{"email",
+		"first_name",
+		"middle_name",
+		"last_name",
+		"address",
+		"gender",
+		"birth_day",
+		"region",
+		"city"}
+}
+
 func (p *Profile) fillMainParams() {
 	strField := -1
 	numberField := -1
