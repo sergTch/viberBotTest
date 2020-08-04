@@ -247,7 +247,7 @@ func (f *Field) ToString() string {
 		// 		}
 		// 	}
 		// } else {
-		text += f.Value.(string)
+		text += fmt.Sprint(f.Value)
 		// }
 	}
 	return text
