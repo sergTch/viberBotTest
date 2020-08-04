@@ -41,7 +41,7 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if fkey == "city" {
 		field = prof.City
 	}
-	if fkey == "region" {
+	if fkey == "id_region" {
 		field = prof.Region
 		regions, err := abm.Client.Regions()
 		check(err)
