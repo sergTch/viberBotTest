@@ -400,9 +400,9 @@ func (c *client) profileLoad(token string) (reader io.ReadCloser, err error) {
 	}
 
 	buf := &bytes.Buffer{}
-	// tee := io.TeeReader(r.Body, buf)
-	// bytes, _ := ioutil.ReadAll(tee)
-	// fmt.Println(string(bytes))
+	tee := io.TeeReader(r.Body, buf)
+	bytes, _ := ioutil.ReadAll(tee)
+	fmt.Println(string(bytes))
 	r.Body = ioutil.NopCloser(buf)
 
 	return r.Body, nil

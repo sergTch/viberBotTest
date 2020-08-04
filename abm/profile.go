@@ -110,6 +110,7 @@ func (p *Profile) readParams(r io.ReadCloser) error {
 	}
 
 	p.schemas = resp2.Data.Schema
+	fmt.Printf("%+v\n", p.schemas)
 
 	for _, k := range requiredParams {
 		s, _ := p.Schema(k)
@@ -133,10 +134,10 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 	}
 
 	buf := &bytes.Buffer{}
-	// tee := io.TeeReader(r, buf)
-	// fmt.Println("$$$ $$$")
-	// bs, _ := ioutil.ReadAll(tee)
-	// fmt.Println(string(bs))
+	tee := io.TeeReader(r, buf)
+	fmt.Println("$$$ $$$")
+	bs, _ := ioutil.ReadAll(tee)
+	fmt.Println(string(bs))
 	r = ioutil.NopCloser(buf)
 
 	err := json.NewDecoder(r).Decode(&resp)
@@ -148,8 +149,8 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 	for _, f := range resp.Data.Fields {
 		fields[f.Key] = f.Required
 		p.schemas[f.Key] = f.Schema
-		// fmt.Println("!!! !!!")
-		// fmt.Println(f.Schema)
+		fmt.Println("!!! !!!")
+		fmt.Println(f.Schema)
 	}
 
 	DataType = map[int]string{}
@@ -213,19 +214,19 @@ func (p *Profile) Schema(param string) (s Schema, ok bool) {
 		return
 	}
 
-	// fmt.Println(val)
+	fmt.Println(val)
 	bs, err := json.Marshal(val)
 	if err != nil {
 		return
 	}
 
-	// fmt.Println(string(bs))
+	fmt.Println(string(bs))
 
 	err = json.Unmarshal(bs, &s)
 	if err != nil {
 		return
 	}
-	// fmt.Println(s)
+	fmt.Println(s)
 
 	ok = true
 	return
