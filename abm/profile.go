@@ -239,8 +239,8 @@ func (f *Field) ToString() string {
 	}
 	text += f.Name + ": "
 	if f.Value != nil {
-		if i, ok := f.Value.(int); ok && FieldType[f.FieldType] == "Integer" {
-			str := strconv.Itoa(i)
+		if FieldType[f.FieldType] == "Integer" {
+			str := fmt.Sprint(f.Value)
 			for _, ent := range f.Schema {
 				if ent.ID == str {
 					text += ent.Value
