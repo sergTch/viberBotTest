@@ -50,7 +50,7 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
-		for _, region := range regions[:24] {
+		for _, region := range regions {
 			fmt.Println(region.RegionName)
 			keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(region.RegionID), region.RegionName, "", true))
 		}
