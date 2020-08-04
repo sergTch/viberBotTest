@@ -232,28 +232,37 @@ func (p *Profile) Schema(param string) (s Schema, ok bool) {
 	return
 }
 
+func (f *Field) ToString() string {
+	text := ""
+	if f.Required {
+		text += "*"
+	}
+	text += f.Name + ": "
+	if f.Value != nil {
+		if FieldType[f.FieldType] == "Integer" {
+			str := strconv.Itoa(f.Value.(int))
+			for _, ent := range f.Schema {
+				if ent.ID == str {
+					text += ent.Value
+				}
+			}
+		} else {
+			text += f.Value.(string)
+		}
+	}
+	return text
+}
+
 func (p *Profile) ToString() string {
 	text := ""
 	for _, field := range p.Main {
-		if field.Required {
-			text += "*"
-		}
-		text += field.Name + ": " + "\n"
+		text += field.ToString() + "\n"
 	}
 	for _, field := range p.Additional {
-		if field.Required {
-			text += "*"
-		}
-		text += field.Name + ": " + "\n"
+		text += field.ToString() + "\n"
 	}
-	if p.City.Required {
-		text += "*"
-	}
-	text += p.City.Name + ": " + "\n"
-	if p.Region.Required {
-		text += "*"
-	}
-	text += p.Region.Name + ": " + "\n"
+	text += p.City.ToString() + "\n"
+	text += p.Region.ToString() + "\n"
 	return text
 }
 

@@ -17,7 +17,7 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	text += prof.ToString()
 	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 3, 1, "", "В меню", "mnu"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "В меню", "mnu"))
 
 	for _, field := range prof.Main {
 		keyboard.AddButtons(*BuildButton(v, 6, 1, "", field.Name, "prof", field.Key))
