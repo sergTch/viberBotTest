@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -42,6 +43,21 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	}
 	if fkey == "region" {
 		field = prof.Region
+		regions, err := abm.Client.Regions()
+		check(err)
+		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
+		keyboard := v.NewKeyboard("", false)
+		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
+		for _, region := range regions {
+			keyboard.AddButtons(*v.NewButton(6, 1, viber.Reply, strconv.Itoa(region.RegionID), region.RegionName, "", true))
+		}
+		keyboard.InputFieldState = viber.HiddenInputField
+		msg.Keyboard = keyboard
+		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
+		UserField[u.ID] = field
+		_, err = v.SendMessage(u.ID, msg)
+		check(err)
+		return
 	}
 	if field == nil {
 		return
