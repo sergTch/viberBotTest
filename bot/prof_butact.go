@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"strconv"
 	"time"
 
@@ -42,6 +43,7 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		field = prof.City
 	}
 	if fkey == "id_region" {
+		fmt.Println("Region Change")
 		field = prof.Region
 		regions, err := abm.Client.Regions()
 		check(err)
