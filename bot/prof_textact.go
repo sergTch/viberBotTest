@@ -43,8 +43,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		field = prof.City
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "' Введите несколько первых букв вашего города")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
-		keyboard.InputFieldState = viber.HiddenInputField
+		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: SearchCity}}
 		UserField[u.ID] = field
