@@ -257,7 +257,7 @@ func (f *Field) ToString() string {
 		}
 	}
 	if f.Key == "id_city" {
-		fmt.Println(f.Value.(int64))
+		fmt.Println(valueTosString(f.Value))
 		if valueTosString(f.Value) == "0" {
 			return text
 		} else {
