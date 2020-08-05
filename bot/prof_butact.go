@@ -41,7 +41,7 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	check(err)
 	fields := []*abm.Field{}
 	for _, field := range prof.Fields {
-		if field.Value == nil || field.Value == 0 || field.Value == "" {
+		if field.Required && (field.Value == nil || field.Value == 0 || field.Value == "") {
 			fields = append(fields, field)
 		}
 	}
