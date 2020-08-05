@@ -38,9 +38,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	}
 	err = abm.Client.FieldSave(user.Token, field)
 	if field.Key == "id_region" {
-		prof, err := abm.Client.Profile(user.Token)
 		check(err)
-		field = prof.City
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "' Введите несколько первых букв вашего города")
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
@@ -74,12 +72,14 @@ func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
 		for _, city := range cities {
-			keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(city.CityID), city.CityName, "", true))
+			if city.RegionID == region.RegionID {
+				keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(city.CityID), city.CityName, "", true))
+			}
 		}
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserField[u.ID] = field
+		UserField[u.ID] = prof.City
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
 	}
