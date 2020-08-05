@@ -246,8 +246,7 @@ func (f *Field) ToString() string {
 		}
 	}
 	if f.Key == "id_city" {
-		fmt.Printf("%v", f.Value)
-		if fmt.Sprint(f.Value) == "0" {
+		if fmt.Sprint(f.Value.(int64)) == "0" {
 			return text
 		} else {
 			city, err := Client.GetCity(fmt.Sprint(f.Value))
