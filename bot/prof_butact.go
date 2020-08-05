@@ -19,13 +19,23 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "В меню", "mnu"))
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Заполнить обязательные поля", "frq"))
 
+	full := true
 	for _, field := range prof.Fields {
-		if field.Key == "id_region" {
-			keyboard.AddButtons(*BuildButton(v, 6, 1, "", prof.Region.Name+"/"+prof.City.Name, "prof", field.Key))
-		} else if field.Key != "id_city" && field.Key != "mobile" {
-			keyboard.AddButtons(*BuildButton(v, 6, 1, "", field.Name, "prof", field.Key))
+		if field.Required && (field.Value == nil || field.Value == 0 || field.Value == "") {
+			full = false
+		}
+	}
+
+	if !full {
+		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Заполнить анкету", "frq"))
+	} else {
+		for _, field := range prof.Fields {
+			if field.Key == "id_region" {
+				keyboard.AddButtons(*BuildButton(v, 6, 1, "", prof.Region.Name+"/"+prof.City.Name, "prof", field.Key))
+			} else if field.Key != "id_city" && field.Key != "mobile" {
+				keyboard.AddButtons(*BuildButton(v, 6, 1, "", field.Name, "prof", field.Key))
+			}
 		}
 	}
 
@@ -42,6 +52,11 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	fields := []*abm.Field{}
 	for _, field := range prof.Fields {
 		if field.Required && (field.Value == nil || field.Value == 0 || field.Value == "") {
+			fields = append(fields, field)
+		}
+	}
+	for _, field := range prof.Fields {
+		if !field.Required && (field.Value == nil || field.Value == 0 || field.Value == "") {
 			fields = append(fields, field)
 		}
 	}
