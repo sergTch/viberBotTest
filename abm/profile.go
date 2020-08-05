@@ -233,13 +233,30 @@ func (f *Field) ToString() string {
 		text += "*"
 	}
 	text += f.Name + ": "
-	// if f.Key == "id_region" {
-	// 	if fmt.Sprint(f.Value) == "0" {
-	// 		return text
-	// 	} else {
-
-	// 	}
-	// }
+	if f.Key == "id_region" {
+		if fmt.Sprint(f.Value) == "0" {
+			return text
+		} else {
+			region, err := Client.GetRegion(fmt.Sprint(f.Value))
+			if err != nil {
+				fmt.Println(err)
+				return text
+			}
+			return text + region.RegionName
+		}
+	}
+	if f.Key == "id_city" {
+		if fmt.Sprint(f.Value) == "0" {
+			return text
+		} else {
+			city, err := Client.GetCity(fmt.Sprint(f.Value))
+			if err != nil {
+				fmt.Println(err)
+				return text
+			}
+			return text + city.CityName
+		}
+	}
 	if f.Value != nil {
 		if FieldType[f.FieldType] == "Integer" {
 			str := fmt.Sprint(f.Value)
