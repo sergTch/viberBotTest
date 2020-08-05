@@ -12,21 +12,21 @@ import (
 func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	var err error
 	user := UserIDMap[u.ID]
-	field, ok := UserField[u.ID]
+	field, ok := UserFields[u.ID]
 	if !ok {
 		Menu(v, u, m, token, t)
 	}
-	if abm.FieldType[field.FieldType] == "String" {
-		field.Value = m.Text
-	} else if abm.FieldType[field.FieldType] == "Integer" {
-		field.Value, err = strconv.Atoi(m.Text)
+	if abm.FieldType[field[0].FieldType] == "String" {
+		field[0].Value = m.Text
+	} else if abm.FieldType[field[0].FieldType] == "Integer" {
+		field[0].Value, err = strconv.Atoi(m.Text)
 		check(err)
-	} else if abm.FieldType[field.FieldType] == "Birthday" {
+	} else if abm.FieldType[field[0].FieldType] == "Birthday" {
 		_, err := time.Parse("2006-01-02", m.Text)
 		if err != nil {
 			_, err := v.SendTextMessage(u.ID, "Дата должна быть выписана в формате ГГГГ-ММ-ДД. Повторите ещё раз")
 			check(err)
-			msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
+			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
 			keyboard := v.NewKeyboard("", false)
 			keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
 			msg.Keyboard = keyboard
@@ -34,23 +34,28 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			check(err)
 			return
 		}
-		field.Value = m.Text
+		field[0].Value = m.Text
 	}
-	err = abm.Client.FieldSave(user.Token, field)
-	if field.Key == "id_region" {
+	err = abm.Client.FieldSave(user.Token, field[0])
+	if field[0].Key == "id_region" {
 		check(err)
-		msg := v.NewTextMessage("Редактируем '" + field.Name + "' Введите несколько первых букв вашего города")
+		msg := v.NewTextMessage("Редактируем '" + field[0].Name + "' Введите несколько первых букв вашего города")
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: SearchCity}}
-		UserField[u.ID] = field
+		UserFields[u.ID] = field[:1]
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
 		return
 	}
 	check(err)
-	ProfileChange(v, u, m, token, t)
+	UserFields[u.ID] = field[1:]
+	if len(field) == 1 {
+		ProfileChange(v, u, m, token, t)
+	} else {
+		ChangeProfField(v, u, m, token, t, field[1].Key)
+	}
 }
 
 func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
@@ -74,7 +79,7 @@ func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserField[u.ID] = prof.City
+		UserFields[u.ID] = []*abm.Field{prof.City}
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
 	}

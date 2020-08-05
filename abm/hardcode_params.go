@@ -86,5 +86,4 @@ func (p *Profile) fillMainParams() {
 	p.Region.Key = "id_region"
 	delete(p.Main, "city")
 	delete(p.Main, "region")
-	delete(p.Main, "mobile")
 }

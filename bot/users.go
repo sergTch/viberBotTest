@@ -8,13 +8,13 @@ import (
 //var UserPhoneMap map[string]*User
 var UserIDMap map[string]*User
 var UserSMS map[string]SMS
-var UserField map[string]*abm.Field
+var UserFields map[string][]*abm.Field
 var NextAction map[string]*ButtAction
 
 func init() {
 	//UserPhoneMap = map[string]*User{}
 	UserIDMap = map[string]*User{}
-	UserField = map[string]*abm.Field{}
+	UserFields = map[string][]*abm.Field{}
 	UserSMS = map[string]SMS{}
 	NextAction = map[string]*ButtAction{}
 }
