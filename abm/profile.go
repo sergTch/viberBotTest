@@ -7,6 +7,7 @@ import (
 	"io"
 	"io/ioutil"
 	"strconv"
+	"strings"
 )
 
 var DataType map[int]string
@@ -232,7 +233,7 @@ func valueTosString(value interface{}) string {
 	case string:
 		return fmt.Sprint(value)
 	case float64, float32:
-		return fmt.Sprintf("%f\n", value)
+		return strings.Split(fmt.Sprintf("%f\n", value), ".")[0]
 	default:
 		return fmt.Sprintf("%v\n", value)
 	}
