@@ -227,6 +227,17 @@ func (p *Profile) Schema(param string) (s Schema, ok bool) {
 	return
 }
 
+func valueTosString(value interface{}) string {
+	switch value.(type) {
+	case string:
+		return fmt.Sprint(value)
+	case float64, float32:
+		return fmt.Sprintf("%f\n", value)
+	default:
+		return fmt.Sprintf("%v\n", value)
+	}
+}
+
 func (f *Field) ToString() string {
 	text := ""
 	if f.Required {
@@ -234,10 +245,10 @@ func (f *Field) ToString() string {
 	}
 	text += f.Name + ": "
 	if f.Key == "id_region" {
-		if fmt.Sprint(f.Value) == "0" {
+		if valueTosString(f.Value) == "0" {
 			return text
 		} else {
-			region, err := Client.GetRegion(fmt.Sprint(f.Value))
+			region, err := Client.GetRegion(valueTosString(f.Value))
 			if err != nil {
 				fmt.Println(err)
 				return text
@@ -247,10 +258,10 @@ func (f *Field) ToString() string {
 	}
 	if f.Key == "id_city" {
 		fmt.Println(f.Value.(int64))
-		if fmt.Sprint(f.Value) == "0" {
+		if valueTosString(f.Value) == "0" {
 			return text
 		} else {
-			city, err := Client.GetCity(fmt.Sprint(f.Value))
+			city, err := Client.GetCity(valueTosString(f.Value))
 			if err != nil {
 				fmt.Println(err)
 				return text
@@ -260,7 +271,7 @@ func (f *Field) ToString() string {
 	}
 	if f.Value != nil {
 		if FieldType[f.FieldType] == "Integer" {
-			str := fmt.Sprint(f.Value)
+			str := valueTosString(f.Value)
 			for _, ent := range f.Schema {
 				if ent.ID == str {
 					text += ent.Value
