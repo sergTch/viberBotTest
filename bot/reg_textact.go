@@ -9,6 +9,8 @@ import (
 	"github.com/sergTch/viberBotTest/abm"
 )
 
+const signa = "Ydfsdf464s"
+
 var UserTxtAct map[string][]*TextAction
 
 type TextAction struct {
@@ -22,7 +24,7 @@ func init() {
 func SetPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	if !strings.Contains(m.Text, " ") && len(m.Text) > 5 {
 		user := UserIDMap[u.ID]
-		smsID, err := abm.Client.Register(user.PhoneNumber, m.Text, "Ydfsdf464s")
+		smsID, err := abm.Client.Register(user.PhoneNumber, m.Text, signa)
 		fmt.Println(smsID)
 		if err != nil {
 			fmt.Println(err)
@@ -47,7 +49,7 @@ func SetPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 
 func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
-	uToken, err := abm.Client.AuthPhone(user.PhoneNumber, m.Text, "Ydfsdf464s")
+	uToken, err := abm.Client.AuthPhone(user.PhoneNumber, m.Text, signa)
 	if err != nil {
 		fmt.Println(err)
 		msg := v.NewTextMessage("Неправильный пароль, попробуйте другой")
@@ -68,7 +70,7 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 func ReadNewPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	if !strings.Contains(m.Text, " ") && len(m.Text) > 5 {
 		user := UserIDMap[u.ID]
-		smsID, err := abm.Client.ChangePassword(user.PhoneNumber, m.Text, "Ydfsdf464s")
+		smsID, err := abm.Client.ChangePassword(user.PhoneNumber, m.Text, signa)
 		fmt.Println(smsID)
 		if err != nil {
 			fmt.Println(err)
@@ -106,7 +108,7 @@ func SMSConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 		return
 	}
 	if ok {
-		user.Token = regToken
+		user.Token = abm.NewSmartToken(abm.Client, regToken, user.PhoneNumber, user.Password, signa)
 		act := NextAction[user.ViberUser.ID]
 		act.Act(v, u, m, token, t)
 	} else {

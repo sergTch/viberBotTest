@@ -37,10 +37,6 @@ func (c *client) url(endpoint string) string {
 	return c.apiURL + endpoint
 }
 
-// client := abm.New()
-// ok, err := client.CheckPhone("380671810640")
-// fmt.Printf("phone: %v %v", ok, err)
-
 func (c *client) CheckPhone(number string) (ok bool, err error) {
 	values := url.Values{}
 	values.Set("phone", number)
@@ -107,7 +103,37 @@ func (c *client) Register(phone, password, signature string) (smsID int, err err
 	return
 }
 
-func (c *client) AuthPhone(phone, password, signature string) (token string, err error) {
+type SmartToken struct {
+	client *client
+
+	token, phone, password, signature string
+}
+
+func NewSmartToken(client *client, token, phone, password, signature string) *SmartToken {
+	return &SmartToken{
+		client:    client,
+		token:     token,
+		phone:     phone,
+		password:  password,
+		signature: signature,
+	}
+}
+
+func (s *SmartToken) Token() string {
+	return s.token
+}
+
+func (s *SmartToken) Renew() (token *SmartToken, err error) {
+	token, err = s.client.AuthPhone(s.phone, s.password, s.signature)
+	if err != nil {
+		return
+	}
+
+	*s = *token
+	return
+}
+
+func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
@@ -139,7 +165,7 @@ func (c *client) AuthPhone(phone, password, signature string) (token string, err
 		return
 	}
 
-	token = resp.Data.Token
+	token = NewSmartToken(c, resp.Data.Token, phone, password, signature)
 	return
 }
 
@@ -257,7 +283,21 @@ const (
 	SlaveCard
 )
 
-func (c *client) SetCard(token, cardNumber string) (card *Card, ok bool, err error) {
+func (c *client) SetCard(token *SmartToken, cardNumber string) (card *Card, ok bool, err error) {
+	card, ok, err = c.setCard(token, cardNumber)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.setCard(token, cardNumber)
+}
+
+func (c *client) setCard(token *SmartToken, cardNumber string) (card *Card, ok bool, err error) {
 	values := url.Values{}
 	values.Set("number", cardNumber)
 
@@ -270,7 +310,7 @@ func (c *client) SetCard(token, cardNumber string) (card *Card, ok bool, err err
 		return
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.client.Do(req)
 	if err != nil {
@@ -301,13 +341,27 @@ func (c *client) SetCard(token, cardNumber string) (card *Card, ok bool, err err
 	return
 }
 
-func (c *client) BarCode(token string) (userID int, barCode string, err error) {
+func (c *client) BarCode(token *SmartToken) (userID int, barCode string, err error) {
+	userID, barCode, err = c.barCode(token)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.barCode(token)
+}
+
+func (c *client) barCode(token *SmartToken) (userID int, barCode string, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/bar-code"), nil)
 	if err != nil {
 		return
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(token.Token(), "")
 	r, err := c.client.Do(req)
 	if err != nil {
 		return
@@ -356,13 +410,27 @@ func (c *client) profileParams() (reader io.ReadCloser, err error) {
 	return r.Body, nil
 }
 
-func (c *client) profileFields(token string) (reader io.ReadCloser, err error) {
+func (c *client) profileFields(token *SmartToken) (reader io.ReadCloser, err error) {
+	reader, err = c._profileFields(token)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c._profileFields(token)
+}
+
+func (c *client) _profileFields(token *SmartToken) (reader io.ReadCloser, err error) {
 	req, err := http.NewRequest("", c.url("/v2/system/profile-fields"), nil)
 	if err != nil {
 		return
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(token.Token(), "")
 
 	r, err := c.client.Do(req)
 	if err != nil {
@@ -379,13 +447,27 @@ func (c *client) profileFields(token string) (reader io.ReadCloser, err error) {
 	return r.Body, nil
 }
 
-func (c *client) profileLoad(token string) (reader io.ReadCloser, err error) {
+func (c *client) profileLoad(token *SmartToken) (reader io.ReadCloser, err error) {
+	reader, err = c._profileLoad(token)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c._profileLoad(token)
+}
+
+func (c *client) _profileLoad(token *SmartToken) (reader io.ReadCloser, err error) {
 	req, err := http.NewRequest("", c.url("/v2/client/profile"), nil)
 	if err != nil {
 		return
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(token.Token(), "")
 
 	r, err := c.client.Do(req)
 	if err != nil {
@@ -408,7 +490,21 @@ func (c *client) profileLoad(token string) (reader io.ReadCloser, err error) {
 	return r.Body, nil
 }
 
-func (c *client) ProfileSave(token string, profile *Profile) error {
+func (c *client) ProfileSave(token *SmartToken, profile *Profile) (err error) {
+	err = c.profileSave(token, profile)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.profileSave(token, profile)
+}
+
+func (c *client) profileSave(token *SmartToken, profile *Profile) error {
 	values := url.Values{}
 	values.Set("channel_reg", "22")
 	for _, f := range profile.Fields {
@@ -425,7 +521,7 @@ func (c *client) ProfileSave(token string, profile *Profile) error {
 		return err
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.client.Do(req)
 	if err != nil {
@@ -440,7 +536,21 @@ func (c *client) ProfileSave(token string, profile *Profile) error {
 	return nil
 }
 
-func (c *client) FieldSave(token string, field *Field) error {
+func (c *client) FieldSave(token *SmartToken, field *Field) (err error) {
+	err = c.fieldSave(token, field)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.fieldSave(token, field)
+}
+
+func (c *client) fieldSave(token *SmartToken, field *Field) error {
 	values := url.Values{}
 	values.Set(field.Key, fmt.Sprintf("%v", field.Value))
 
@@ -454,7 +564,7 @@ func (c *client) FieldSave(token string, field *Field) error {
 		return err
 	}
 
-	req.SetBasicAuth(token, "")
+	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.client.Do(req)
 	if err != nil {
