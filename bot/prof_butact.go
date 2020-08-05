@@ -19,6 +19,7 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "В меню", "mnu"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Заполнить обязательные поля", "frq"))
 
 	for _, field := range prof.Fields {
 		if field.Key == "id_region" {
@@ -34,13 +35,23 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	check(err)
 }
 
-func FillRequired() {
-
+func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	user := UserIDMap[u.ID]
+	prof, err := abm.Client.Profile(user.Token)
+	check(err)
+	fields := []*abm.Field{}
+	for _, field := range prof.Fields {
+		if field.Value != nil && field.Value != 0 && field.Value != "" {
+			fields = append(fields, field)
+		}
+	}
+	UserFields[u.ID] = fields
 }
 
 func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time, fkey string) {
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
+	fields := UserFields[u.ID]
 	check(err)
 	field, ok := prof.Main[fkey]
 	if !ok {
@@ -58,7 +69,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserFields[u.ID] = []*abm.Field{prof.Region, prof.City}
+		if len(fields) == 0 || fields[0].Key != prof.Region.Key {
+			UserFields[u.ID] = []*abm.Field{prof.Region, prof.City}
+		}
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
 		return
@@ -72,7 +85,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserFields[u.ID] = []*abm.Field{field}
+		if len(fields) == 0 || fields[0].Key != field.Key {
+			UserFields[u.ID] = []*abm.Field{field}
+		}
 		_, err := v.SendMessage(u.ID, msg)
 		check(err)
 	}
@@ -86,7 +101,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserFields[u.ID] = []*abm.Field{field}
+		if len(fields) == 0 || fields[0].Key != field.Key {
+			UserFields[u.ID] = []*abm.Field{field}
+		}
 		_, err := v.SendMessage(u.ID, msg)
 		check(err)
 	}
@@ -96,7 +113,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserFields[u.ID] = []*abm.Field{field}
+		if len(fields) == 0 || fields[0].Key != field.Key {
+			UserFields[u.ID] = []*abm.Field{field}
+		}
 		_, err := v.SendMessage(u.ID, msg)
 		check(err)
 	}
@@ -109,7 +128,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
-		UserFields[u.ID] = []*abm.Field{field}
+		if len(fields) == 0 || fields[0].Key != field.Key {
+			UserFields[u.ID] = []*abm.Field{field}
+		}
 		_, err := v.SendMessage(u.ID, msg)
 		check(err)
 	}

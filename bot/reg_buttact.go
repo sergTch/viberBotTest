@@ -26,6 +26,7 @@ func init() {
 	ButtActions["mnu"] = &ButtAction{Act: Menu, ID: "mnu"}
 	ButtActions["chp"] = &ButtAction{Act: ChangePassword, ID: "chp"}
 	ButtActions["prf"] = &ButtAction{Act: ProfileChange, ID: "prf"}
+	ButtActions["frq"] = &ButtAction{Act: FillRequired, ID: "frq"}
 }
 
 //id: str
