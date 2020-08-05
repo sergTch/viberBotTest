@@ -46,6 +46,13 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 		}
 	}
 	UserFields[u.ID] = fields
+	if len(fields) != 0 {
+		ChangeProfField(v, u, m, token, t, fields[0].Key)
+	} else {
+		_, err := v.SendTextMessage(u.ID, "Все обязательные поля уже заполнены")
+		check(err)
+		ProfileChange(v, u, m, token, t)
+	}
 }
 
 func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time, fkey string) {
