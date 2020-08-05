@@ -53,6 +53,7 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	fields := []*abm.Field{}
 	for _, field := range prof.Fields {
 		if field.Key == "id_region" || field.Key == "id_city" || field.Key == "has_smartphone" {
+			fmt.Println(field.Key, " ", field.Value)
 			fmt.Println(field.Value == nil || field.Value == 0 || field.Value == "")
 			fmt.Println(field.Required)
 		}
