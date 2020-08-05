@@ -3,7 +3,8 @@ package abm
 var requiredParams []string
 
 func init() {
-	requiredParams = []string{"email",
+	requiredParams = []string{
+		"email",
 		"first_name",
 		"middle_name",
 		"last_name",

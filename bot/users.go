@@ -22,6 +22,6 @@ func init() {
 type User struct {
 	ViberUser   viber.User
 	PhoneNumber string
-	Token       string
+	Token       *abm.SmartToken
 	Password    string
 }

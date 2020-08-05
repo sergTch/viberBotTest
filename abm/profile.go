@@ -44,7 +44,7 @@ func NewProfile() *Profile {
 	}
 }
 
-func (c *client) Profile(token string) (*Profile, error) {
+func (c *client) Profile(token *SmartToken) (*Profile, error) {
 	r, err := c.profileParams()
 	if err != nil {
 		return nil, err
