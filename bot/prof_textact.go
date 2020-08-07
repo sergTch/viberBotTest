@@ -7,6 +7,7 @@ import (
 
 	"github.com/orsenkucher/viber"
 	"github.com/sergTch/viberBotTest/abm"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
@@ -22,9 +23,20 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		field[0].Value, err = strconv.Atoi(m.Text)
 		check(err)
 	} else if abm.FieldType[field[0].FieldType] == "Birthday" {
-		_, err := time.Parse("2006-01-02", m.Text)
+		date, err := time.Parse("2006-01-02", m.Text)
 		if err != nil {
 			_, err := v.SendTextMessage(u.ID, "Дата должна быть выписана в формате ГГГГ-ММ-ДД. Повторите ещё раз")
+			check(err)
+			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
+			keyboard := v.NewKeyboard("", false)
+			keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
+			msg.Keyboard = keyboard
+			_, err = v.SendMessage(u.ID, msg)
+			check(err)
+			return
+		}
+		if time.Since(date).Hours() < float64(data.MinAge)*24*365.25 {
+			_, err := v.SendTextMessage(u.ID, fmt.Sprintf("Минимальный возраст для регистрации %v лет.", data.MinAge))
 			check(err)
 			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
 			keyboard := v.NewKeyboard("", false)
