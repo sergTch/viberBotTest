@@ -37,10 +37,10 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 // myMsgReceivedFunc will be called everytime when user send us a message.
 func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
 	fmt.Println(u.ID, " response")
-	if _, ok := UserIDMap[u.ID]; !ok {
-		StartMsg(v, u, *v.NewTextMessage(""), token, t)
-		return
-	}
+	// if _, ok := UserIDMap[u.ID]; !ok {
+	// 	StartMsg(v, u, *v.NewTextMessage(""), token, t)
+	// 	return
+	// }
 	switch m := m.(type) {
 	case *viber.TextMessage:
 		txt := m.Text
