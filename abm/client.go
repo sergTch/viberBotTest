@@ -124,12 +124,15 @@ func (s *SmartToken) Token() string {
 }
 
 func (s *SmartToken) Renew() (token *SmartToken, err error) {
+	fmt.Println("*** RENEWING TOKEN ***")
 	token, err = s.client.AuthPhone(s.phone, s.password, s.signature)
+	fmt.Printf("New token, err: %v, %v\n", token, err)
 	if err != nil {
 		return
 	}
 
 	*s = *token
+	fmt.Printf("struct token, local token: %v, %v\n", *s, *token)
 	return
 }
 
