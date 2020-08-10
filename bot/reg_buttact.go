@@ -130,23 +130,26 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
 
-	user := UserIDMap[u.ID]
-	check(err)
+	// user := UserIDMap[u.ID]
+	// check(err)
 
-	if user == nil {
-		panic("panica: user was nil")
-	}
+	// if user == nil {
+	// 	panic("panica: user was nil")
+	// }
 
-	profile, err := abm.Client.Profile(user.Token)
-	check(err)
+	// profile, err := abm.Client.Profile(user.Token)
+	// checkServerError(err, v, u, m, token, t)
+	// if err != nil {
+	// 	return
+	// }
 
-	fmt.Println("===MAIN===")
-	for key, field := range profile.Main {
-		fmt.Println(key, field)
-	}
+	// fmt.Println("===MAIN===")
+	// for key, field := range profile.Main {
+	// 	fmt.Println(key, field)
+	// }
 
-	fmt.Println("===Additional===")
-	for key, field := range profile.Additional {
-		fmt.Println(key, field)
-	}
+	// fmt.Println("===Additional===")
+	// for key, field := range profile.Additional {
+	// 	fmt.Println(key, field)
+	// }
 }

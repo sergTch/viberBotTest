@@ -124,12 +124,16 @@ func (s *SmartToken) Token() string {
 }
 
 func (s *SmartToken) Renew() (token *SmartToken, err error) {
+	fmt.Println("*** RENEWING TOKEN ***")
+	fmt.Printf("params: %v, %v, %v\n", s.phone, s.password, s.signature)
 	token, err = s.client.AuthPhone(s.phone, s.password, s.signature)
+	fmt.Printf("New token, err: %v, %v\n", token, err)
 	if err != nil {
 		return
 	}
 
 	*s = *token
+	fmt.Printf("struct token, local token: %v, %v\n", *s, *token)
 	return
 }
 
@@ -148,6 +152,7 @@ func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken
 
 	if r.StatusCode != 201 {
 		err = errors.New("Not 201 status" + "\nstatus: " + strconv.Itoa(r.StatusCode))
+		panic(err)
 		return
 	}
 
@@ -166,6 +171,8 @@ func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken
 	}
 
 	token = NewSmartToken(c, resp.Data.Token, phone, password, signature)
+	fmt.Printf("token from api: %v", resp.Data.Token)
+	fmt.Printf("token in token: %v", token.Token())
 	return
 }
 
@@ -290,7 +297,7 @@ func (c *client) SetCard(token *SmartToken, cardNumber string) (card *Card, ok b
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -348,7 +355,7 @@ func (c *client) BarCode(token *SmartToken) (userID int, barCode string, err err
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -417,7 +424,7 @@ func (c *client) profileFields(token *SmartToken) (reader io.ReadCloser, err err
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -454,7 +461,7 @@ func (c *client) profileLoad(token *SmartToken) (reader io.ReadCloser, err error
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -467,6 +474,7 @@ func (c *client) _profileLoad(token *SmartToken) (reader io.ReadCloser, err erro
 		return
 	}
 
+	fmt.Println(token.Token())
 	req.SetBasicAuth(token.Token(), "")
 
 	r, err := c.client.Do(req)
@@ -497,7 +505,7 @@ func (c *client) ProfileSave(token *SmartToken, profile *Profile) (err error) {
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -543,7 +551,7 @@ func (c *client) FieldSave(token *SmartToken, field *Field) (err error) {
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 

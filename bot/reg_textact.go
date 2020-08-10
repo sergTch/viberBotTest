@@ -50,6 +50,7 @@ func SetPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
 	uToken, err := abm.Client.AuthPhone(user.PhoneNumber, m.Text, signa)
+	fmt.Printf("uToken: %v", uToken.Token())
 	if err != nil {
 		fmt.Println(err)
 		msg := v.NewTextMessage("Неправильный пароль, попробуйте другой")

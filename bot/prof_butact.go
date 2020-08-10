@@ -14,6 +14,9 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	check(err)
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
+	// if user == nil {
+	// 	panic("panica: user was nil")
+	// }
 	checkServerError(err, v, u, m, token, t)
 	if err != nil {
 		return
