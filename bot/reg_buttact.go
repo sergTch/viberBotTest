@@ -138,7 +138,10 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	// }
 
 	profile, err := abm.Client.Profile(user.Token)
-	check(err)
+	checkServerError(err, v, u, m, token, t)
+	if err != nil {
+		return
+	}
 
 	fmt.Println("===MAIN===")
 	for key, field := range profile.Main {
