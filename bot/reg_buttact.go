@@ -131,11 +131,11 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	check(err)
 
 	user := UserIDMap[u.ID]
-	check(err)
+	// check(err)
 
-	if user == nil {
-		panic("panica: user was nil")
-	}
+	// if user == nil {
+	// 	panic("panica: user was nil")
+	// }
 
 	profile, err := abm.Client.Profile(user.Token)
 	check(err)
