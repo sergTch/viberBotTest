@@ -14,7 +14,10 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	check(err)
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
-	check(err)
+	checkServerError(err, v, u, m, token, t)
+	if err != nil {
+		return
+	}
 	text := "*Номер: " + user.PhoneNumber + "\n"
 	text += prof.ToString()
 	msg := v.NewTextMessage(text)
@@ -49,7 +52,10 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
-	check(err)
+	checkServerError(err, v, u, m, token, t)
+	if err != nil {
+		return
+	}
 	fields := []*abm.Field{}
 	for _, field := range prof.Fields {
 		if field.Key == "id_region" || field.Key == "id_city" || field.Key == "has_smartphone" {
@@ -79,8 +85,11 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time, fkey string) {
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
+	checkServerError(err, v, u, m, token, t)
+	if err != nil {
+		return
+	}
 	fields := UserFields[u.ID]
-	check(err)
 	field, ok := prof.Main[fkey]
 	if !ok {
 		field = prof.Additional[fkey]

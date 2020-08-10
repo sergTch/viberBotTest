@@ -2,6 +2,7 @@ package bot
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/orsenkucher/nothing/encio"
 	"github.com/orsenkucher/viber"
@@ -25,5 +26,15 @@ func NewBot(cfg encio.Config) *viber.Viber {
 func check(err error) {
 	if err != nil {
 		fmt.Println(err)
+	}
+}
+
+func checkServerError(err error, v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	check(err)
+	if err != nil {
+		_, err = v.SendTextMessage(u.ID, "Извините, что-то пошло не так. Попробуйте ещё раз")
+		check(err)
+		Menu(v, u, m, token, t)
+		return
 	}
 }

@@ -75,8 +75,15 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
-	check(err)
+	checkServerError(err, v, u, m, token, t)
+	if err != nil {
+		return
+	}
 	region, err := abm.Client.GetRegion(fmt.Sprint(prof.Region.Value))
+	checkServerError(err, v, u, m, token, t)
+	if err != nil {
+		return
+	}
 	check(err)
 	fmt.Println(region)
 

@@ -278,6 +278,13 @@ func (f *Field) ToString() string {
 					text += ent.Value
 				}
 			}
+			if len(f.Schema) == 0 {
+				if str == "0" {
+					text += "нет"
+				} else if str == "1" {
+					text += "да"
+				}
+			}
 		} else {
 			text += fmt.Sprint(f.Value)
 		}
