@@ -471,6 +471,7 @@ func (c *client) _profileLoad(token *SmartToken) (reader io.ReadCloser, err erro
 		return
 	}
 
+	fmt.Println(token.Token())
 	req.SetBasicAuth(token.Token(), "")
 
 	r, err := c.client.Do(req)
