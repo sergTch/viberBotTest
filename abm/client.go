@@ -152,6 +152,7 @@ func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken
 
 	if r.StatusCode != 201 {
 		err = errors.New("Not 201 status" + "\nstatus: " + strconv.Itoa(r.StatusCode))
+		panic(err)
 		return
 	}
 
@@ -170,6 +171,8 @@ func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken
 	}
 
 	token = NewSmartToken(c, resp.Data.Token, phone, password, signature)
+	fmt.Printf("token from api: %v", resp.Data.Token)
+	fmt.Printf("token in token: %v", token.Token())
 	return
 }
 
