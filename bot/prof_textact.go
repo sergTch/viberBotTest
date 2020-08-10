@@ -35,7 +35,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			check(err)
 			return
 		}
-		if time.Since(date).Hours() < float64(data.MinAge)*24*365.25 && field[0].Key != "birth_day" {
+		if time.Since(date).Hours() < float64(data.MinAge)*24*365.25 && field[0].Key == "birth_day" {
 			_, err := v.SendTextMessage(u.ID, fmt.Sprintf("Минимальный возраст для регистрации %v лет.", data.MinAge))
 			check(err)
 			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
