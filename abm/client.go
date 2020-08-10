@@ -293,7 +293,7 @@ func (c *client) SetCard(token *SmartToken, cardNumber string) (card *Card, ok b
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -351,7 +351,7 @@ func (c *client) BarCode(token *SmartToken) (userID int, barCode string, err err
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -420,7 +420,7 @@ func (c *client) profileFields(token *SmartToken) (reader io.ReadCloser, err err
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -457,7 +457,7 @@ func (c *client) profileLoad(token *SmartToken) (reader io.ReadCloser, err error
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -500,7 +500,7 @@ func (c *client) ProfileSave(token *SmartToken, profile *Profile) (err error) {
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
@@ -546,7 +546,7 @@ func (c *client) FieldSave(token *SmartToken, field *Field) (err error) {
 	}
 
 	token, err = token.Renew()
-	if err == nil {
+	if err != nil {
 		return
 	}
 
