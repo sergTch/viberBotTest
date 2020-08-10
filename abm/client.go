@@ -152,7 +152,6 @@ func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken
 
 	if r.StatusCode != 201 {
 		err = errors.New("Not 201 status" + "\nstatus: " + strconv.Itoa(r.StatusCode))
-		panic(err)
 		return
 	}
 
