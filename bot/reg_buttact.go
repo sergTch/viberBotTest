@@ -31,7 +31,7 @@ func init() {
 
 //id: str
 func StartMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr", "qwe")
+	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
 	keyboard.InputFieldState = viber.HiddenInputField

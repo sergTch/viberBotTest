@@ -24,7 +24,7 @@ func generatePhoneNumber(number string) string {
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
 
-	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr", "qwe")
+	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
 	keyboard.InputFieldState = viber.HiddenInputField
@@ -37,10 +37,11 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 // myMsgReceivedFunc will be called everytime when user send us a message.
 func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint64, t time.Time) {
 	fmt.Println(u.ID, " response")
-	// if _, ok := UserIDMap[u.ID]; !ok {
-	// 	StartMsg(v, u, *v.NewTextMessage(""), token, t)
-	// 	return
-	// }
+	msg := m.(*viber.TextMessage)
+	if _, ok := UserIDMap[u.ID]; !ok && msg != nil && msg.Text != "#butt/str" && msg.Text != "#butt/agr" {
+		StartMsg(v, u, *v.NewTextMessage(""), token, t)
+		return
+	}
 	switch m := m.(type) {
 	case *viber.TextMessage:
 		txt := m.Text
