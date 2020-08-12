@@ -91,6 +91,7 @@ func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 
 	cities, err := abm.Client.SearchCity(m.Text)
 	if len(cities) > 0 {
+		fmt.Println("red city ", UserFields[u.ID])
 		msg := v.NewTextMessage("Редактируем '" + prof.City.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
