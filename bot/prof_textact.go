@@ -51,15 +51,17 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	err = abm.Client.FieldSave(user.Token, field[0])
 	check(err)
 	if field[0].Key == "id_region" {
+		if len(field) <= 1 {
+			ProfileChange(v, u, m, token, t)
+			return
+		}
 		check(err)
-		msg := v.NewTextMessage("Редактируем '" + field[0].Name + "' Введите несколько первых букв вашего города")
+		msg := v.NewTextMessage("Редактируем '" + field[1].Name + "' Введите несколько первых букв вашего города")
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
 		msg.Keyboard = keyboard
+		UserFields[u.ID] = field[1:]
 		UserTxtAct[u.ID] = []*TextAction{{Act: SearchCity}}
-		if len(field) > 1 && field[1].Key == "id_city" {
-			UserFields[u.ID] = field[:1]
-		}
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
 		return
