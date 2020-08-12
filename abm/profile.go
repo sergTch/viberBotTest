@@ -138,7 +138,7 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 	tee := io.TeeReader(r, buf)
 	fmt.Println("$$$ $$$")
 	bs, _ := ioutil.ReadAll(tee)
-	fmt.Println(string(bs))
+	_ = fmt.Sprint(string(bs))
 	r = ioutil.NopCloser(buf)
 
 	err := json.NewDecoder(r).Decode(&resp)
