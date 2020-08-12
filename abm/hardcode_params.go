@@ -82,8 +82,10 @@ func (p *Profile) fillMainParams() {
 	}
 
 	p.City = p.Main["city"]
+	p.City.FieldType = numberField
 	p.City.Key = "id_city"
 	p.Region = p.Main["region"]
+	p.Region.FieldType = numberField
 	p.Region.Key = "id_region"
 	delete(p.Main, "city")
 	delete(p.Main, "region")
