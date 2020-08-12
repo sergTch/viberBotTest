@@ -44,14 +44,14 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t
 
 //id: agr
 func AgreementMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	linkB := v.NewButton(6, 1, viber.OpenURL, data.AgreementLink, "Условия", "", true)
+	linkB := v.NewButton(6, 1, viber.OpenURL, data.Cfg.AgreementLink, "Условия", "", true)
 	phoneB := v.NewButton(3, 1, viber.SharePhone, "qwe", "Принять", "", true)
 	cancelB := BuildButton(v, 3, 1, "", "Отмена", "str")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*linkB, *phoneB, *cancelB)
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage(fmt.Sprint("Вам уже исполнилось ", data.MinAge, " лет и Вы принимаете Условия программы лояльности?"))
+	msg := v.NewTextMessage(fmt.Sprint("Вам уже исполнилось ", data.Cfg.MinAge, " лет и Вы принимаете Условия программы лояльности?"))
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)

@@ -10,27 +10,22 @@ const (
 	pub = "secure/pub.json"
 )
 
-var (
-	MinAge        int
-	ApiUrl        string
-	AgreementLink string
-	CountryID     string
-)
+var Cfg struct {
+	MinAge         int    `json:"Age"`
+	ApiUrl         string `json:"ApiUrl"`
+	AgreementLink  string `json:"AgreementLink"`
+	CountryID      string `json:"CountryID"`
+	AcceptLanguage string `json:"Accept-Language"`
+}
 
 func Init() {
-	var cfg map[string]interface{}
 	bytes, err := ioutil.ReadFile(pub)
 	if err != nil {
 		panic(fmt.Errorf("Failed to read '%s': %w", pub, err))
 	}
 
-	err = json.Unmarshal(bytes, &cfg)
+	err = json.Unmarshal(bytes, &Cfg)
 	if err != nil {
 		panic(fmt.Errorf("Failed to parse '%s': %w", pub, err))
 	}
-
-	AgreementLink = cfg["AgreementLink"].(string)
-	MinAge = int(cfg["Age"].(float64))
-	ApiUrl = cfg["ApiUrl"].(string)
-	CountryID = cfg["CountryID"].(string)
 }

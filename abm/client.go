@@ -29,7 +29,7 @@ type client struct {
 func New() *client {
 	return &client{
 		client: &http.Client{},
-		apiURL: data.ApiUrl,
+		apiURL: data.Cfg.ApiUrl,
 	}
 }
 
@@ -594,7 +594,7 @@ type Region struct {
 }
 
 func (c *client) Regions() (regs []Region, err error) {
-	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/regions", data.CountryID)), nil)
+	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/regions", data.Cfg.CountryID)), nil)
 	if err != nil {
 		return
 	}
@@ -632,7 +632,7 @@ type City struct {
 }
 
 func (c *client) SearchCity(city string) (cs []City, err error) {
-	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/%s/search-city", data.CountryID, city)), nil)
+	req, err := http.NewRequest("", c.url(fmt.Sprintf("/v2/client/geo/%s/%s/search-city", data.Cfg.CountryID, city)), nil)
 	if err != nil {
 		return
 	}
