@@ -68,11 +68,10 @@ func (c *client) CheckPhone(number string) (ok bool, err error) {
 	return
 }
 
-func (c *client) Register(phone, password, signature string) (smsID int, err error) {
+func (c *client) Register(phone, password string) (smsID int, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
-	values.Set("signature", signature)
 
 	r, err := c.client.PostForm(c.url("/v2.1/client/registration"), values)
 	if err != nil {
@@ -106,16 +105,15 @@ func (c *client) Register(phone, password, signature string) (smsID int, err err
 type SmartToken struct {
 	client *client
 
-	token, phone, password, signature string
+	token, phone, password string
 }
 
-func NewSmartToken(client *client, token, phone, password, signature string) *SmartToken {
+func NewSmartToken(client *client, token, phone, password string) *SmartToken {
 	return &SmartToken{
-		client:    client,
-		token:     token,
-		phone:     phone,
-		password:  password,
-		signature: signature,
+		client:   client,
+		token:    token,
+		phone:    phone,
+		password: password,
 	}
 }
 
@@ -125,8 +123,8 @@ func (s *SmartToken) Token() string {
 
 func (s *SmartToken) Renew() (token *SmartToken, err error) {
 	fmt.Println("*** RENEWING TOKEN ***")
-	fmt.Printf("params: %v, %v, %v\n", s.phone, s.password, s.signature)
-	token, err = s.client.AuthPhone(s.phone, s.password, s.signature)
+	fmt.Printf("params: %v, %v\n", s.phone, s.password)
+	token, err = s.client.AuthPhone(s.phone, s.password)
 	fmt.Printf("New token, err: %v, %v\n", token, err)
 	if err != nil {
 		return
@@ -137,11 +135,10 @@ func (s *SmartToken) Renew() (token *SmartToken, err error) {
 	return
 }
 
-func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken, err error) {
+func (c *client) AuthPhone(phone, password string) (token *SmartToken, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
-	values.Set("signature", signature)
 
 	r, err := c.client.PostForm(c.url("/v2.1/client/auth-phone"), values)
 	if err != nil {
@@ -169,17 +166,16 @@ func (c *client) AuthPhone(phone, password, signature string) (token *SmartToken
 		return
 	}
 
-	token = NewSmartToken(c, resp.Data.Token, phone, password, signature)
+	token = NewSmartToken(c, resp.Data.Token, phone, password)
 	fmt.Printf("token from api: %v", resp.Data.Token)
 	fmt.Printf("token in token: %v", token.Token())
 	return
 }
 
-func (c *client) ChangePassword(phone, password, signature string) (smsID int, err error) {
+func (c *client) ChangePassword(phone, password string) (smsID int, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
-	values.Set("signature", signature)
 
 	r, err := c.client.PostForm(c.url("/v2.1/client/change-password"), values)
 	if err != nil {
