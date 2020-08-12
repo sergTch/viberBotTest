@@ -51,7 +51,6 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	if err != nil {
 		fmt.Println(err)
 	}
-	fmt.Printf("uToken: %v", uToken.Token())
 	if err != nil {
 		fmt.Println(err)
 		msg := v.NewTextMessage("Неправильный пароль, попробуйте другой")
