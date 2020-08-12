@@ -1,7 +1,5 @@
 package abm
 
-import "fmt"
-
 var requiredParams []string
 
 func init() {
@@ -18,7 +16,6 @@ func init() {
 }
 
 func (p *Profile) fillMainParams() {
-	fmt.Println(DataType)
 	DataType = map[int]string{}
 	FieldType = map[int]string{}
 	DataType[1] = "Text"
@@ -28,7 +25,6 @@ func (p *Profile) fillMainParams() {
 	FieldType[0] = "String"
 	FieldType[1] = "Integer"
 	FieldType[2] = "Birthday"
-	fmt.Println(DataType)
 
 	strField := -1
 	numberField := -1
