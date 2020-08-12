@@ -152,17 +152,7 @@ func (p *Profile) readFields(r io.ReadCloser) error {
 		p.schemas[f.Key] = f.Schema
 	}
 
-	DataType = map[int]string{}
-	FieldType = map[int]string{}
 	Required = map[int]string{}
-	for _, v := range resp.Data.DataType {
-		id, _ := strconv.Atoi(v.ID)
-		DataType[id] = v.Value
-	}
-	for _, v := range resp.Data.FieldType {
-		id, _ := strconv.Atoi(v.ID)
-		FieldType[id] = v.Value
-	}
 	for _, v := range resp.Data.Required {
 		id, _ := strconv.Atoi(v.ID)
 		Required[id] = v.Value

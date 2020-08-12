@@ -13,11 +13,6 @@ func init() {
 		"birth_day",
 		"region",
 		"city"}
-}
-
-func (p *Profile) fillMainParams() {
-	DataType = map[int]string{}
-	FieldType = map[int]string{}
 	DataType[1] = "Text"
 	DataType[2] = "Dropdown list"
 	DataType[3] = "Date"
@@ -25,7 +20,9 @@ func (p *Profile) fillMainParams() {
 	FieldType[0] = "String"
 	FieldType[1] = "Integer"
 	FieldType[2] = "Birthday"
+}
 
+func (p *Profile) fillMainParams() {
 	strField := -1
 	numberField := -1
 	dayField := -1
