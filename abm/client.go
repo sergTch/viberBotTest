@@ -37,11 +37,35 @@ func (c *client) url(endpoint string) string {
 	return c.apiURL + endpoint
 }
 
+func (c *client) PostForm(url string, vals url.Values) (resp *http.Response, err error) {
+	req, err := http.NewRequest(
+		"POST",
+		url,
+		strings.NewReader(vals.Encode()),
+	)
+
+	if err != nil {
+		return
+	}
+
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	return c.Do(req)
+}
+
+func (c *client) Do(req *http.Request) (*http.Response, error) {
+	setAcceptLanguage(req)
+	return c.client.Do(req)
+}
+
+func setAcceptLanguage(req *http.Request) {
+	req.Header.Add("Accept-Language", data.Cfg.AcceptLanguage)
+}
+
 func (c *client) CheckPhone(number string) (ok bool, err error) {
 	values := url.Values{}
 	values.Set("phone", number)
 
-	r, err := c.client.PostForm(c.url("/v2/client/check-phone"), values)
+	r, err := c.PostForm(c.url("/v2/client/check-phone"), values)
 	if err != nil {
 		return
 	}
@@ -73,7 +97,7 @@ func (c *client) Register(phone, password string) (smsID int, err error) {
 	values.Set("phone", phone)
 	values.Set("password", password)
 
-	r, err := c.client.PostForm(c.url("/v2.1/client/registration"), values)
+	r, err := c.PostForm(c.url("/v2.1/client/registration"), values)
 	if err != nil {
 		return
 	}
@@ -140,7 +164,7 @@ func (c *client) AuthPhone(phone, password string) (token *SmartToken, err error
 	values.Set("phone", phone)
 	values.Set("password", password)
 
-	r, err := c.client.PostForm(c.url("/v2.1/client/auth-phone"), values)
+	r, err := c.PostForm(c.url("/v2.1/client/auth-phone"), values)
 	if err != nil {
 		return
 	}
@@ -177,7 +201,7 @@ func (c *client) ChangePassword(phone, password string) (smsID int, err error) {
 	values.Set("phone", phone)
 	values.Set("password", password)
 
-	r, err := c.client.PostForm(c.url("/v2.1/client/change-password"), values)
+	r, err := c.PostForm(c.url("/v2.1/client/change-password"), values)
 	if err != nil {
 		return
 	}
@@ -214,7 +238,7 @@ func (c *client) Confirm(code string, smsID int, confirmType string) (token stri
 	values.Set("code", code)
 	values.Set("sms_id", strconv.Itoa(smsID))
 
-	r, err := c.client.PostForm(c.url("/v2.1/client/"+confirmType), values)
+	r, err := c.PostForm(c.url("/v2.1/client/"+confirmType), values)
 	if err != nil {
 		return
 	}
@@ -318,7 +342,7 @@ func (c *client) setCard(token *SmartToken, cardNumber string) (card *Card, ok b
 
 	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -368,7 +392,7 @@ func (c *client) barCode(token *SmartToken) (userID int, barCode string, err err
 	}
 
 	req.SetBasicAuth(token.Token(), "")
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -403,7 +427,7 @@ func (c *client) profileParams() (reader io.ReadCloser, err error) {
 		return
 	}
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -438,7 +462,7 @@ func (c *client) _profileFields(token *SmartToken) (reader io.ReadCloser, err er
 
 	req.SetBasicAuth(token.Token(), "")
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -476,7 +500,7 @@ func (c *client) _profileLoad(token *SmartToken) (reader io.ReadCloser, err erro
 	fmt.Println(token.Token())
 	req.SetBasicAuth(token.Token(), "")
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -530,7 +554,7 @@ func (c *client) profileSave(token *SmartToken, profile *Profile) error {
 
 	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return err
 	}
@@ -573,7 +597,7 @@ func (c *client) fieldSave(token *SmartToken, field *Field) error {
 
 	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return err
 	}
@@ -599,7 +623,7 @@ func (c *client) Regions() (regs []Region, err error) {
 		return
 	}
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -637,7 +661,7 @@ func (c *client) SearchCity(city string) (cs []City, err error) {
 		return
 	}
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -669,7 +693,7 @@ func (c *client) GetRegion(regID string) (reg Region, err error) {
 		return
 	}
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
@@ -701,7 +725,7 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 		return
 	}
 
-	r, err := c.client.Do(req)
+	r, err := c.Do(req)
 	if err != nil {
 		return
 	}
