@@ -105,17 +105,19 @@ func SMSConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 		UserTxtAct[u.ID] = []*TextAction{{Act: SetPassword}}
 		return
 	}
-	regToken, ok, err := abm.Client.Confirm(m.Text, sms.ID, sms.ConfirmType)
+	regToken, resp, err := abm.Client.Confirm(m.Text, sms.ID, sms.ConfirmType)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	if ok {
+	if resp.Ok {
 		user.Token = abm.NewSmartToken(abm.Client, regToken, user.PhoneNumber, user.Password)
 		act := NextAction[user.ViberUser.ID]
 		act.Act(v, u, m, token, t)
 	} else {
-		fmt.Println("")
+		fmt.Println(resp.Err)
+		_, err := v.SendTextMessage(u.ID, resp.Err)
+		check(err)
 	}
 }
 

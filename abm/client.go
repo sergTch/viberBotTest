@@ -206,7 +206,10 @@ func (c *client) ChangePassword(phone, password string) (smsID int, err error) {
 	return
 }
 
-func (c *client) Confirm(code string, smsID int, confirmType string) (token string, ok bool, err error) {
+func (c *client) Confirm(code string, smsID int, confirmType string) (token string, resp struct {
+	Ok  bool
+	Err string
+}, err error) {
 	values := url.Values{}
 	values.Set("code", code)
 	values.Set("sms_id", strconv.Itoa(smsID))
@@ -223,21 +226,22 @@ func (c *client) Confirm(code string, smsID int, confirmType string) (token stri
 		return
 	}
 
-	var resp struct {
+	var _resp struct {
 		Data struct {
-			Token string `json:"token"`
+			Token   string `json:"token"`
+			Message string `json:"message"`
 		} `json:"data"`
 		Success bool `json:"success"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&resp)
+	err = json.NewDecoder(r.Body).Decode(&_resp)
 	if err != nil {
 		return
 	}
 
-	//ok = resp.Success
-	ok = true
-	token = resp.Data.Token
+	resp.Ok = _resp.Success
+	resp.Err = _resp.Data.Message
+	token = _resp.Data.Token
 	return
 }
 
