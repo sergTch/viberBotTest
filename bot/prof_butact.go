@@ -86,6 +86,9 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 }
 
 func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time, fkey string) {
+	fmt.Println("Change field: ", fkey)
+	fmt.Println(abm.DataType)
+	fmt.Println(abm.FieldType)
 	user := UserIDMap[u.ID]
 	prof, err := abm.Client.Profile(user.Token)
 	checkServerError(err, v, u, m, token, t)
