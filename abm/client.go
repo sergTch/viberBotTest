@@ -313,8 +313,11 @@ const (
 	SlaveCard
 )
 
-func (c *client) SetCard(token *SmartToken, cardNumber string) (card *Card, ok bool, err error) {
-	card, ok, err = c.setCard(token, cardNumber)
+func (c *client) SetCard(token *SmartToken, cardNumber string) (card *Card, resp struct {
+	Ok  bool
+	Err string
+}, err error) {
+	card, resp, err = c.setCard(token, cardNumber)
 	if err == nil {
 		return
 	}
@@ -327,7 +330,10 @@ func (c *client) SetCard(token *SmartToken, cardNumber string) (card *Card, ok b
 	return c.setCard(token, cardNumber)
 }
 
-func (c *client) setCard(token *SmartToken, cardNumber string) (card *Card, ok bool, err error) {
+func (c *client) setCard(token *SmartToken, cardNumber string) (card *Card, resp struct {
+	Ok  bool
+	Err string
+}, err error) {
 	values := url.Values{}
 	values.Set("number", cardNumber)
 
@@ -354,20 +360,22 @@ func (c *client) setCard(token *SmartToken, cardNumber string) (card *Card, ok b
 		return
 	}
 
-	var resp struct {
+	var _resp struct {
 		Data struct {
-			Card *Card `json:"card"`
+			Card    *Card  `json:"card"`
+			Message string `json:"message"`
 		} `json:"data"`
 		Success bool `json:"success"`
 	}
 
-	err = json.NewDecoder(r.Body).Decode(&resp)
+	err = json.NewDecoder(r.Body).Decode(&_resp)
 	if err != nil {
 		return
 	}
 
-	ok = resp.Success
-	card = resp.Data.Card
+	resp.Ok = _resp.Success
+	resp.Err = _resp.Data.Message
+	card = _resp.Data.Card
 	return
 }
 

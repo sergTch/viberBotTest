@@ -123,9 +123,9 @@ func SMSConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 
 func SetCard(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
-	_, ok, err := abm.Client.SetCard(user.Token, m.Text)
+	_, resp, err := abm.Client.SetCard(user.Token, m.Text)
 	check(err)
-	if ok {
+	if resp.Ok {
 		_, barcode, err := abm.Client.BarCode(user.Token)
 		check(err)
 		msg := v.NewPictureMessage("bar-code", barcode, "")
@@ -134,7 +134,7 @@ func SetCard(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t 
 		check(err)
 		FillInfQuestion(v, u, m, token, t)
 	} else {
-		_, err := v.SendTextMessage(u.ID, "That card is invalid, sorry, you can answer no for following question to get newone")
+		_, err := v.SendTextMessage(u.ID, resp.Err)
 		check(err)
 		CardExistQuestion(v, u, m, token, t)
 	}
