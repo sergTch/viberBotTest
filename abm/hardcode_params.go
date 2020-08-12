@@ -13,6 +13,8 @@ func init() {
 		"birth_day",
 		"region",
 		"city"}
+	DataType = map[int]string{}
+	FieldType = map[int]string{}
 	DataType[1] = "Text"
 	DataType[2] = "Dropdown list"
 	DataType[3] = "Date"
