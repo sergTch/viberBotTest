@@ -523,7 +523,7 @@ func (c *client) _profileLoad(token *SmartToken) (reader io.ReadCloser, err erro
 	buf := &bytes.Buffer{}
 	tee := io.TeeReader(r.Body, buf)
 	bytes, _ := ioutil.ReadAll(tee)
-	fmt.Println(string(bytes))
+	_ = fmt.Sprint(string(bytes))
 	r.Body = ioutil.NopCloser(buf)
 
 	return r.Body, nil
