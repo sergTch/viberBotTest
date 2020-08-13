@@ -795,13 +795,9 @@ func (c *client) clientHistory(token *SmartToken) error {
 		return err
 	}
 
-	if r.StatusCode != 200 {
-		err = errors.New("Not 200 status")
-		return err
-	}
-
 	var resp struct {
-		Data struct {
+		Success bool `json:"success"`
+		Data    struct {
 			DateFrom string `json:"dateFrom"`
 			DateTo   string `json:"dateTo"`
 			Meta     struct {
@@ -816,7 +812,7 @@ func (c *client) clientHistory(token *SmartToken) error {
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
-	if err != nil {
+	if err != nil || !resp.Success {
 		return fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
 	}
 
