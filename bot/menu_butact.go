@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/orsenkucher/viber"
+	"github.com/sergTch/viberBotTest/abm"
 )
 
 func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
@@ -20,5 +21,8 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 }
 
 func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-
+	if user, ok := UserIDMap[u.ID]; ok {
+		err := abm.Client.ClientHistory(user.Token)
+		check(err)
+	}
 }
