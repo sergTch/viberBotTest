@@ -16,19 +16,6 @@ type ButtAction struct {
 	ID  string
 }
 
-func init() {
-	ButtActions = map[string]*ButtAction{}
-	ButtActions["agr"] = &ButtAction{Act: AgreementMsg, ID: "agr"}
-	ButtActions["str"] = &ButtAction{Act: StartMsg, ID: "str"}
-	ButtActions["ceq"] = &ButtAction{Act: CardExistQuestion, ID: "ceq"}
-	ButtActions["ccr"] = &ButtAction{Act: CardCreate, ID: "ccr"}
-	ButtActions["cin"] = &ButtAction{Act: CardInput, ID: "cin"}
-	ButtActions["mnu"] = &ButtAction{Act: Menu, ID: "mnu"}
-	ButtActions["chp"] = &ButtAction{Act: ChangePassword, ID: "chp"}
-	ButtActions["prf"] = &ButtAction{Act: ProfileChange, ID: "prf"}
-	ButtActions["frq"] = &ButtAction{Act: FillRequired, ID: "frq"}
-}
-
 //id: str
 func StartMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr")
@@ -117,39 +104,4 @@ func ChangePassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 	_, err := v.SendMessage(u.ID, msg)
 	UserTxtAct[u.ID] = []*TextAction{{Act: ReadNewPassword}}
 	check(err)
-}
-
-func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to start", "str"))
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to profile", "prf"))
-	keyboard.InputFieldState = viber.HiddenInputField
-	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage("Вы попали в меню...")
-	msg.SetKeyboard(keyboard)
-	_, err := v.SendMessage(u.ID, msg)
-	check(err)
-
-	// user := UserIDMap[u.ID]
-	// check(err)
-
-	// if user == nil {
-	// 	panic("panica: user was nil")
-	// }
-
-	// profile, err := abm.Client.Profile(user.Token)
-	// checkServerError(err, v, u, m, token, t)
-	// if err != nil {
-	// 	return
-	// }
-
-	// fmt.Println("===MAIN===")
-	// for key, field := range profile.Main {
-	// 	fmt.Println(key, field)
-	// }
-
-	// fmt.Println("===Additional===")
-	// for key, field := range profile.Additional {
-	// 	fmt.Println(key, field)
-	// }
 }
