@@ -811,12 +811,13 @@ func (c *client) clientHistory(token *SmartToken) error {
 				PerPage     int `json:"perPage"`
 			} `json:"_meta"`
 			Items []interface{} `json:"items"`
+			Error string        `json:"message"`
 		} `json:"data"`
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil {
-		return err
+		return fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
 	}
 
 	fmt.Printf("%+v\n", resp)
