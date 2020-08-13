@@ -245,11 +245,6 @@ func (c *client) Confirm(code string, smsID int, confirmType string) (token stri
 
 	defer r.Body.Close()
 
-	if r.StatusCode != 201 {
-		err = errors.New("Not 201 status")
-		return
-	}
-
 	var _resp struct {
 		Data struct {
 			Token   string `json:"token"`
@@ -354,11 +349,6 @@ func (c *client) setCard(token *SmartToken, cardNumber string) (card *Card, resp
 	}
 
 	defer r.Body.Close()
-
-	if r.StatusCode != 200 {
-		err = errors.New("Not 200 status")
-		return
-	}
 
 	var _resp struct {
 		Data struct {
@@ -796,8 +786,7 @@ func (c *client) clientHistory(token *SmartToken) error {
 	}
 
 	var resp struct {
-		Success bool `json:"success"`
-		Data    struct {
+		Data struct {
 			DateFrom string `json:"dateFrom"`
 			DateTo   string `json:"dateTo"`
 			Meta     struct {
@@ -809,6 +798,7 @@ func (c *client) clientHistory(token *SmartToken) error {
 			Items []interface{} `json:"items"`
 			Error string        `json:"message"`
 		} `json:"data"`
+		Success bool `json:"success"`
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
