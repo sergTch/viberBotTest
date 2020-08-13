@@ -758,3 +758,68 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 
 	return resp.Data.Target, nil
 }
+
+func (c *client) ClientHistory(token *SmartToken) (err error) {
+	err = c.clientHistory(token)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.clientHistory(token)
+}
+
+// page=1&dateFrom=2020-02-17&dateTo=2020-02-24
+func (c *client) clientHistory(token *SmartToken) error {
+	values := url.Values{}
+	values.Set("page", "1")
+
+	req, err := http.NewRequest(
+		"PUT",
+		c.url("/v2/client/client-history"),
+		strings.NewReader(values.Encode()),
+	)
+
+	if err != nil {
+		return err
+	}
+
+	req.SetBasicAuth(token.Token(), "")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r, err := c.Do(req)
+	if err != nil {
+		return err
+	}
+
+	if r.StatusCode != 200 {
+		err = errors.New("Not 200 status")
+		return err
+	}
+
+	var resp struct {
+		Data struct {
+			DateFrom string `json:"dateFrom"`
+			DateTo   string `json:"dateTo"`
+			Meta     struct {
+				TotalCount  int `json:"totalCount"`
+				PageCount   int `json:"pageCount"`
+				CurrentPage int `json:"currentPage"`
+				PerPage     int `json:"perPage"`
+			} `json:"_meta"`
+			Items []interface{} `json:"items"`
+		} `json:"data"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("%+v\n", resp)
+
+	return nil
+}
