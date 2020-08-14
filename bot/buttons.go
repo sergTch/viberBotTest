@@ -24,4 +24,5 @@ func init() {
 	ButtActions["prf"] = &ButtAction{Act: ProfileChange, ID: "prf"}
 	ButtActions["frq"] = &ButtAction{Act: FillRequired, ID: "frq"}
 	ButtActions["lop"] = &ButtAction{Act: LastOperations, ID: "lop"}
+	ButtActions["sbq"] = &ButtAction{Act: ShowBarcode, ID: "sbq"}
 }
