@@ -811,3 +811,56 @@ func (c *client) clientHistory(token *SmartToken, page int) (history ClientHisto
 	history = resp.Data
 	return
 }
+
+type Balance struct {
+	Currency  string `json:"currency"`
+	Account   int    `json:"account"`
+	Balance   string `json:"balance"`
+	Avialable string `json:"avialable"`
+	Error     string `json:"message"`
+}
+
+func (c *client) Balance(token *SmartToken, currency string) (bal Balance, err error) {
+	bal, err = c.balance(token, currency)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.balance(token, currency)
+}
+
+func (c *client) balance(token *SmartToken, currency string) (bal Balance, err error) {
+	req, err := http.NewRequest(
+		"",
+		c.url(fmt.Sprintf("/v2/client/account/%s/balance", currency)),
+		nil,
+	)
+
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token.Token(), "")
+	r, err := c.Do(req)
+	if err != nil {
+		return
+	}
+
+	var resp struct {
+		Data    Balance `json:"data"`
+		Success bool    `json:"success"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil || !resp.Success {
+		return bal, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+	}
+
+	bal = resp.Data
+	return
+}
