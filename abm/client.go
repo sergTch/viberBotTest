@@ -766,10 +766,10 @@ func (c *client) ClientHistory(token *SmartToken) (err error) {
 // page=1&dateFrom=2020-02-17&dateTo=2020-02-24
 func (c *client) clientHistory(token *SmartToken) error {
 	values := url.Values{}
-	// values.Set("page", "1")
+	values.Set("page", "1")
 
 	req, err := http.NewRequest(
-		"PUT",
+		"",
 		c.url("/v2/client/client-history"),
 		strings.NewReader(values.Encode()),
 	)
