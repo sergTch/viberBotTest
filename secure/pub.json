@@ -4,5 +4,6 @@
   "Accept-Language": "ru",
   "Bot-Language": "ru",
   "Age": 18,
-  "CountryID": "1"
+  "CountryID": "1",
+  "Currency": "BON"
 }

@@ -16,6 +16,7 @@ var Cfg struct {
 	AgreementLink  string `json:"AgreementLink"`
 	CountryID      string `json:"CountryID"`
 	AcceptLanguage string `json:"Accept-Language"`
+	Currency       string `json:"Currency"`
 }
 
 func Init() {

@@ -820,7 +820,9 @@ type Balance struct {
 	Error     string `json:"message"`
 }
 
-func (c *client) Balance(token *SmartToken, currency string) (bal Balance, err error) {
+func (c *client) Balance(token *SmartToken) (bal Balance, err error) {
+	currency := data.Cfg.Currency
+
 	bal, err = c.balance(token, currency)
 	if err == nil {
 		return
