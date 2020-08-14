@@ -750,11 +750,36 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 	return resp.Data.Target, nil
 }
 
+type HistoryItem struct {
+	Type string
+	Data []byte
+}
+
+func (i *HistoryItem) UnmarshalJSON(data []byte) error {
+	var v struct {
+		Type string      `json:"type"`
+		Data interface{} `json:"data"`
+	}
+
+	if err := json.Unmarshal(data, &v); err != nil {
+		return err
+	}
+
+	bytes, err := json.Marshal(&v)
+	if err != nil {
+		return err
+	}
+
+	i.Data = bytes
+	i.Type = v.Type
+	return nil
+}
+
 type ClientHistory struct {
 	DateFrom string        `json:"dateFrom"`
 	DateTo   string        `json:"dateTo"`
 	Meta     PageMeta      `json:"_meta"`
-	Items    []interface{} `json:"items"`
+	Items    []HistoryItem `json:"items"`
 	Error    string        `json:"message"`
 }
 
