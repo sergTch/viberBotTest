@@ -749,8 +749,21 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 	return resp.Data.Target, nil
 }
 
-func (c *client) ClientHistory(token *SmartToken) (err error) {
-	err = c.clientHistory(token)
+type ClientHistory struct {
+	DateFrom string `json:"dateFrom"`
+	DateTo   string `json:"dateTo"`
+	Meta     struct {
+		TotalCount  int `json:"totalCount"`
+		PageCount   int `json:"pageCount"`
+		CurrentPage int `json:"currentPage"`
+		PerPage     int `json:"perPage"`
+	} `json:"_meta"`
+	Items []interface{} `json:"items"`
+	Error string        `json:"message"`
+}
+
+func (c *client) ClientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
+	history, err = c.clientHistory(token, page)
 	if err == nil {
 		return
 	}
@@ -760,13 +773,13 @@ func (c *client) ClientHistory(token *SmartToken) (err error) {
 		return
 	}
 
-	return c.clientHistory(token)
+	return c.clientHistory(token, page)
 }
 
 // page=1&dateFrom=2020-02-17&dateTo=2020-02-24
-func (c *client) clientHistory(token *SmartToken) error {
+func (c *client) clientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
 	values := url.Values{}
-	values.Set("page", "1")
+	values.Set("page", fmt.Sprintf("%v", page))
 
 	req, err := http.NewRequest(
 		"",
@@ -775,38 +788,26 @@ func (c *client) clientHistory(token *SmartToken) error {
 	)
 
 	if err != nil {
-		return err
+		return
 	}
 
 	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.Do(req)
 	if err != nil {
-		return err
+		return
 	}
 
 	var resp struct {
-		Data struct {
-			DateFrom string `json:"dateFrom"`
-			DateTo   string `json:"dateTo"`
-			Meta     struct {
-				TotalCount  int `json:"totalCount"`
-				PageCount   int `json:"pageCount"`
-				CurrentPage int `json:"currentPage"`
-				PerPage     int `json:"perPage"`
-			} `json:"_meta"`
-			Items []interface{} `json:"items"`
-			Error string        `json:"message"`
-		} `json:"data"`
-		Success bool `json:"success"`
+		Data    ClientHistory `json:"data"`
+		Success bool          `json:"success"`
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil || !resp.Success {
-		return fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+		return history, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
 	}
 
-	fmt.Printf("%+v\n", resp)
-
-	return nil
+	history = resp.Data
+	return
 }
