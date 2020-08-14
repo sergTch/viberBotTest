@@ -765,7 +765,7 @@ func (i *HistoryItem) UnmarshalJSON(data []byte) error {
 		return err
 	}
 
-	bytes, err := json.Marshal(&v)
+	bytes, err := json.Marshal(&v.Data)
 	if err != nil {
 		return err
 	}
