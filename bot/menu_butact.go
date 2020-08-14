@@ -1,6 +1,7 @@
 package bot
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -23,6 +24,7 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 
 func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	if user, ok := UserIDMap[u.ID]; ok {
+		fmt.Println(user.Token.Token())
 		err := abm.Client.ClientHistory(user.Token)
 		check(err)
 	}
