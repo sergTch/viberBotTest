@@ -11,6 +11,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/sergTch/viberBotTest/data"
 )
@@ -775,6 +776,9 @@ func (c *client) ClientHistory(token *SmartToken, page int) (history ClientHisto
 func (c *client) clientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
 	values := url.Values{}
 	values.Set("page", fmt.Sprintf("%v", page))
+	values.Set("dateFrom", "2015-01-01")
+	year, mon, day := time.Now().Date()
+	values.Set("dateTo", fmt.Sprintf("%v-%v-%v", year, mon, day))
 
 	req, err := http.NewRequest(
 		"",
