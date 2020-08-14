@@ -27,6 +27,14 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		fmt.Println(user.Token.Token())
 		history, err := abm.Client.ClientHistory(user.Token, 1)
 		check(err)
+		msg := v.NewRichMediaMessage(2, 2, "")
+		msg.AddButton(v.NewButton(6, 6, viber.None, "", "first", "", true))
+		msg.AddButton(v.NewButton(6, 3, viber.None, "", "1-3", "", true))
+		msg.AddButton(v.NewButton(6, 2, viber.None, "", "4-5", "", true))
+		msg.AddButton(v.NewButton(6, 1, viber.None, "", "6", "", true))
+		_, err = v.SendMessage(u.ID, msg)
+		check(err)
+		Menu(v, u, m, token, t)
 		fmt.Printf("%+v\n", history)
 	}
 }
