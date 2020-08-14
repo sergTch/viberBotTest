@@ -750,16 +750,11 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 }
 
 type ClientHistory struct {
-	DateFrom string `json:"dateFrom"`
-	DateTo   string `json:"dateTo"`
-	Meta     struct {
-		TotalCount  int `json:"totalCount"`
-		PageCount   int `json:"pageCount"`
-		CurrentPage int `json:"currentPage"`
-		PerPage     int `json:"perPage"`
-	} `json:"_meta"`
-	Items []interface{} `json:"items"`
-	Error string        `json:"message"`
+	DateFrom string        `json:"dateFrom"`
+	DateTo   string        `json:"dateTo"`
+	Meta     PageMeta      `json:"_meta"`
+	Items    []interface{} `json:"items"`
+	Error    string        `json:"message"`
 }
 
 func (c *client) ClientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
@@ -864,5 +859,73 @@ func (c *client) balance(token *SmartToken, currency string) (bal Balance, err e
 	}
 
 	bal = resp.Data
+	return
+}
+
+type PageMeta struct {
+	TotalCount  int `json:"totalCount"`
+	PageCount   int `json:"pageCount"`
+	CurrentPage int `json:"currentPage"`
+	PerPage     int `json:"perPage"`
+}
+
+type Actions struct {
+	Title   string `json:"title"`
+	Image   string `json:"img_path"`
+	From    string `json:"act_from"`
+	To      string `json:"act_to"`
+	Content string `json:"content"`
+}
+
+func (c *client) Actions(token *SmartToken, page int) (actions []Actions, meta PageMeta, err error) {
+	actions, meta, err = c.actions(token, page)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.actions(token, page)
+}
+
+func (c *client) actions(token *SmartToken, page int) (actions []Actions, meta PageMeta, err error) {
+	values := url.Values{}
+	values.Set("page", fmt.Sprintf("%v", page))
+
+	req, err := http.NewRequest(
+		"",
+		c.url("/v2/client/partner/actions"),
+		strings.NewReader(values.Encode()),
+	)
+
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token.Token(), "")
+	r, err := c.Do(req)
+	if err != nil {
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Items []Actions `json:"items"`
+			Meta  PageMeta  `json:"_meta"`
+			Error string    `json:"message"`
+		} `json:"data"`
+		Success bool `json:"success"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil || !resp.Success {
+		return actions, meta, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+	}
+
+	meta = resp.Data.Meta
+	actions = resp.Data.Items
 	return
 }
