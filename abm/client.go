@@ -749,8 +749,16 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 	return resp.Data.Target, nil
 }
 
-func (c *client) ClientHistory(token *SmartToken) (err error) {
-	err = c.clientHistory(token)
+type ClientHistory struct {
+	DateFrom string        `json:"dateFrom"`
+	DateTo   string        `json:"dateTo"`
+	Meta     PageMeta      `json:"_meta"`
+	Items    []interface{} `json:"items"`
+	Error    string        `json:"message"`
+}
+
+func (c *client) ClientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
+	history, err = c.clientHistory(token, page)
 	if err == nil {
 		return
 	}
@@ -760,53 +768,164 @@ func (c *client) ClientHistory(token *SmartToken) (err error) {
 		return
 	}
 
-	return c.clientHistory(token)
+	return c.clientHistory(token, page)
 }
 
 // page=1&dateFrom=2020-02-17&dateTo=2020-02-24
-func (c *client) clientHistory(token *SmartToken) error {
+func (c *client) clientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
 	values := url.Values{}
-	// values.Set("page", "1")
+	values.Set("page", fmt.Sprintf("%v", page))
 
 	req, err := http.NewRequest(
-		"PUT",
+		"",
 		c.url("/v2/client/client-history"),
 		strings.NewReader(values.Encode()),
 	)
 
 	if err != nil {
-		return err
+		return
 	}
 
 	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.Do(req)
 	if err != nil {
-		return err
+		return
+	}
+
+	var resp struct {
+		Data    ClientHistory `json:"data"`
+		Success bool          `json:"success"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil || !resp.Success {
+		return history, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+	}
+
+	history = resp.Data
+	return
+}
+
+type Balance struct {
+	Currency  string `json:"currency"`
+	Account   int    `json:"account"`
+	Balance   string `json:"balance"`
+	Avialable string `json:"avialable"`
+	Error     string `json:"message"`
+}
+
+func (c *client) Balance(token *SmartToken) (bal Balance, err error) {
+	currency := data.Cfg.Currency
+
+	bal, err = c.balance(token, currency)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.balance(token, currency)
+}
+
+func (c *client) balance(token *SmartToken, currency string) (bal Balance, err error) {
+	req, err := http.NewRequest(
+		"",
+		c.url(fmt.Sprintf("/v2/client/account/%s/balance", currency)),
+		nil,
+	)
+
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token.Token(), "")
+	r, err := c.Do(req)
+	if err != nil {
+		return
+	}
+
+	var resp struct {
+		Data    Balance `json:"data"`
+		Success bool    `json:"success"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil || !resp.Success {
+		return bal, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+	}
+
+	bal = resp.Data
+	return
+}
+
+type PageMeta struct {
+	TotalCount  int `json:"totalCount"`
+	PageCount   int `json:"pageCount"`
+	CurrentPage int `json:"currentPage"`
+	PerPage     int `json:"perPage"`
+}
+
+type Actions struct {
+	Title   string `json:"title"`
+	Image   string `json:"img_path"`
+	From    string `json:"act_from"`
+	To      string `json:"act_to"`
+	Content string `json:"content"`
+}
+
+func (c *client) Actions(token *SmartToken, page int) (actions []Actions, meta PageMeta, err error) {
+	actions, meta, err = c.actions(token, page)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.actions(token, page)
+}
+
+func (c *client) actions(token *SmartToken, page int) (actions []Actions, meta PageMeta, err error) {
+	values := url.Values{}
+	values.Set("page", fmt.Sprintf("%v", page))
+
+	req, err := http.NewRequest(
+		"",
+		c.url("/v2/client/partner/actions"),
+		strings.NewReader(values.Encode()),
+	)
+
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token.Token(), "")
+	r, err := c.Do(req)
+	if err != nil {
+		return
 	}
 
 	var resp struct {
 		Data struct {
-			DateFrom string `json:"dateFrom"`
-			DateTo   string `json:"dateTo"`
-			Meta     struct {
-				TotalCount  int `json:"totalCount"`
-				PageCount   int `json:"pageCount"`
-				CurrentPage int `json:"currentPage"`
-				PerPage     int `json:"perPage"`
-			} `json:"_meta"`
-			Items []interface{} `json:"items"`
-			Error string        `json:"message"`
+			Items []Actions `json:"items"`
+			Meta  PageMeta  `json:"_meta"`
+			Error string    `json:"message"`
 		} `json:"data"`
 		Success bool `json:"success"`
 	}
 
 	err = json.NewDecoder(r.Body).Decode(&resp)
 	if err != nil || !resp.Success {
-		return fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+		return actions, meta, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
 	}
 
-	fmt.Printf("%+v\n", resp)
-
-	return nil
+	meta = resp.Data.Meta
+	actions = resp.Data.Items
+	return
 }

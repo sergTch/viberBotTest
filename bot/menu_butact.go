@@ -25,7 +25,7 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	if user, ok := UserIDMap[u.ID]; ok {
 		fmt.Println(user.Token.Token())
-		err := abm.Client.ClientHistory(user.Token)
+		history, err := abm.Client.ClientHistory(user.Token, 1)
 		check(err)
 		msg := v.NewRichMediaMessage(2, 2, "")
 		msg.AddButton(v.NewButton(6, 6, viber.None, "", "first", "", true))
@@ -35,6 +35,7 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		_, err = v.SendMessage(u.ID, msg)
 		check(err)
 		Menu(v, u, m, token, t)
+		fmt.Printf("%+v\n", history)
 	}
 }
 
