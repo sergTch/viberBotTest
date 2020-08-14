@@ -910,6 +910,7 @@ func (c *client) actions(token *SmartToken, page int) (actions []Actions, meta P
 	}
 
 	req.SetBasicAuth(token.Token(), "")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.Do(req)
 	if err != nil {
 		return
