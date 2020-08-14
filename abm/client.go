@@ -934,3 +934,64 @@ func (c *client) actions(token *SmartToken, page int) (actions []Actions, meta P
 	actions = resp.Data.Items
 	return
 }
+
+type News struct {
+	Name  string `json:"name"`
+	Descr string `json:"description"`
+	Short string `json:"description_short"`
+	Image string `json:"image_path"`
+}
+
+func (c *client) News(token *SmartToken, page int) (news []News, meta PageMeta, err error) {
+	news, meta, err = c.news(token, page)
+	if err == nil {
+		return
+	}
+
+	token, err = token.Renew()
+	if err != nil {
+		return
+	}
+
+	return c.news(token, page)
+}
+
+func (c *client) news(token *SmartToken, page int) (news []News, meta PageMeta, err error) {
+	values := url.Values{}
+	values.Set("page", fmt.Sprintf("%v", page))
+
+	req, err := http.NewRequest(
+		"",
+		c.url("/v2/client/partner/news-all"),
+		strings.NewReader(values.Encode()),
+	)
+
+	if err != nil {
+		return
+	}
+
+	req.SetBasicAuth(token.Token(), "")
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	r, err := c.Do(req)
+	if err != nil {
+		return
+	}
+
+	var resp struct {
+		Data struct {
+			Items []News   `json:"items"`
+			Meta  PageMeta `json:"_meta"`
+			Error string   `json:"message"`
+		} `json:"data"`
+		Success bool `json:"success"`
+	}
+
+	err = json.NewDecoder(r.Body).Decode(&resp)
+	if err != nil || !resp.Success {
+		return news, meta, fmt.Errorf("%s\n%w\n", resp.Data.Error, err)
+	}
+
+	meta = resp.Data.Meta
+	news = resp.Data.Items
+	return
+}
