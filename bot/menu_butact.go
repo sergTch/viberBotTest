@@ -43,13 +43,13 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 			}
 			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "<-", "hist", strconv.Itoa(n-5)))
 		} else {
-			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "", "", false))
+			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
 		}
 		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
 		if history.Meta.CurrentPage < history.Meta.PageCount || n+5 < history.Meta.TotalCount {
 			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "hist", strconv.Itoa(n+5)))
 		} else {
-			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "", "", false))
+			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
 		}
 		msg.SetKeyboard(keyboard)
 		_, err = v.SendMessage(user.ViberUser.ID, msg)
