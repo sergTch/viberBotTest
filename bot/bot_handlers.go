@@ -3,6 +3,7 @@ package bot
 import (
 	"fmt"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -48,14 +49,20 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		fmt.Println(txt)
 		parts := strings.Split(txt, "/")
 		if parts[0] == "#butt" {
-			if parts[1] != "prof" {
+			if parts[1] == "prof" {
+				ChangeProfField(v, u, *m, token, t, parts[2])
+			} else if parts[1] == "hist" {
+				n, err := strconv.Atoi(parts[2])
+				if err != nil {
+					return
+				}
+				LastOperations(v, u, *m, token, t, n)
+			} else {
 				for _, actionID := range parts {
 					if action, ok := ButtActions[actionID]; ok {
 						action.Act(v, u, *m, token, t)
 					}
 				}
-			} else {
-				ChangeProfField(v, u, *m, token, t, parts[2])
 			}
 		} else {
 			for _, actions := range UserTxtAct {

@@ -751,26 +751,33 @@ func (c *client) GetCity(cityID string) (ct City, err error) {
 }
 
 type HistoryItem struct {
-	Type string
-	Data []byte
+	Type    string
+	Data    map[string]interface{}
+	Details []map[string]interface{}
 }
 
 func (i *HistoryItem) UnmarshalJSON(data []byte) error {
 	var v struct {
-		Type string      `json:"type"`
-		Data interface{} `json:"data"`
+		Type string                 `json:"type"`
+		Data map[string]interface{} `json:"data"`
 	}
 
 	if err := json.Unmarshal(data, &v); err != nil {
 		return err
 	}
 
-	bytes, err := json.Marshal(&v.Data)
-	if err != nil {
-		return err
+	if det, ok := v.Data["details"]; ok {
+		bytes, err := json.Marshal(det)
+		if err != nil {
+			return err
+		}
+		err = json.Unmarshal(bytes, &i.Details)
+		if err != nil {
+			return err
+		}
 	}
 
-	i.Data = bytes
+	i.Data = v.Data
 	i.Type = v.Type
 	return nil
 }

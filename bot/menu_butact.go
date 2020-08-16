@@ -2,6 +2,7 @@ package bot
 
 import (
 	"fmt"
+	"strconv"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -10,7 +11,7 @@ import (
 
 func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Покупки", "lop"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Покупки", "hist", "0"))
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Карточка", "sbq"))
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to start", "str"))
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Go to profile", "prf"))
@@ -22,21 +23,37 @@ func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	check(err)
 }
 
-func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time, n int) {
 	if user, ok := UserIDMap[u.ID]; ok {
 		fmt.Println(user.Token.Token())
-		history, err := abm.Client.ClientHistory(user.Token, 1)
+		history, err := abm.Client.ClientHistory(user.Token, n/20)
+		if (err != nil) || history.Meta.TotalCount < n%20 {
+			Menu(v, u, m, token, t)
+			return
+		}
 		check(err)
 		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
-		msg.AddButton(v.NewButton(6, 6, viber.None, "", "first", "", true))
-		msg.AddButton(v.NewButton(6, 1, viber.None, "", "last", "", true))
-		msg.AddButton(v.NewButton(6, 3, viber.None, "", "1-3", "", true))
-		msg.AddButton(v.NewButton(6, 2, viber.None, "", "4-5", "", true))
-		msg.AddButton(v.NewButton(6, 1, viber.None, "", "6", "", true))
-		msg.AddButton(v.NewButton(6, 1, viber.None, "", "7", "", true))
-		_, err = v.SendMessage(u.ID, msg)
+		for i := n % 20; i < len(history.Items) && i < 5; i++ {
+			AddOpperation(v, msg, history.Items[i])
+		}
+		keyboard := v.NewKeyboard("", false)
+		if n > 0 {
+			if n < 5 {
+				n = 5
+			}
+			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "<-", "hist", strconv.Itoa(n-5)))
+		} else {
+			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "", "", false))
+		}
+		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
+		if history.Meta.CurrentPage < history.Meta.PageCount || n+5 < history.Meta.TotalCount {
+			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "hist", strconv.Itoa(n+5)))
+		} else {
+			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "", "", false))
+		}
+		msg.SetKeyboard(keyboard)
+		_, err = v.SendMessage(user.ViberUser.ID, msg)
 		check(err)
-		Menu(v, u, m, token, t)
 		fmt.Printf("%+v\n", history)
 	}
 }
