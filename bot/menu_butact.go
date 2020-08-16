@@ -2,7 +2,6 @@ package bot
 
 import (
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -36,22 +35,22 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		for i := n % 20; i < len(history.Items) && i < 5; i++ {
 			AddOpperation(v, msg, history.Items[i])
 		}
-		keyboard := v.NewKeyboard("", false)
-		if n > 0 {
-			if n < 5 {
-				n = 5
-			}
-			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "<-", "hist", strconv.Itoa(n-5)))
-		} else {
-			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
-		}
-		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
-		if history.Meta.CurrentPage < history.Meta.PageCount || n+5 < history.Meta.TotalCount {
-			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "hist", strconv.Itoa(n+5)))
-		} else {
-			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
-		}
-		msg.SetKeyboard(keyboard)
+		// keyboard := v.NewKeyboard("", false)
+		// if n > 0 {
+		// 	if n < 5 {
+		// 		n = 5
+		// 	}
+		// 	keyboard.AddButtons(*BuildButton(v, 2, 1, "", "<-", "hist", strconv.Itoa(n-5)))
+		// } else {
+		// 	keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
+		// }
+		// keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
+		// if history.Meta.CurrentPage < history.Meta.PageCount || n+5 < history.Meta.TotalCount {
+		// 	keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "hist", strconv.Itoa(n+5)))
+		// } else {
+		// 	keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
+		// }
+		// msg.SetKeyboard(keyboard)
 		_, err = v.SendMessage(user.ViberUser.ID, msg)
 		check(err)
 		fmt.Printf("%+v\n", history)

@@ -13,6 +13,7 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 		return
 	}
 	msg.AddButton(v.NewButton(6, 1, viber.None, "", item.Type, "", true))
+	fmt.Println(item.Type)
 	rows++
 
 	if item.Type == "check" || item.Type == "check_return" {
@@ -81,6 +82,6 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 	}
 
 	if rows < 7 {
-		msg.AddButton(v.NewButton(6, rows-7, viber.None, "", "free space", "", true))
+		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", "free space", "", true))
 	}
 }
