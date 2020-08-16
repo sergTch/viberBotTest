@@ -81,6 +81,6 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 	}
 
 	if rows < 7 {
-		msg.AddButton(v.NewButton(6, rows-7, viber.None, "", "", "", true))
+		msg.AddButton(v.NewButton(6, rows-7, viber.None, "", "free space", "", true))
 	}
 }
