@@ -36,8 +36,8 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		}
 		check(err)
 		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
-		for i := n % 20; i < len(history.Items) && i < 5; i++ {
-			AddOpperation(v, msg, history.Items[i+5])
+		for i := n % 20; i < len(history.Items) && i < n%20+5; i++ {
+			AddOpperation(v, msg, history.Items[i])
 		}
 		keyboard := v.NewKeyboard("", false)
 		if n > 0 {
@@ -49,7 +49,7 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
 		}
 		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
-		if history.Meta.CurrentPage < history.Meta.PageCount || n+5 < history.Meta.TotalCount {
+		if n+5 < history.Meta.TotalCount {
 			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "hist", strconv.Itoa(n+5)))
 		} else {
 			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
