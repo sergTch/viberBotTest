@@ -11,7 +11,7 @@ import (
 
 func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Покупки", "news", "0"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Новости", "news", "0"))
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Покупки", "hist", "0"))
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Баланс", "sbl"))
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Карточка", "sbq"))
