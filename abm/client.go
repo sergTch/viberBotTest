@@ -811,7 +811,7 @@ func (c *client) clientHistory(token *SmartToken, page int) (history ClientHisto
 	values.Set("dateFrom", "2015-01-01")
 	year, mon, day := time.Now().Date()
 	values.Set("dateTo", fmt.Sprintf("%v-%v-%v", year, int(mon), day))
-	fmt.Println(fmt.Sprintf("%v-%v-%v", year, mon, day))
+	fmt.Println(fmt.Sprintf("%v-%v-%v", year, int(mon), day))
 
 	req, err := http.NewRequest(
 		"",
