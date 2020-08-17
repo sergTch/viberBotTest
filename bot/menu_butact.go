@@ -80,7 +80,8 @@ func ShowBalance(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		fmt.Println(err)
 		return
 	}
-	msg := v.NewTextMessage("Баланс: " + balance.Balance + balance.Currency + "\n" + "Доступно к списанию: " + balance.Avialable + balance.Avialable)
+	fmt.Println(balance)
+	msg := v.NewTextMessage("Баланс: " + balance.Balance + balance.Currency + "\n" + "Доступно к списанию: " + balance.Avialable + balance.Currency)
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Меню", "mnu"))
 	msg.SetKeyboard(keyboard)
