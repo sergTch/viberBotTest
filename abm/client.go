@@ -822,13 +822,17 @@ func (c *client) clientHistory(token *SmartToken, page int) (history ClientHisto
 	req, err := http.NewRequest(
 		"",
 		c.url("/v2/client/client-history"),
-		strings.NewReader(values.Encode()),
+		// strings.NewReader(values.Encode()),
+		nil,
 	)
 
 	if err != nil {
 		return
 	}
 
+	fmt.Printf("BEFORE: %v\n", req.URL.Query())
+	req.URL.RawQuery = values.Encode()
+	fmt.Printf("AFTER: %v\n", req.URL.Query())
 	req.SetBasicAuth(token.Token(), "")
 	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.Do(req)
