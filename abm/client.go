@@ -854,7 +854,7 @@ type Balance struct {
 	Currency  string `json:"currency"`
 	Account   int    `json:"account"`
 	Balance   string `json:"balance"`
-	Avialable string `json:"avialable"`
+	Avialable string `json:"available"`
 	Error     string `json:"message"`
 }
 
