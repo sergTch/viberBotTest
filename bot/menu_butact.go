@@ -71,3 +71,18 @@ func ShowBarcode(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	_, err = v.SendMessage(u.ID, msg)
 	check(err)
 }
+
+func ShowBalance(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
+	user := UserIDMap[u.ID]
+	balance, err := abm.Client.Balance(user.Token)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	msg := v.NewTextMessage("Баланс: " + balance.Balance + balance.Currency + "\n" + "Доступно к списанию: " + balance.Avialable + balance.Avialable)
+	keyboard := v.NewKeyboard("", false)
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Меню", "mnu"))
+	msg.SetKeyboard(keyboard)
+	_, err = v.SendMessage(u.ID, msg)
+	check(err)
+}
