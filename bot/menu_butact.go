@@ -98,6 +98,43 @@ func News(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 	}
 }
 
+func Actions(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time, n int) {
+	if user, ok := UserIDMap[u.ID]; ok {
+		fmt.Println(user.Token.Token())
+		actions, meta, err := abm.Client.Actions(user.Token, n/20+1)
+		if (err != nil) || meta.TotalCount < n%20 {
+			_, err := v.SendTextMessage(u.ID, "Нету новостей;(")
+			check(err)
+			Menu(v, u, m, token, t)
+			return
+		}
+		check(err)
+		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
+		for i := n % 20; i < len(actions) && i < n%20+5; i++ {
+			AddAction(v, msg, &actions[i])
+		}
+		keyboard := v.NewKeyboard("", false)
+		if n > 0 {
+			if n < 5 {
+				n = 5
+			}
+			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "<-", "acts", strconv.Itoa(n-5)))
+		} else {
+			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
+		}
+		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
+		if n+5 < meta.TotalCount {
+			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "acts", strconv.Itoa(n+5)))
+		} else {
+			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
+		}
+		msg.SetKeyboard(keyboard)
+		_, err = v.SendMessage(user.ViberUser.ID, msg)
+		check(err)
+		fmt.Printf("%+v\n", actions)
+	}
+}
+
 func ShowBarcode(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	user := UserIDMap[u.ID]
 	_, barcode, err := abm.Client.BarCode(user.Token)

@@ -100,3 +100,22 @@ func AddNews(v *viber.Viber, msg *viber.RichMediaMessage, news *abm.News) {
 		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
 	}
 }
+
+func AddAction(v *viber.Viber, msg *viber.RichMediaMessage, action *abm.Actions) {
+	rows := 0
+	msg.AddButton(v.NewButton(6, 1, viber.None, "", action.Title, "", true))
+	rows++
+
+	if action.Image != "" {
+		msg.AddButton(v.NewButton(6, 3, viber.None, "", "", action.Image, true))
+	} else {
+		msg.AddButton(v.NewButton(6, 3, viber.None, "", " ", "", true))
+	}
+	rows += 3
+	msg.AddButton(v.NewButton(6, 3, viber.None, "", "C "+action.From+" по "+action.To+"\n"+action.Content, "", true))
+	rows += 3
+
+	if rows < 7 {
+		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
+	}
+}

@@ -63,6 +63,12 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 					return
 				}
 				News(v, u, *m, token, t, n)
+			} else if parts[1] == "acts" {
+				n, err := strconv.Atoi(parts[2])
+				if err != nil {
+					return
+				}
+				Actions(v, u, *m, token, t, n)
 			} else {
 				for _, actionID := range parts {
 					if action, ok := ButtActions[actionID]; ok {
