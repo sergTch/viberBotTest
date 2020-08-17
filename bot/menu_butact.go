@@ -37,7 +37,7 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		check(err)
 		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
 		for i := n % 20; i < len(history.Items) && i < 5; i++ {
-			AddOpperation(v, msg, history.Items[i])
+			AddOpperation(v, msg, history.Items[i+5])
 		}
 		keyboard := v.NewKeyboard("", false)
 		if n > 0 {
