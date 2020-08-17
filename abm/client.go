@@ -968,7 +968,7 @@ type News struct {
 	Name  string `json:"name"`
 	Descr string `json:"description"`
 	Short string `json:"description_short"`
-	Image string `json:"image_path"`
+	Image string `json:"img_path"`
 }
 
 func (c *client) News(token *SmartToken, page int) (news []News, meta PageMeta, err error) {
