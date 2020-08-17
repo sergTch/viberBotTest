@@ -931,15 +931,15 @@ func (c *client) actions(token *SmartToken, page int) (actions []Actions, meta P
 	req, err := http.NewRequest(
 		"",
 		c.url("/v2/client/partner/actions"),
-		strings.NewReader(values.Encode()),
+		nil,
 	)
 
 	if err != nil {
 		return
 	}
 
+	req.URL.RawQuery = values.Encode()
 	req.SetBasicAuth(token.Token(), "")
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.Do(req)
 	if err != nil {
 		return
@@ -992,15 +992,15 @@ func (c *client) news(token *SmartToken, page int) (news []News, meta PageMeta, 
 	req, err := http.NewRequest(
 		"",
 		c.url("/v2/client/partner/news-all"),
-		strings.NewReader(values.Encode()),
+		nil,
 	)
 
 	if err != nil {
 		return
 	}
 
+	req.URL.RawQuery = values.Encode()
 	req.SetBasicAuth(token.Token(), "")
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
 	r, err := c.Do(req)
 	if err != nil {
 		return
