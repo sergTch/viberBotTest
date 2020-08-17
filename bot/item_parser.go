@@ -9,11 +9,7 @@ import (
 
 func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.HistoryItem) {
 	rows := 0
-	if item.Type == "other" {
-		return
-	}
 	msg.AddButton(v.NewButton(6, 1, viber.None, "", item.Type, "", true))
-	fmt.Println(item.Type)
 	rows++
 
 	if item.Type == "check" || item.Type == "check_return" {
@@ -82,6 +78,20 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 	}
 
 	if rows < 7 {
-		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", "free space", "", true))
+		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
+	}
+}
+
+func AddNews(v *viber.Viber, msg *viber.RichMediaMessage, news *abm.News) {
+	rows := 0
+	msg.AddButton(v.NewButton(6, 1, viber.None, "", news.Name, "", true))
+	rows++
+
+	msg.AddButton(v.NewButton(6, 1, viber.None, "", news.Name, "", true))
+	msg.AddButton(v.NewButton(6, 3, viber.None, "", "", news.Image, true))
+	msg.AddButton(v.NewButton(6, 4, viber.None, "", news.Descr, "", true))
+
+	if rows < 7 {
+		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
 	}
 }
