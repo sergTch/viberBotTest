@@ -808,15 +808,10 @@ func (c *client) ClientHistory(token *SmartToken, page int) (history ClientHisto
 func (c *client) clientHistory(token *SmartToken, page int) (history ClientHistory, err error) {
 	values := url.Values{}
 	values.Set("page", fmt.Sprintf("%v", page))
-	t, err := time.Parse("2006-01-02", "2015-01-01")
-	if err != nil {
-		fmt.Println(err)
-	}
-	values.Set("dateFrom", fmt.Sprint(t.Unix()))
-	//year, mon, day := time.Now().Date()
-	//values.Set("dateTo", fmt.Sprintf("%v-%v-%v", year, mon, day))
-	values.Set("dateTo", fmt.Sprint(time.Now().Unix()))
-	fmt.Println(t.Unix(), " ", time.Now().Unix())
+	values.Set("dateFrom", "2015-01-01")
+	year, mon, day := time.Now().Date()
+	values.Set("dateTo", fmt.Sprintf("%v-%v-%v", year, mon, day))
+	fmt.Println(fmt.Sprintf("%v-%v-%v", year, mon, day))
 
 	req, err := http.NewRequest(
 		"",
