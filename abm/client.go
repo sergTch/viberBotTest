@@ -810,8 +810,14 @@ func (c *client) clientHistory(token *SmartToken, page int) (history ClientHisto
 	values.Set("page", fmt.Sprintf("%v", page))
 	values.Set("dateFrom", "2015-01-01")
 	year, mon, day := time.Now().Date()
-	values.Set("dateTo", fmt.Sprintf("%v-%v-%v", year, int(mon), day))
-	fmt.Println(fmt.Sprintf("%v-%v-%v", year, int(mon), day))
+	month := ""
+	if int(mon) < 10 {
+		month = "0" + strconv.Itoa(int(mon))
+	} else {
+		month = strconv.Itoa(int(mon))
+	}
+	values.Set("dateTo", fmt.Sprintf("%v-%v-%v", year, month, day))
+	fmt.Println(fmt.Sprintf("%v-%v-%v", year, month, day))
 
 	req, err := http.NewRequest(
 		"",
