@@ -87,13 +87,14 @@ func AddNews(v *viber.Viber, msg *viber.RichMediaMessage, news *abm.News) {
 	msg.AddButton(v.NewButton(6, 1, viber.None, "", news.Name, "", true))
 	rows++
 
-	msg.AddButton(v.NewButton(6, 1, viber.None, "", news.Name, "", true))
 	if news.Image != "" {
 		msg.AddButton(v.NewButton(6, 3, viber.None, "", "", news.Image, true))
 	} else {
 		msg.AddButton(v.NewButton(6, 3, viber.None, "", " ", "", true))
 	}
-	msg.AddButton(v.NewButton(6, 4, viber.None, "", news.Descr, "", true))
+	rows += 3
+	msg.AddButton(v.NewButton(6, 3, viber.None, "", news.Descr, "", true))
+	rows += 3
 
 	if rows < 7 {
 		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
