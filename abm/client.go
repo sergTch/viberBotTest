@@ -961,6 +961,10 @@ func (c *client) actions(token *SmartToken, page int) (actions []Actions, meta P
 
 	meta = resp.Data.Meta
 	actions = resp.Data.Items
+	for i := range actions {
+		remakeHtml(&actions[i].Content)
+		remakeHtml(&actions[i].Title)
+	}
 	return
 }
 
@@ -1022,5 +1026,9 @@ func (c *client) news(token *SmartToken, page int) (news []News, meta PageMeta, 
 
 	meta = resp.Data.Meta
 	news = resp.Data.Items
+	for i := range news {
+		remakeHtml(&news[i].Descr)
+		remakeHtml(&news[i].Name)
+	}
 	return
 }

@@ -1,6 +1,9 @@
 package abm
 
+import "strings"
+
 var requiredParams []string
+var htmlTags map[string]string
 
 func init() {
 	requiredParams = []string{
@@ -22,6 +25,16 @@ func init() {
 	FieldType[0] = "String"
 	FieldType[1] = "Integer"
 	FieldType[2] = "Birthday"
+
+	htmlTags = map[string]string{}
+	htmlTags["<span style=\"color: "] = "<font color=\""
+	htmlTags["</span>"] = "</font>"
+}
+
+func remakeHtml(s *string) {
+	for k, v := range htmlTags {
+		*s = strings.ReplaceAll(*s, k, v)
+	}
 }
 
 func (p *Profile) fillMainParams() {
