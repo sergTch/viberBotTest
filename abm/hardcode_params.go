@@ -29,6 +29,7 @@ func init() {
 	htmlTags = map[string]string{}
 	htmlTags["<span style=\"color: "] = "<font color=\""
 	htmlTags["</span>"] = "</font>"
+	htmlTags[";\">"] = "\">"
 }
 
 func remakeHtml(s *string) {
