@@ -30,6 +30,12 @@ func init() {
 	htmlTags["<span style=\"color: "] = "<font color=\""
 	htmlTags["</span>"] = "</font>"
 	htmlTags[";\">"] = "\">"
+	htmlTags["<p>"] = ""
+	htmlTags["</p>"] = ""
+	htmlTags["<strong>"] = "<b>"
+	htmlTags["</strong>"] = "</b>"
+	htmlTags["<em>"] = "<i>"
+	htmlTags["</em>"] = "</i>"
 }
 
 func remakeHtml(s *string) {
