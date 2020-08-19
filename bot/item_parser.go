@@ -2,6 +2,8 @@ package bot
 
 import (
 	"fmt"
+	"strconv"
+	"time"
 
 	"github.com/orsenkucher/viber"
 	"github.com/sergTch/viberBotTest/abm"
@@ -29,20 +31,25 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 			rows++
 		}
 		adress, ok := item.Data["shop_address"]
-		if ok && adress != "0" {
-			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Начислено: ", adress), "", true))
+		if ok {
+			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Адресс: ", adress), "", true))
 			rows++
 		}
 		name, ok := item.Data["shop_name"]
-		if ok && name != "0" {
-			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Начислено: ", name), "", true))
+		if ok {
+			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Магазин: ", name), "", true))
+			rows++
+		}
+		date, ok := item.Data["date"]
+		if ok {
+			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Дата: ", parseDate(date)), "", true))
 			rows++
 		}
 	}
 
 	if item.Type == "pending" {
 		category, ok := item.Data["category"]
-		if ok && category != "0" {
+		if ok {
 			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Категория: ", category), "", true))
 			rows++
 		}
@@ -51,12 +58,22 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Бонус: ", bonus), "", true))
 			rows++
 		}
+		date, ok := item.Data["date"]
+		if ok {
+			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Действ. до ", parseDate(date)), "", true))
+			rows++
+		}
 	}
 
 	if item.Type == "gift" {
 		bonus, ok := item.Data["bonus"]
 		if ok && bonus != "0" {
 			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Бонус: ", bonus), "", true))
+			rows++
+		}
+		date, ok := item.Data["date"]
+		if ok {
+			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Действ. до ", parseDate(date)), "", true))
 			rows++
 		}
 	}
@@ -118,4 +135,11 @@ func AddAction(v *viber.Viber, msg *viber.RichMediaMessage, action *abm.Actions)
 	if rows < 7 {
 		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
 	}
+}
+
+func parseDate(sec interface{}) string {
+	seconds, err := strconv.ParseInt(fmt.Sprint(sec), 10, 64)
+	check(err)
+	t := time.Unix(seconds, 0)
+	return fmt.Sprint(t.Day(), "-", int(t.Month()), "-", t.Year())
 }
