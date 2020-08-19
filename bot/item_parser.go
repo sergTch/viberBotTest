@@ -138,7 +138,7 @@ func AddAction(v *viber.Viber, msg *viber.RichMediaMessage, action *abm.Actions)
 }
 
 func parseDate(sec interface{}) string {
-	seconds, err := strconv.ParseInt(fmt.Sprint(sec), 10, 64)
+	seconds, err := strconv.ParseInt(fmt.Sprintf("%v", sec), 10, 64)
 	check(err)
 	fmt.Println(seconds)
 	t := time.Unix(seconds, seconds)
