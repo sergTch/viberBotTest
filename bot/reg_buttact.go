@@ -40,7 +40,7 @@ func AgreementMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	cancelB := BuildCfgButton(v, data.ButtCfg.Back, true, "str")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*linkB, *phoneB, *cancelB)
-	keyboard.InputFieldState = viber.HiddenInputField
+	// keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
 	msg := v.NewTextMessage(fmt.Sprint("Вам уже исполнилось ", data.Cfg.MinAge, " лет и Вы принимаете Условия программы лояльности?"))
 	msg.SetKeyboard(keyboard)
