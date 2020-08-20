@@ -127,17 +127,19 @@ func (c *client) Register(phone, password string) (smsID int, err error) {
 }
 
 type SmartToken struct {
-	client *client
+	client   *client
+	callback func()
 
 	token, phone, password string
 }
 
-func NewSmartToken(client *client, token, phone, password string) *SmartToken {
+func NewSmartToken(client *client, token, phone, password string, callback func()) *SmartToken {
 	return &SmartToken{
 		client:   client,
 		token:    token,
 		phone:    phone,
 		password: password,
+		callback: callback,
 	}
 }
 
@@ -148,9 +150,10 @@ func (s *SmartToken) Token() string {
 func (s *SmartToken) Renew() (token *SmartToken, err error) {
 	fmt.Println("*** RENEWING TOKEN ***")
 	fmt.Printf("params: %v, %v\n", s.phone, s.password)
-	token, err = s.client.AuthPhone(s.phone, s.password)
+	token, err = s.client.AuthPhone(s.phone, s.password, s.callback)
 	fmt.Printf("New token, err: %v, %v\n", token, err)
 	if err != nil {
+		s.callback()
 		return
 	}
 
@@ -159,7 +162,7 @@ func (s *SmartToken) Renew() (token *SmartToken, err error) {
 	return
 }
 
-func (c *client) AuthPhone(phone, password string) (token *SmartToken, err error) {
+func (c *client) AuthPhone(phone, password string, onRenewErr func()) (token *SmartToken, err error) {
 	values := url.Values{}
 	values.Set("phone", phone)
 	values.Set("password", password)
@@ -190,7 +193,7 @@ func (c *client) AuthPhone(phone, password string) (token *SmartToken, err error
 		return
 	}
 
-	token = NewSmartToken(c, resp.Data.Token, phone, password)
+	token = NewSmartToken(c, resp.Data.Token, phone, password, onRenewErr)
 	fmt.Printf("token from api: %v", resp.Data.Token)
 	fmt.Printf("token in token: %v", token.Token())
 	return
