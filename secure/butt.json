@@ -70,5 +70,47 @@
         "row":1,
         "text":"Нет карточки",
         "image":""
+    },
+    "cancel":{
+        "col":6,
+        "row":1,
+        "text":"Отмена",
+        "image":""
+    },
+    "region":{
+        "col":3,
+        "row":1,
+        "text":"",
+        "image":""
+    },
+    "city":{
+        "col":3,
+        "row":1,
+        "text":"",
+        "image":""
+    },
+    "finish_later":{
+        "col":6,
+        "row":1,
+        "text":"Закончить позже",
+        "image":""
+    },
+    "drop_down":{
+        "col":6,
+        "row":1,
+        "text":"",
+        "image":""
+    },
+    "prof_field":{
+        "col":6,
+        "row":1,
+        "text":"",
+        "image":""
+    },
+    "FillRequired":{
+        "col":6,
+        "row":1,
+        "text":"",
+        "image":""
     }
 }
