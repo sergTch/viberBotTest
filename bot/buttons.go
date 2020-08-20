@@ -21,11 +21,19 @@ func BuildCfgButton(v *viber.Viber, butt data.Butt, silent bool, actionIDs ...st
 	return v.NewButton(butt.Col, butt.Row, viber.Reply, actBody, butt.Text, butt.Image, silent)
 }
 
+func TxtBuildCfgButton(v *viber.Viber, butt data.Butt, text string, silent bool, actionIDs ...string) *viber.Button {
+	actBody := "#butt"
+	for _, id := range actionIDs {
+		actBody += "/" + id
+	}
+	return v.NewButton(butt.Col, butt.Row, viber.Reply, actBody, text, butt.Image, silent)
+}
+
 func CfgButton(v *viber.Viber, actType viber.ActionType, butt data.Butt, action string, silent bool) *viber.Button {
 	return v.NewButton(butt.Col, butt.Row, actType, action, butt.Text, butt.Image, silent)
 }
 
-func TxtCfgButton(v *viber.Viber, actType viber.ActionType, butt data.Butt, text string, action string, silent bool) *viber.Button {
+func TxtCfgButton(v *viber.Viber, actType viber.ActionType, butt data.Butt, action string, text string, silent bool) *viber.Button {
 	return v.NewButton(butt.Col, butt.Row, actType, action, text, butt.Image, silent)
 }
 
