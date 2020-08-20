@@ -1,0 +1,74 @@
+{
+    "start":{
+        "col":6,
+        "row":1,
+        "text":"СТАРТ",
+        "image":""
+    },
+    "agree":{
+        "col":6,
+        "row":1,
+        "text":"Принять",
+        "image":""
+    },
+    "back":{
+        "col":6,
+        "row":1,
+        "text":"Назад",
+        "image":""
+    },
+    "agreement":{
+        "col":6,
+        "row":1,
+        "text":"Условия",
+        "image":""
+    },
+    "forgot_pass":{
+        "col":6,
+        "row":1,
+        "text":"Забыл пароль",
+        "image":""
+    },
+    "yes":{
+        "col":6,
+        "row":1,
+        "text":"Да",
+        "image":""
+    },
+    "no":{
+        "col":6,
+        "row":1,
+        "text":"Нет",
+        "image":""
+    },
+    "menu":{
+        "col":6,
+        "row":1,
+        "text":"Меню",
+        "image":""
+    },
+    "enter_card":{
+        "col":6,
+        "row":1,
+        "text":"Вводите номер карты",
+        "image":""
+    },
+    "enter_pass":{
+        "col":6,
+        "row":1,
+        "text":"Вводите пароль",
+        "image":""
+    },
+    "enter_new_pass":{
+        "col":6,
+        "row":1,
+        "text":"Вводите новый пароль",
+        "image":""
+    },
+    "no_card":{
+        "col":6,
+        "row":1,
+        "text":"Нет карточки",
+        "image":""
+    }
+}

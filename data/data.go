@@ -7,7 +7,8 @@ import (
 )
 
 const (
-	pub = "secure/pub.json"
+	pub        = "secure/pub.json"
+	buttonspub = "secure/butt.json"
 )
 
 var Cfg struct {
@@ -19,6 +20,28 @@ var Cfg struct {
 	Currency       string `json:"Currency"`
 }
 
+type Butt struct {
+	Col   int    `json:"col"`
+	Row   int    `json:"row"`
+	Image string `json:"image"`
+	Text  string `json:"text"`
+}
+
+var ButtCfg struct {
+	Start        Butt `json:"start"`
+	Agree        Butt `json:"agree"`
+	Back         Butt `json:"back"`
+	Agreement    Butt `json:"agreement"`
+	ForgotPass   Butt `json:"forgot_pass"`
+	Yes          Butt `json:"yes"`
+	No           Butt `json:"no"`
+	EnterCard    Butt `json:"enter_card"`
+	EnterPass    Butt `json:"enter_pass"`
+	EnterNewPass Butt `json:"enter_new_pass"`
+	NoCard       Butt `json:"no_card"`
+	Menu         Butt `json:"menu"`
+}
+
 func Init() {
 	bytes, err := ioutil.ReadFile(pub)
 	if err != nil {
@@ -28,5 +51,15 @@ func Init() {
 	err = json.Unmarshal(bytes, &Cfg)
 	if err != nil {
 		panic(fmt.Errorf("Failed to parse '%s': %w", pub, err))
+	}
+
+	bytes, err = ioutil.ReadFile(buttonspub)
+	if err != nil {
+		panic(fmt.Errorf("Failed to read '%s': %w", buttonspub, err))
+	}
+
+	err = json.Unmarshal(bytes, &ButtCfg)
+	if err != nil {
+		panic(fmt.Errorf("Failed to parse '%s': %w", buttonspub, err))
 	}
 }

@@ -9,6 +9,7 @@ import (
 
 	"github.com/orsenkucher/viber"
 	"github.com/sergTch/viberBotTest/abm"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func generatePhoneNumber(number string) string {
@@ -25,7 +26,7 @@ func generatePhoneNumber(number string) string {
 func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, context string, subscribed bool, token uint64, t time.Time) viber.Message {
 	fmt.Println("new subscriber", u.ID)
 
-	startB := BuildButton(v, 6, 1, "", "СТАРТ", "agr")
+	startB := BuildCfgButton(v, data.ButtCfg.Start, true, "agr")
 	keyboard := v.NewKeyboard("", false)
 	keyboard.AddButtons(*startB)
 	keyboard.InputFieldState = viber.HiddenInputField
@@ -105,7 +106,8 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		if !ok {
 			msg := v.NewTextMessage("Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
 			keyboard := v.NewKeyboard("", false)
-			keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите пароль", "", true))
+			//keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите пароль", "", true))
+			keyboard.AddButtons(*CfgButton(v, viber.None, data.ButtCfg.EnterPass, "", true))
 			msg.Keyboard = keyboard
 			_, err := v.SendMessage(u.ID, msg)
 			check(err)

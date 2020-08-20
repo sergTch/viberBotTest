@@ -2,6 +2,7 @@ package bot
 
 import (
 	"github.com/orsenkucher/viber"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func BuildButton(v *viber.Viber, cols int, rows int, image string, text string, actionIDs ...string) *viber.Button {
@@ -10,6 +11,18 @@ func BuildButton(v *viber.Viber, cols int, rows int, image string, text string, 
 		actBody += "/" + id
 	}
 	return v.NewButton(cols, rows, viber.Reply, actBody, text, image, true)
+}
+
+func BuildCfgButton(v *viber.Viber, butt data.Butt, silent bool, actionIDs ...string) *viber.Button {
+	actBody := "#butt"
+	for _, id := range actionIDs {
+		actBody += "/" + id
+	}
+	return v.NewButton(butt.Col, butt.Row, viber.Reply, actBody, butt.Text, butt.Image, silent)
+}
+
+func CfgButton(v *viber.Viber, actType viber.ActionType, butt data.Butt, action string, silent bool) *viber.Button {
+	return v.NewButton(butt.Col, butt.Row, actType, action, butt.Text, butt.Image, silent)
 }
 
 func init() {

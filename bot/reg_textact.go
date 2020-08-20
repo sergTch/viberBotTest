@@ -7,6 +7,7 @@ import (
 
 	"github.com/orsenkucher/viber"
 	"github.com/sergTch/viberBotTest/abm"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 var UserTxtAct map[string][]*TextAction
@@ -55,7 +56,9 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 		fmt.Println(err)
 		msg := v.NewTextMessage("Неправильный пароль, попробуйте другой")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Забыл Пароль", "chp"))
+		//keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Забыл Пароль", "chp"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.ForgotPass, true, "chp"))
+
 		msg.Keyboard = keyboard
 		_, err := v.SendMessage(u.ID, msg)
 		if err != nil {
