@@ -41,6 +41,8 @@ func run() error {
 		return err
 	}
 	defer db.Close()
+	bot.DB = db
+	bot.LoadUsers()
 
 	cfg, err := key.GetConfig("secure/viber.json")
 	if err != nil {

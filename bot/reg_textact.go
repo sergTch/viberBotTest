@@ -68,6 +68,7 @@ func CheckPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	}
 	user.Password = m.Text
 	user.Token = uToken
+	DB.Save(&user)
 	Menu(v, u, m, token, t)
 }
 
@@ -113,6 +114,7 @@ func SMSConfirm(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 	}
 	if resp.Ok {
 		user.Token = abm.NewSmartToken(abm.Client, regToken, user.PhoneNumber, user.Password, func() { ReenterPassword(v, u.ID) })
+		DB.Save(&user)
 		act := NextAction[user.ViberUser.ID]
 		act.Act(v, u, m, token, t)
 	} else {
