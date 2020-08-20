@@ -36,11 +36,11 @@ func run() error {
 
 	key := encio.NewEncIO(*s)
 
-	// db, err := NewDB(key)
-	// if err != nil {
-	// 	return err
-	// }
-	// defer db.Close()
+	db, err := NewDB(key)
+	if err != nil {
+		return err
+	}
+	defer db.Close()
 
 	cfg, err := key.GetConfig("secure/viber.json")
 	if err != nil {
