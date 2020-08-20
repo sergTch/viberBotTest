@@ -25,6 +25,10 @@ func CfgButton(v *viber.Viber, actType viber.ActionType, butt data.Butt, action 
 	return v.NewButton(butt.Col, butt.Row, actType, action, butt.Text, butt.Image, silent)
 }
 
+func TxtCfgButton(v *viber.Viber, actType viber.ActionType, butt data.Butt, text string, action string, silent bool) *viber.Button {
+	return v.NewButton(butt.Col, butt.Row, actType, action, text, butt.Image, silent)
+}
+
 func init() {
 	ButtActions = map[string]*ButtAction{}
 	ButtActions["agr"] = &ButtAction{Act: AgreementMsg, ID: "agr"}

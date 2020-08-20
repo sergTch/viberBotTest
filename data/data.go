@@ -31,6 +31,7 @@ var ButtCfg struct {
 	Start        Butt `json:"start"`
 	Agree        Butt `json:"agree"`
 	Back         Butt `json:"back"`
+	Cancel       Butt `json:"cancel"`
 	Agreement    Butt `json:"agreement"`
 	ForgotPass   Butt `json:"forgot_pass"`
 	Yes          Butt `json:"yes"`
@@ -39,7 +40,13 @@ var ButtCfg struct {
 	EnterPass    Butt `json:"enter_pass"`
 	EnterNewPass Butt `json:"enter_new_pass"`
 	NoCard       Butt `json:"no_card"`
+	FillRequired Butt `json:"fill_required"`
+	ProfField    Butt `json:"prof_field"`
+	DropDown     Butt `json:"drop_down"`
 	Menu         Butt `json:"menu"`
+	FinishLater  Butt `json:"finish_later"`
+	Region       Butt `json:"region"`
+	City         Butt `json:"city"`
 }
 
 func Init() {

@@ -29,7 +29,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			check(err)
 			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
 			keyboard := v.NewKeyboard("", false)
-			keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
+			keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 			msg.Keyboard = keyboard
 			_, err = v.SendMessage(u.ID, msg)
 			check(err)
@@ -40,7 +40,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			check(err)
 			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
 			keyboard := v.NewKeyboard("", false)
-			keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
+			keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 			msg.Keyboard = keyboard
 			_, err = v.SendMessage(u.ID, msg)
 			check(err)
@@ -59,7 +59,7 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		check(err)
 		msg := v.NewTextMessage("Редактируем '" + field[1].Name + "' Введите несколько первых букв вашего города")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Отмена", "prf"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		msg.Keyboard = keyboard
 		UserFields[u.ID] = field[1:]
 		UserTxtAct[u.ID] = []*TextAction{{Act: SearchCity}}
@@ -96,10 +96,10 @@ func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 		fmt.Println("red city ", ok, field[0])
 		msg := v.NewTextMessage("Редактируем '" + prof.City.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Отмена", "prf"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		for _, city := range cities {
 			if city.RegionID == region.RegionID {
-				keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(city.CityID), city.CityName, "", true))
+				keyboard.AddButtons(*TxtCfgButton(v, viber.Reply, data.ButtCfg.Region, strconv.Itoa(city.CityID), city.CityName, true))
 			}
 		}
 		keyboard.InputFieldState = viber.HiddenInputField

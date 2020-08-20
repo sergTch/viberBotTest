@@ -7,6 +7,7 @@ import (
 
 	"github.com/orsenkucher/viber"
 	"github.com/sergTch/viberBotTest/abm"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
@@ -25,7 +26,7 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	text += prof.ToString()
 	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "В меню", "mnu"))
+	keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.Menu, true, "mnu"))
 
 	full := true
 	for _, field := range prof.Fields {
@@ -35,13 +36,13 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	}
 
 	if !full {
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Заполнить анкету", "frq"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FillRequired, true, "frq"))
 	} else {
 		for _, field := range prof.Fields {
 			if field.Key == "id_region" {
-				keyboard.AddButtons(*BuildButton(v, 6, 1, "", prof.Region.Name+"/"+prof.City.Name, "prof", field.Key))
+				keyboard.AddButtons(*TxtBuildCfgButton(v, data.ButtCfg.ProfField, prof.Region.Name+"/"+prof.City.Name, true, "prof", field.Key))
 			} else if field.Key != "id_city" && field.Key != "mobile" {
-				keyboard.AddButtons(*BuildButton(v, 6, 1, "", field.Name, "prof", field.Key))
+				keyboard.AddButtons(*TxtBuildCfgButton(v, data.ButtCfg.ProfField, field.Name, true, "prof", field.Key))
 			}
 		}
 	}
@@ -105,9 +106,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		check(err)
 		msg := v.NewTextMessage("Редактируем '" + prof.Region.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		for _, region := range regions {
-			keyboard.AddButtons(*v.NewButton(3, 1, viber.Reply, strconv.Itoa(region.RegionID), region.RegionName, "", true))
+			keyboard.AddButtons(*TxtCfgButton(v, viber.Reply, data.ButtCfg.Region, strconv.Itoa(region.RegionID), region.RegionName, true))
 		}
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
@@ -125,7 +126,7 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if abm.DataType[field.DataType] == "Text" {
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Напишите новый вариант")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
 		if len(fields) == 0 || fields[0].Key != field.Key {
@@ -137,9 +138,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if abm.DataType[field.DataType] == "Dropdown list" {
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		for _, sch := range field.Schema {
-			keyboard.AddButtons(*v.NewButton(6, 1, viber.Reply, sch.ID, sch.Value, "", true))
+			keyboard.AddButtons(*TxtCfgButton(v, viber.Reply, data.ButtCfg.DropDown, sch.ID, sch.Value, true))
 		}
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
@@ -153,7 +154,7 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if abm.DataType[field.DataType] == "Date" {
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
 		if len(fields) == 0 || fields[0].Key != field.Key {
@@ -165,9 +166,9 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if abm.DataType[field.DataType] == "Checkbox" {
 		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
 		keyboard := v.NewKeyboard("", false)
-		keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Закончить позже", "prf"))
-		keyboard.AddButtons(*v.NewButton(6, 1, viber.Reply, "1", "да", "", true))
-		keyboard.AddButtons(*v.NewButton(6, 1, viber.Reply, "0", "нет", "", true))
+		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
+		keyboard.AddButtons(*CfgButton(v, viber.Reply, data.ButtCfg.Yes, "1", true))
+		keyboard.AddButtons(*CfgButton(v, viber.Reply, data.ButtCfg.No, "0", true))
 		keyboard.InputFieldState = viber.HiddenInputField
 		msg.Keyboard = keyboard
 		UserTxtAct[u.ID] = []*TextAction{{Act: ChangeField}}
