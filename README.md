@@ -11,7 +11,7 @@ tmux
 git clone https://github.com/sergTch/viberBotTest.git
 git pull
 
-go run main.go -s release
+go run main.go -s ...
 ```
 
 Кнопки region city нельзя делать больше, чем 3 на 1 размером, так как может 
