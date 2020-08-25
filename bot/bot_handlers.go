@@ -31,7 +31,7 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 	keyboard.AddButtons(*startB)
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage(data.Translate("", "Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ"))
+	msg := v.NewTextMessage(data.Translate("", data.Translate("", "Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")))
 	msg.SetKeyboard(keyboard)
 	return msg
 }
@@ -105,7 +105,7 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 			return
 		}
 		if !ok {
-			msg := v.NewTextMessage("Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов")
+			msg := v.NewTextMessage(data.Translate("", "Для регистрации в программе лояльности придумайте и отправьте мне пароль. Пароль должен состоять минимум из 6-ти символов"))
 			keyboard := v.NewKeyboard("", false)
 			//keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите пароль", "", true))
 			keyboard.AddButtons(*CfgButton(v, viber.None, data.ButtCfg.EnterPass, "", true))

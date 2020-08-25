@@ -7,18 +7,19 @@ import (
 
 	"github.com/orsenkucher/viber"
 	"github.com/sergTch/viberBotTest/abm"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func Menu(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Акции", "acts", "0"))
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Покупки", "hist", "0"))
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Баланс", "sbl"))
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Карточка", "sbq"))
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Профиль", "prf"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate("", "Акции"), "acts", "0"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate("", "Покупки"), "hist", "0"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate("", "Баланс"), "sbl"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate("", "Карточка"), "sbq"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate("", "Профиль"), "prf"))
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage("Вы попали в меню...")
+	msg := v.NewTextMessage(data.Translate("", "Вы попали в меню..."))
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
@@ -29,7 +30,7 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		fmt.Println(user.Token.Token())
 		history, err := abm.Client.ClientHistory(user.Token, n/20+1)
 		if (err != nil) || history.Meta.TotalCount < n%20 {
-			_, err := v.SendTextMessage(u.ID, "Нету предидущих транзакций;(")
+			_, err := v.SendTextMessage(u.ID, data.Translate(user.Language, "Нету предидущих транзакций;("))
 			check(err)
 			Menu(v, u, m, token, t)
 			return
@@ -48,7 +49,7 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		} else {
 			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
 		}
-		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
+		keyboard.AddButtons(*BuildButton(v, 2, 1, "", data.Translate(user.Language, "Меню"), "mnu"))
 		if n+5 < history.Meta.TotalCount {
 			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "hist", strconv.Itoa(n+5)))
 		} else {
@@ -66,7 +67,7 @@ func News(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 		fmt.Println(user.Token.Token())
 		news, meta, err := abm.Client.News(user.Token, n/20+1)
 		if (err != nil) || meta.TotalCount < n%20 {
-			_, err := v.SendTextMessage(u.ID, "Нету новостей;(")
+			_, err := v.SendTextMessage(u.ID, data.Translate(user.Language, "Нету новостей;("))
 			check(err)
 			Menu(v, u, m, token, t)
 			return
@@ -85,7 +86,7 @@ func News(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 		} else {
 			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
 		}
-		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
+		keyboard.AddButtons(*BuildButton(v, 2, 1, "", data.Translate(user.Language, "Меню"), "mnu"))
 		if n+5 < meta.TotalCount {
 			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "news", strconv.Itoa(n+5)))
 		} else {
@@ -103,7 +104,7 @@ func Actions(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t 
 		fmt.Println(user.Token.Token())
 		actions, meta, err := abm.Client.Actions(user.Token, n/20+1)
 		if (err != nil) || meta.TotalCount < n%20 {
-			_, err := v.SendTextMessage(u.ID, "Нету новостей;(")
+			_, err := v.SendTextMessage(u.ID, data.Translate(user.Language, "Нету новостей;("))
 			check(err)
 			Menu(v, u, m, token, t)
 			return
@@ -122,7 +123,7 @@ func Actions(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t 
 		} else {
 			keyboard.AddButtons(*v.NewButton(2, 1, viber.None, "", "--", "", false))
 		}
-		keyboard.AddButtons(*BuildButton(v, 2, 1, "", "Меню", "mnu"))
+		keyboard.AddButtons(*BuildButton(v, 2, 1, "", data.Translate(user.Language, "Меню"), "mnu"))
 		if n+5 < meta.TotalCount {
 			keyboard.AddButtons(*BuildButton(v, 2, 1, "", "->", "acts", strconv.Itoa(n+5)))
 		} else {
@@ -141,7 +142,7 @@ func ShowBarcode(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	check(err)
 	msg := v.NewPictureMessage("bar-code", barcode, "")
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Меню", "mnu"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate(user.Language, "Меню"), "mnu"))
 	msg.SetKeyboard(keyboard)
 	_, err = v.SendMessage(u.ID, msg)
 	check(err)
@@ -155,9 +156,14 @@ func ShowBalance(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 		return
 	}
 	fmt.Println(balance)
-	msg := v.NewTextMessage("Баланс: " + balance.Balance + balance.Currency + "\n" + "Доступно к списанию: " + balance.Avialable + balance.Currency)
+	text := data.Format(data.Translate(user.Language, "Баланс: {balance}{currency}\nДоступно к списанию: {avialable}{currency}"),
+		"balance", balance.Balance,
+		"avialable", balance.Avialable,
+		"currency", balance.Currency,
+	)
+	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
-	keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Меню", "mnu"))
+	keyboard.AddButtons(*BuildButton(v, 6, 1, "", data.Translate(user.Language, "Меню"), "mnu"))
 	msg.SetKeyboard(keyboard)
 	_, err = v.SendMessage(u.ID, msg)
 	check(err)

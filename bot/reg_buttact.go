@@ -1,7 +1,6 @@
 package bot
 
 import (
-	"fmt"
 	"time"
 
 	"github.com/orsenkucher/viber"
@@ -24,7 +23,7 @@ func StartMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t
 	keyboard.AddButtons(*startB)
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
+	msg := v.NewTextMessage(data.Translate("", "Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ"))
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
@@ -42,14 +41,15 @@ func AgreementMsg(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	keyboard.AddButtons(*linkB, *phoneB, *cancelB)
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage(fmt.Sprint("Вам уже исполнилось ", data.Cfg.MinAge, " лет и Вы принимаете Условия программы лояльности?"))
+	text := data.Format(data.Translate("", "Вам уже исполнилось {min_age} лет и Вы принимаете Условия программы лояльности?"), "min_age", data.Cfg.MinAge)
+	msg := v.NewTextMessage(text)
 	msg.SetKeyboard(keyboard)
 	_, err := v.SendMessage(u.ID, msg)
 	check(err)
 }
 
 func CardExistQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	msg := v.NewTextMessage("У вас уже есть бонусная карта?")
+	msg := v.NewTextMessage(data.Translate("", "У вас уже есть бонусная карта?"))
 	keyboard := v.NewKeyboard("", false)
 	//keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Да", "cin"), *BuildButton(v, 3, 1, "", "Нет", "ccr"))
 	keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.Yes, true, "cin"), *BuildCfgButton(v, data.ButtCfg.No, true, "ccr"))
@@ -61,7 +61,7 @@ func CardExistQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token 
 }
 
 func CardInput(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	msg := v.NewTextMessage("Введите номер вашей карты")
+	msg := v.NewTextMessage(data.Translate("", "Введите номер вашей карты"))
 	keyboard := v.NewKeyboard("", false)
 	// keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите номер карты", "", true))
 	keyboard.AddButtons(*CfgButton(v, viber.None, data.ButtCfg.EnterCard, "", true), *BuildCfgButton(v, data.ButtCfg.NoCard, true, "ccr"))
@@ -82,7 +82,8 @@ func CardCreate(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 }
 
 func FillInfQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	msg := v.NewTextMessage("Для возможности использовать накопленные бонусы необходимо заполнить обязательные поля анкеты в разделе меню Мой профиль. Заполнить анкету сейчас?")
+	text := data.Translate("", "Для возможности использовать накопленные бонусы необходимо заполнить обязательные поля анкеты в разделе меню Мой профиль. Заполнить анкету сейчас?")
+	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
 	//keyboard.AddButtons(*BuildButton(v, 3, 1, "", "да", "prf"), *BuildButton(v, 3, 1, "", "Заполнить позже", "mnu"))
 	keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.Yes, true, "prf"), *BuildCfgButton(v, data.ButtCfg.No, true, "mnu"))
@@ -94,7 +95,7 @@ func FillInfQuestion(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 }
 
 func EnterPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	msg := v.NewTextMessage("Ваш номер уже зарегистрирован в программе лояльности. Для авторизации отправьте свой пароль")
+	msg := v.NewTextMessage(data.Translate("", "Ваш номер уже зарегистрирован в программе лояльности. Для авторизации отправьте свой пароль"))
 	keyboard := v.NewKeyboard("", false)
 	// keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Забыл Пароль", "chp"))
 	keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.ForgotPass, true, "chp"))
@@ -105,7 +106,7 @@ func EnterPassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 }
 
 func ReenterPassword(v *viber.Viber, uid string) {
-	msg := v.NewTextMessage("Введите пароль, он возможно был изменён")
+	msg := v.NewTextMessage(data.Translate("", "Введите пароль, он возможно был изменён"))
 	keyboard := v.NewKeyboard("", false)
 	// keyboard.AddButtons(*BuildButton(v, 6, 1, "", "Забыл Пароль", "chp"))
 	keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.ForgotPass, true, "chp"))
@@ -116,7 +117,7 @@ func ReenterPassword(v *viber.Viber, uid string) {
 }
 
 func ChangePassword(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	msg := v.NewTextMessage("Придумайте и отправьте мне новый пароль. Пароль должен состоять минимум из 6-ти символов")
+	msg := v.NewTextMessage(data.Translate("", "Придумайте и отправьте мне новый пароль. Пароль должен состоять минимум из 6-ти символов"))
 	keyboard := v.NewKeyboard("", false)
 	// keyboard.AddButtons(*v.NewButton(6, 1, viber.None, "", "Вводите новый пароль", "", true))
 	keyboard.AddButtons(*CfgButton(v, viber.None, data.ButtCfg.EnterNewPass, "", true))

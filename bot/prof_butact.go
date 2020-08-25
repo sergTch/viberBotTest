@@ -11,9 +11,9 @@ import (
 )
 
 func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
-	_, err := v.SendTextMessage(u.ID, "Для использования бонусов, нужно заполнить обязательные поля (* - обязательно к заполнению)")
-	check(err)
 	user := UserIDMap[u.ID]
+	_, err := v.SendTextMessage(u.ID, data.Translate(user.Language, "Для использования бонусов, нужно заполнить обязательные поля (* - обязательно к заполнению)"))
+	check(err)
 	prof, err := abm.Client.Profile(user.Token)
 	// if user == nil {
 	// 	panic("panica: user was nil")
@@ -22,7 +22,7 @@ func ProfileChange(v *viber.Viber, u viber.User, m viber.TextMessage, token uint
 	if err != nil {
 		return
 	}
-	text := "*Номер: " + user.PhoneNumber + "\n"
+	text := data.Format(data.Translate(user.Language, "*Номер: {phone_number}\n"), "phone_number", user.PhoneNumber)
 	text += prof.ToString()
 	msg := v.NewTextMessage(text)
 	keyboard := v.NewKeyboard("", false)
@@ -80,7 +80,7 @@ func FillRequired(v *viber.Viber, u viber.User, m viber.TextMessage, token uint6
 	if len(fields) != 0 {
 		ChangeProfField(v, u, m, token, t, fields[0].Key)
 	} else {
-		_, err := v.SendTextMessage(u.ID, "Все обязательные поля уже заполнены")
+		_, err := v.SendTextMessage(u.ID, data.Translate(user.Language, "Все обязательные поля уже заполнены"))
 		check(err)
 		ProfileChange(v, u, m, token, t)
 	}
@@ -104,7 +104,8 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 	if fkey == "id_region" {
 		regions, err := abm.Client.Regions()
 		check(err)
-		msg := v.NewTextMessage("Редактируем '" + prof.Region.Name + "'" + ". Выберите свой вариант")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{region_name}'. Выберите свой вариант"), "region_name", prof.Region.Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		for _, region := range regions {
@@ -124,7 +125,8 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		return
 	}
 	if abm.DataType[field.DataType] == "Text" {
-		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Напишите новый вариант")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Напишите новый вариант"), "field_name", field.Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		msg.Keyboard = keyboard
@@ -136,7 +138,8 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		check(err)
 	}
 	if abm.DataType[field.DataType] == "Dropdown list" {
-		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Выберите свой вариант"), "field_name", field.Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		for _, sch := range field.Schema {
@@ -152,7 +155,8 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		check(err)
 	}
 	if abm.DataType[field.DataType] == "Date" {
-		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Введите дату в формате ГГГГ-ММ-ДД"), "field_name", field.Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		msg.Keyboard = keyboard
@@ -164,7 +168,8 @@ func ChangeProfField(v *viber.Viber, u viber.User, m viber.TextMessage, token ui
 		check(err)
 	}
 	if abm.DataType[field.DataType] == "Checkbox" {
-		msg := v.NewTextMessage("Редактируем '" + field.Name + "'" + ". Выберите свой вариант")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Выберите свой вариант"), "field_name", field.Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		keyboard.AddButtons(*CfgButton(v, viber.Reply, data.ButtCfg.Yes, "1", true))

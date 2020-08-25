@@ -6,6 +6,7 @@ import (
 
 	"github.com/orsenkucher/nothing/encio"
 	"github.com/orsenkucher/viber"
+	"github.com/sergTch/viberBotTest/data"
 )
 
 func NewBot(cfg encio.Config) *viber.Viber {
@@ -32,7 +33,7 @@ func check(err error) {
 func checkServerError(err error, v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t time.Time) {
 	check(err)
 	if err != nil {
-		_, err = v.SendTextMessage(u.ID, "Извините, что-то пошло не так. Попробуйте ещё раз")
+		_, err = v.SendTextMessage(u.ID, data.Translate("", "Извините, что-то пошло не так. Попробуйте ещё раз"))
 		check(err)
 		Menu(v, u, m, token, t)
 		return

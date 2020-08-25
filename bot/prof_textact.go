@@ -25,9 +25,10 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 	} else if abm.FieldType[field[0].FieldType] == "Birthday" {
 		date, err := time.Parse("2006-01-02", m.Text)
 		if err != nil {
-			_, err := v.SendTextMessage(u.ID, "Дата должна быть выписана в формате ГГГГ-ММ-ДД. Повторите ещё раз")
+			_, err := v.SendTextMessage(u.ID, data.Translate(user.Language, "Дата должна быть выписана в формате ГГГГ-ММ-ДД. Повторите ещё раз"))
 			check(err)
-			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
+			text := data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Введите дату в формате ГГГГ-ММ-ДД"), "field_name", field[0].Name)
+			msg := v.NewTextMessage(text)
 			keyboard := v.NewKeyboard("", false)
 			keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 			msg.Keyboard = keyboard
@@ -36,9 +37,11 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			return
 		}
 		if time.Since(date).Hours() < float64(data.Cfg.MinAge)*24*365.25 && field[0].Key == "birth_day" {
-			_, err := v.SendTextMessage(u.ID, fmt.Sprintf("Минимальный возраст для регистрации %v лет.", data.Cfg.MinAge))
+			text := data.Format(data.Translate(user.Language, "Минимальный возраст для регистрации {min_age} лет."), "min_age", data.Cfg.MinAge)
+			_, err := v.SendTextMessage(u.ID, text)
 			check(err)
-			msg := v.NewTextMessage("Редактируем '" + field[0].Name + "'" + ". Введите дату в формате ГГГГ-ММ-ДД")
+			text = data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Введите дату в формате ГГГГ-ММ-ДД"), "field_name", field[0].Name)
+			msg := v.NewTextMessage(text)
 			keyboard := v.NewKeyboard("", false)
 			keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 			msg.Keyboard = keyboard
@@ -57,7 +60,8 @@ func ChangeField(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64
 			return
 		}
 		check(err)
-		msg := v.NewTextMessage("Редактируем '" + field[1].Name + "' Введите несколько первых букв вашего города")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{field_name}'. Введите несколько первых букв вашего города"), "field_name", field[1].Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		msg.Keyboard = keyboard
@@ -94,7 +98,8 @@ func SearchCity(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 	if len(cities) > 0 {
 		field, ok := UserFields[u.ID]
 		fmt.Println("red city ", ok, field[0])
-		msg := v.NewTextMessage("Редактируем '" + prof.City.Name + "'" + ". Выберите свой вариант")
+		text := data.Format(data.Translate(user.Language, "Редактируем '{city_name}'. Выберите свой вариант"), "city_name", prof.City.Name)
+		msg := v.NewTextMessage(text)
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildCfgButton(v, data.ButtCfg.FinishLater, true, "prf"))
 		for _, city := range cities {

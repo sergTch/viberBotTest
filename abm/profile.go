@@ -8,6 +8,8 @@ import (
 	"io/ioutil"
 	"strconv"
 	"strings"
+
+	"github.com/sergTch/viberBotTest/data"
 )
 
 var DataType map[int]string
@@ -270,9 +272,9 @@ func (f *Field) ToString() string {
 			}
 			if len(f.Schema) == 0 {
 				if str == "0" {
-					text += "нет"
+					text += data.Translate("", "нет")
 				} else if str == "1" {
-					text += "да"
+					text += data.Translate("", "да")
 				}
 			}
 		} else {
