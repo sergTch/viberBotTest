@@ -28,6 +28,7 @@ type User struct {
 	PhoneNumber string
 	Token       *abm.SmartToken
 	Password    string
+	Language    string
 }
 
 func LoadUsers() {

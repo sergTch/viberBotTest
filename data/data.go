@@ -7,8 +7,9 @@ import (
 )
 
 const (
-	pub        = "secure/pub.json"
-	buttonspub = "secure/butt.json"
+	pub          = "secure/pub.json"
+	buttonspub   = "secure/butt.json"
+	translations = "secure/lang.json"
 )
 
 var Cfg struct {
@@ -69,4 +70,38 @@ func Init() {
 	if err != nil {
 		panic(fmt.Errorf("Failed to parse '%s': %w", buttonspub, err))
 	}
+
+	bytes, err = ioutil.ReadFile(translations)
+	if err != nil {
+		panic(fmt.Errorf("Failed to read '%s': %w", translations, err))
+	}
+
+	err = json.Unmarshal(bytes, &Translations)
+	if err != nil {
+		panic(fmt.Errorf("Failed to parse '%s': %w", translations, err))
+	}
+}
+
+var Translations map[string]map[string]string
+
+func Translate(lang, text string) string {
+	if lang == "" {
+		lang = Cfg.AcceptLanguage
+	}
+
+	if t, ok := translate(lang, text); ok {
+		return t
+	}
+
+	return text
+}
+
+func translate(lang, text string) (string, bool) {
+	if ts, ok := Translations[text]; ok {
+		if t, ok := ts[lang]; ok {
+			return t, true
+		}
+	}
+
+	return "", false
 }

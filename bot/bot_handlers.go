@@ -31,7 +31,7 @@ func MyConversaionStarted(v *viber.Viber, u viber.User, conversationType, contex
 	keyboard.AddButtons(*startB)
 	keyboard.InputFieldState = viber.HiddenInputField
 	UserTxtAct[u.ID] = []*TextAction{}
-	msg := v.NewTextMessage("Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ")
+	msg := v.NewTextMessage(data.Translate("", "Приветствуем в програме лояльности ABMLoyalty! Для начала работы нажмите СТАРТ"))
 	msg.SetKeyboard(keyboard)
 	return msg
 }
@@ -93,8 +93,9 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 		_, _ = v.SendTextMessage(u.ID, "Nice pic!")
 
 	case *viber.ContactMessage:
-		user := User{ViberUser: u, PhoneNumber: m.Contact.PhoneNumber}
+		user := User{ViberUser: u, PhoneNumber: m.Contact.PhoneNumber, Language: data.Cfg.AcceptLanguage}
 		UserIDMap[user.ViberUser.ID] = &user
+		DB.Save(&user)
 		//UserPhoneMap[user.Contact.PhoneNumber] = &user
 		fmt.Println(m.Contact.PhoneNumber)
 		fmt.Println(generatePhoneNumber(m.Contact.PhoneNumber))
