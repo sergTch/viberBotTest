@@ -16,6 +16,7 @@ const (
 var Cfg struct {
 	MinAge         int    `json:"Age"`
 	ApiUrl         string `json:"ApiUrl"`
+	Webhook        string `json:"Webhook"`
 	AgreementLink  string `json:"AgreementLink"`
 	CountryID      string `json:"CountryID"`
 	AcceptLanguage string `json:"Accept-Language"`

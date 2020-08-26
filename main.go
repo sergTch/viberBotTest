@@ -53,7 +53,7 @@ func run() error {
 
 	// you really need this only once, remove after you set the webhook
 	if *h {
-		hook, err := v.SetWebhook("https://loyalty-vbot.abmloyalty.app/viber/webhook", nil)
+		hook, err := v.SetWebhook(data.Cfg.Webhook, nil)
 		if err != nil {
 			return err
 		}
