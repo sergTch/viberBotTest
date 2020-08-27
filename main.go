@@ -17,24 +17,26 @@ import (
 )
 
 func main() {
-	data.Init()
+	cfg := flag.String("cfg", "secure", "config directory")
+	s := flag.String("s", "", "provide encio password")
+	h := flag.Bool("h", false, "set webhook if true")
+
+	flag.Parse()
+
+	data.Init(*cfg)
 	abm.Init()
-	if err := run(); err != nil {
+
+	if err := run(*s, *h); err != nil {
 		log.Fatalln(err)
 	}
 }
 
-func run() error {
-	var s = flag.String("s", "", "provide encio password")
-	var h = flag.Bool("h", false, "set webhook if true")
-
-	flag.Parse()
-
-	if *s == "" {
+func run(s string, h bool) error {
+	if s == "" {
 		return errors.New("[-s] -> encio must be handled")
 	}
 
-	key := encio.NewEncIO(*s)
+	key := encio.NewEncIO(s)
 
 	db, err := NewDB(key)
 	if err != nil {
@@ -44,7 +46,7 @@ func run() error {
 	bot.DB = db
 	bot.LoadUsers()
 
-	cfg, err := key.GetConfig("secure/viber.json")
+	cfg, err := key.GetConfig(data.Viber)
 	if err != nil {
 		return err
 	}
@@ -52,7 +54,7 @@ func run() error {
 	v := bot.NewBot(cfg)
 
 	// you really need this only once, remove after you set the webhook
-	if *h {
+	if h {
 		hook, err := v.SetWebhook(data.Cfg.Webhook, nil)
 		if err != nil {
 			return err
@@ -93,7 +95,7 @@ func NewDB(key encio.EncIO) (*gorm.DB, error) {
 		Name   string `json:"name"`
 	}
 
-	bytes, err := key.ReadFile("secure/gorm.json")
+	bytes, err := key.ReadFile(data.Gorm)
 	if err != nil {
 		return nil, err
 	}

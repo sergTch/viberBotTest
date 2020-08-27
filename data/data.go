@@ -7,10 +7,12 @@ import (
 	"strings"
 )
 
-const (
-	pub          = "secure/pub.json"
-	buttonspub   = "secure/butt.json"
-	translations = "secure/lang.json"
+var (
+	pub          = "%s/pub.json"
+	buttonspub   = "%s/butt.json"
+	translations = "%s/lang.json"
+	Viber        = "%s/viber.json"
+	Gorm         = "%s/gorm.json"
 )
 
 var Cfg struct {
@@ -52,7 +54,13 @@ var ButtCfg struct {
 	City         Butt `json:"city"`
 }
 
-func Init() {
+func Init(path string) {
+	pub = fmt.Sprintf(pub, path)
+	buttonspub = fmt.Sprintf(buttonspub, path)
+	translations = fmt.Sprintf(translations, path)
+	Viber = fmt.Sprintf(Viber, path)
+	Gorm = fmt.Sprintf(Gorm, path)
+
 	bytes, err := ioutil.ReadFile(pub)
 	if err != nil {
 		panic(fmt.Errorf("Failed to read '%s': %w", pub, err))
