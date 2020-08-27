@@ -29,7 +29,7 @@ type client struct {
 func New() *client {
 	return &client{
 		client: &http.Client{},
-		apiURL: data.Cfg.ApiUrl,
+		apiURL: data.Cfg.ApiURL,
 	}
 }
 

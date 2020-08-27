@@ -72,7 +72,7 @@ func run(s string, h bool) error {
 	// fmt.Println("Message sent, message token:", token)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		http.Redirect(w, r, "viber://pa?chatURI=abmloyaltytest", http.StatusFound)
+		http.Redirect(w, r, fmt.Sprintf("viber://pa?chatURI=%s", data.Cfg.ChatURI), http.StatusFound)
 	})
 
 	http.Handle("/viber/webhook", v)
