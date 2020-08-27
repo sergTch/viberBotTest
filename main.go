@@ -77,7 +77,7 @@ func run(s string, h bool) error {
 
 	http.Handle("/viber/webhook", v)
 
-	err = http.ListenAndServe(":9094", nil)
+	err = http.ListenAndServe(fmt.Sprintf(":%v", data.Cfg.Port), nil)
 	if err != nil {
 		return err
 	}

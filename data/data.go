@@ -18,6 +18,7 @@ var (
 var Cfg struct {
 	MinAge         int    `json:"Age"`
 	ApiUrl         string `json:"ApiUrl"`
+	Port           int    `json:"Port"`
 	Webhook        string `json:"Webhook"`
 	AgreementLink  string `json:"AgreementLink"`
 	CountryID      string `json:"CountryID"`
