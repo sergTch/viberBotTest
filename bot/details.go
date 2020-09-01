@@ -69,7 +69,7 @@ func ActionsDet(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64,
 			Menu(v, u, m, token, t)
 			return
 		}
-		msg := v.NewTextMessage(actions[n%20].Title + "\n" + actions[n%20].Content + "\n" + parseDate(actions[n%20].From+"\n"+parseDate(actions[n%20].To)))
+		msg := v.NewTextMessage(actions[n%20].Title + "\n" + actions[n%20].Content + "\n" + parseDate(actions[n%20].From) + "\n" + parseDate(actions[n%20].To))
 		keyboard := v.NewKeyboard("", false)
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", "Назад", "acts", strconv.Itoa(n-n%5)))
 		keyboard.AddButtons(*BuildButton(v, 3, 1, "", data.Translate(user.Language, "Меню"), "mnu"))
