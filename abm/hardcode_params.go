@@ -32,8 +32,6 @@ func init() {
 	htmlTags[";\">"] = "\">"
 	htmlTags["<p>"] = ""
 	htmlTags["</p>"] = ""
-	htmlTags["<b>"] = ""
-	htmlTags["</b>"] = ""
 	htmlTags["<strong>"] = "<b>"
 	htmlTags["</strong>"] = "</b>"
 	htmlTags["<em>"] = "<i>"
