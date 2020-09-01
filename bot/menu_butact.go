@@ -38,7 +38,7 @@ func LastOperations(v *viber.Viber, u viber.User, m viber.TextMessage, token uin
 		check(err)
 		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
 		for i := n % 20; i < len(history.Items) && i < n%20+5; i++ {
-			AddOpperation(v, msg, history.Items[i])
+			AddOpperation(v, msg, history.Items[i], n-n%20+i)
 		}
 		keyboard := v.NewKeyboard("", false)
 		if n > 0 {
@@ -75,7 +75,7 @@ func News(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t tim
 		check(err)
 		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
 		for i := n % 20; i < len(news) && i < n%20+5; i++ {
-			AddNews(v, msg, &news[i])
+			AddNews(v, msg, &news[i], n-n%20+i)
 		}
 		keyboard := v.NewKeyboard("", false)
 		if n > 0 {
@@ -112,7 +112,7 @@ func Actions(v *viber.Viber, u viber.User, m viber.TextMessage, token uint64, t 
 		check(err)
 		msg := v.NewRichMediaMessage(6, 7, "#FFFFFF")
 		for i := n % 20; i < len(actions) && i < n%20+5; i++ {
-			AddAction(v, msg, &actions[i])
+			AddAction(v, msg, &actions[i], n-n%20+i)
 		}
 		keyboard := v.NewKeyboard("", false)
 		if n > 0 {

@@ -70,6 +70,24 @@ func MyMsgReceivedFunc(v *viber.Viber, u viber.User, m viber.Message, token uint
 					return
 				}
 				Actions(v, u, *m, token, t, n)
+			} else if parts[1] == "histdet" {
+				n, err := strconv.Atoi(parts[2])
+				if err != nil {
+					return
+				}
+				LastOperationsDet(v, u, *m, token, t, n)
+			} else if parts[1] == "newsdet" {
+				n, err := strconv.Atoi(parts[2])
+				if err != nil {
+					return
+				}
+				NewsDet(v, u, *m, token, t, n)
+			} else if parts[1] == "actsdet" {
+				n, err := strconv.Atoi(parts[2])
+				if err != nil {
+					return
+				}
+				ActionsDet(v, u, *m, token, t, n)
 			} else {
 				for _, actionID := range parts {
 					if action, ok := ButtActions[actionID]; ok {

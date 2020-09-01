@@ -9,7 +9,7 @@ import (
 	"github.com/sergTch/viberBotTest/abm"
 )
 
-func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.HistoryItem) {
+func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.HistoryItem, n int) {
 	rows := 0
 	msg.AddButton(v.NewButton(6, 1, viber.None, "", item.Type, "", true))
 	rows++
@@ -30,21 +30,22 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Начислено: ", accrued), "", true))
 			rows++
 		}
-		adress, ok := item.Data["shop_address"]
-		if ok {
-			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Адресс: ", adress), "", true))
-			rows++
-		}
 		name, ok := item.Data["shop_name"]
 		if ok {
-			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Магазин: ", name), "", true))
-			rows++
+			adress, ok := item.Data["shop_address"]
+			if ok {
+				msg.AddButton(v.NewButton(3, 1, viber.None, "", fmt.Sprint("Магазин: ", name), "", true))
+				msg.AddButton(v.NewButton(3, 1, viber.None, "", fmt.Sprint("Адресс: ", adress), "", true))
+				rows++
+			}
 		}
 		date, ok := item.Data["date"]
 		if ok {
 			msg.AddButton(v.NewButton(6, 1, viber.None, "", fmt.Sprint("Дата: ", parseDate(date)), "", true))
 			rows++
 		}
+		msg.AddButton(BuildButton(v, 6, 1, "", "Детали", "histdet", strconv.Itoa(n)))
+		rows++
 	}
 
 	if item.Type == "pending" {
@@ -99,7 +100,7 @@ func AddOpperation(v *viber.Viber, msg *viber.RichMediaMessage, item abm.History
 	}
 }
 
-func AddNews(v *viber.Viber, msg *viber.RichMediaMessage, news *abm.News) {
+func AddNews(v *viber.Viber, msg *viber.RichMediaMessage, news *abm.News, n int) {
 	rows := 0
 	msg.AddButton(v.NewButton(6, 1, viber.None, "", news.Name, "", true))
 	rows++
@@ -110,15 +111,18 @@ func AddNews(v *viber.Viber, msg *viber.RichMediaMessage, news *abm.News) {
 		msg.AddButton(v.NewButton(6, 3, viber.None, "", " ", "", true))
 	}
 	rows += 3
-	msg.AddButton(v.NewButton(6, 3, viber.None, "", news.Descr, "", true))
-	rows += 3
+	msg.AddButton(v.NewButton(6, 2, viber.None, "", news.Short, "", true))
+	rows += 2
+
+	msg.AddButton(BuildButton(v, 6, 1, "", "Детали", "newsdet", strconv.Itoa(n)))
+	rows++
 
 	if rows < 7 {
 		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
 	}
 }
 
-func AddAction(v *viber.Viber, msg *viber.RichMediaMessage, action *abm.Actions) {
+func AddAction(v *viber.Viber, msg *viber.RichMediaMessage, action *abm.Actions, n int) {
 	rows := 0
 	msg.AddButton(v.NewButton(6, 1, viber.None, "", action.Title, "", true))
 	rows++
@@ -129,8 +133,11 @@ func AddAction(v *viber.Viber, msg *viber.RichMediaMessage, action *abm.Actions)
 		msg.AddButton(v.NewButton(6, 3, viber.None, "", " ", "", true))
 	}
 	rows += 3
-	msg.AddButton(v.NewButton(6, 3, viber.None, "", "C "+action.From+" по "+action.To+"\n"+action.Content, "", true))
-	rows += 3
+	msg.AddButton(v.NewButton(6, 2, viber.None, "", "C "+action.From+" по "+action.To+"\n"+action.Content, "", true))
+	rows += 2
+
+	msg.AddButton(BuildButton(v, 6, 1, "", "Детали", "actsdet", strconv.Itoa(n)))
+	rows++
 
 	if rows < 7 {
 		msg.AddButton(v.NewButton(6, 7-rows, viber.None, "", " ", "", true))
