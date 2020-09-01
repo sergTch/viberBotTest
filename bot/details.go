@@ -32,7 +32,7 @@ func LastOperationsDet(v *viber.Viber, u viber.User, m viber.TextMessage, token 
 		}
 		text += "________________\n"
 		for _, det := range item.Details {
-			text += fmt.Sprint(det["product_name"], "\n", det["product_price"], "x", det["product_amount"], "=", det["product_sum"])
+			text += fmt.Sprintln(det["product_name"], "\n", det["product_price"], "x", det["product_amount"], "=", det["product_sum"])
 		}
 		text += "________________\n"
 		name, ok := item.Data["shop_name"]
